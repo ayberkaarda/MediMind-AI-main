@@ -144,5 +144,5 @@ Bu proje **sadece eğitim ve bilgilendirme amaçlıdır**. Sunulan sonuçlar kes
 
 ---
 
-**Geliştirici:** Umut Yavuz
+**Geliştirici:** Ayberk Arda
 **Lisans:** MIT
