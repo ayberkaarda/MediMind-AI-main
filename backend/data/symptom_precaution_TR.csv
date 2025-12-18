@@ -1,0 +1,42 @@
+Disease,Precaution_1,Precaution_2,Precaution_3,Precaution_4
+Drug Reaction,tahrişi durdur,en yakın hastaneye başvurun,uyuşturucu almayı bırak,takip etmek
+Malaria,En yakın hastaneye başvurun,yağlı yiyeceklerden kaçının,sebze olmayan yiyeceklerden kaçının,sivrisinekleri uzak tut
+Allergy,kalamin uygula,bölgeyi bandajla örtün,,kaşıntıyı sıkıştırmak için buz kullanın
+Hypothyroidism,stresi azaltmak,egzersiz yapmak,sağlıklı beslen,düzgün uyku al
+Psoriasis,ellerinizi ılık sabunlu suyla yıkayın,Basınç uygulayarak kanamayı durdurun,doktora danış,tuz banyoları
+GERD,yağlı baharatlı yiyeceklerden kaçının,Yemek yedikten sonra uzanmaktan kaçının,sağlıklı kiloyu korumak,egzersiz yapmak
+Chronic cholestasis,soğuk banyolar,kaşıntı önleyici ilaç,doktora danış,sağlıklı beslen
+hepatitis A,En yakın hastaneye başvurun,ellerini yıka,yağlı baharatlı yiyeceklerden kaçının,ilaç tedavisi
+Osteoarthristis,parasetamol : asetaminofen,en yakın hastaneye başvurun,takip etmek,tuz banyoları
+(vertigo) Paroymsal  Positional Vertigo,yatmak,Vücuttaki ani değişikliklerden kaçının,ani kafa hareketlerinden kaçının,rahatlamak
+Hypoglycemia,yan yat,nabzını kontrol et,şekerli içecekler içmek,doktora danış
+Acne,iki kez banyo yapmak,yağlı baharatlı yiyeceklerden kaçının,bol su iç,çok fazla üründen kaçının
+Diabetes ,dengeli beslenmek,egzersiz yapmak,doktora danış,takip etmek
+Impetigo,Etkilenen bölgeyi ılık suya batırın,antibiyotik kullan,ıslak sıkıştırılmış bezle kabukları çıkarın,doktora danış
+Hypertension ,meditasyon,tuz banyoları,stresi azaltmak,düzgün uyku al
+Peptic ulcer diseae,yağlı baharatlı yiyeceklerden kaçının,probiyotik gıda tüketin,sütü ortadan kaldırmak,alkolü sınırla
+Dimorphic hemmorhoids(piles),yağlı baharatlı yiyeceklerden kaçının,cadı fındığı tüketin,Epsom tuzu ile ılık banyo,aloe vera suyu tüketin
+Common Cold,c vitamini açısından zengin içecekler tüketin,buhar al,soğuk yiyeceklerden kaçının,ateşi kontrol altında tutmak
+Chicken pox,banyo yaparken neem kullan,neem yaprağı tüketin,aşı al,halka açık yerlerden kaçının
+Cervical spondylosis,ısıtma yastığı veya soğuk paket kullanın,egzersiz yapmak,otc ağrı kesici al,doktora danış
+Hyperthyroidism,sağlıklı beslen,masaj,melisa kullan,radyoaktif iyot tedavisi almak
+Urinary tract infection,bol su iç,c vitamini alımını artırın,kızılcık suyu iç,probiyotik al
+Varicose veins,düz uzanın ve bacağınızı yukarı kaldırın,merhem kullan,damar kompresyonunu kullan,uzun süre hareketsiz durma
+AIDS,açık kesimlerden kaçının,mümkünse kişisel koruyucu donanım giyin,doktora danış,takip etmek
+Paralysis (brain hemorrhage),masaj,sağlıklı beslen,egzersiz yapmak,doktora danış
+Typhoid,yüksek kalorili sebzeler yiyin,antibiyotik tedavisi,doktora danış,ilaç tedavisi
+Hepatitis B,en yakın hastaneye başvurun,aşı,sağlıklı beslen,ilaç tedavisi
+Fungal infection,iki kez banyo yapmak,Banyo suyunda dettol veya neem kullanın,enfekte bölgeyi kuru tutun,temiz bezler kullan
+Hepatitis C,En yakın hastaneye başvurun,aşı,sağlıklı beslen,ilaç tedavisi
+Migraine,meditasyon,stresi azaltmak,güneşte polaroid gözlük kullanın,doktora danış
+Bronchial Asthma,bol giysilere geç,derin nefes al,tetikten uzaklaş,yardım istemek
+Alcoholic hepatitis,alkol tüketimini bırak,doktora danış,ilaç tedavisi,takip etmek
+Jaundice,bol su iç,deve dikeni tüketin,meyve ve yüksek lifli yiyecekler yiyin,ilaç tedavisi
+Hepatitis E,alkol tüketimini bırak,dinlenmek,doktora danış,ilaç tedavisi
+Dengue,papaya yaprağı suyu iç,yağlı baharatlı yiyeceklerden kaçının,sivrisinekleri uzak tut,susuz kalmayın
+Hepatitis D,doktora danış,ilaç tedavisi,sağlıklı beslen,takip etmek
+Heart attack,ambulansı ara,aspirini çiğneyin veya yutun,kendini tut,
+Pneumonia,doktora danış,ilaç tedavisi,dinlenmek,takip etmek
+Arthritis,egzersiz yapmak,Sıcak ve soğuk terapisini kullanın,akupunkturu dene,masaj
+Gastroenteritis,bir süre katı yiyecek yemeyi bırakın,küçük yudumlar su içmeyi deneyin,dinlenmek,yemeye geri dönmek
+Tuberculosis,Ağzı kapatmak,doktora danış,ilaç tedavisi,dinlenmek
