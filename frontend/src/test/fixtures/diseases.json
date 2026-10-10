@@ -1,0 +1,367 @@
+[
+  {
+    "disease_id": "fungal_infection",
+    "name": "Mantar Enfeksiyonu",
+    "description": "İnsanlarda mantar enfeksiyonları, istilacı bir mantar vücudun bir alanını ele geçirdiğinde ve bağışıklık sisteminin başa çıkamayacağı kadar fazla olduğunda ortaya çıkar.Mantarlar havada, toprakta, suda ve bitkilerde yaşayabilir.İnsan vücudunda doğal olarak yaşayan bazı mantarlar da vardır.Birçok mikrop gibi yararlı mantarlar ve zararlı mantarlar vardır.",
+    "precautions": [
+      "iki kez banyo yapmak",
+      "Banyo suyunda dettol veya neem kullanın",
+      "enfekte bölgeyi kuru tutun",
+      "temiz bezler kullan"
+    ]
+  },
+  {
+    "disease_id": "allergy",
+    "name": "Alerji",
+    "description": "Alerji, normalde vücudunuza zarar vermeyen yabancı bir maddeye karşı bağışıklık sisteminin verdiği tepkidir. Bunlar arasında belirli gıdalar, polen veya evcil hayvan tüyü bulunabilir.Bağışıklık sisteminizin görevi zararlı patojenlerle savaşarak sizi sağlıklı tutmaktır.",
+    "precautions": [
+      "kalamin uygula",
+      "bölgeyi bandajla örtün",
+      "kaşıntıyı sıkıştırmak için buz kullanın"
+    ]
+  },
+  {
+    "disease_id": "gerd",
+    "name": "Gerd",
+    "description": "Gastroözofageal reflü hastalığı veya GERD, yemek borusu ile mide arasındaki kas halkası olan alt özofagus sfinkterini (LES) etkileyen bir sindirim bozukluğudur.Hamile kadınlar da dahil olmak üzere pek çok kişi, GERD'nin neden olduğu mide yanması veya asit hazımsızlığından muzdariptir.",
+    "precautions": [
+      "yağlı baharatlı yiyeceklerden kaçının",
+      "Yemek yedikten sonra uzanmaktan kaçının",
+      "sağlıklı kiloyu korumak",
+      "egzersiz yapmak"
+    ]
+  },
+  {
+    "disease_id": "chronic_cholestasis",
+    "name": "Kronik Kolestaz",
+    "description": "Kronik kolestatik hastalıklar, ister bebeklik, çocukluk veya yetişkinlik döneminde ortaya çıksın, çoğu durumda safra epitelindeki birincil hasarın neden olduğu safra asidinin karaciğerden bağırsağa taşınmasındaki kusurla karakterize edilir.",
+    "precautions": ["soğuk banyolar", "kaşıntı önleyici ilaç", "doktora danış", "sağlıklı beslen"]
+  },
+  {
+    "disease_id": "drug_reaction",
+    "name": "İlaç Reaksiyonu",
+    "description": "Olumsuz ilaç reaksiyonu (ADR), ilaç almanın neden olduğu bir yaralanmadır.ADR'ler bir ilacın tek doz veya uzun süreli uygulanmasının ardından ortaya çıkabilir veya iki veya daha fazla ilacın kombinasyonundan kaynaklanabilir.",
+    "precautions": [
+      "tahrişi durdur",
+      "en yakın hastaneye başvurun",
+      "uyuşturucu almayı bırak",
+      "takip etmek"
+    ]
+  },
+  {
+    "disease_id": "peptic_ulcer_diseae",
+    "name": "Peptik Ülser Hastalığı",
+    "description": "Peptik ülser hastalığı (PUD), midenin iç astarında, ince bağırsağın ilk kısmında veya bazen yemek borusunun alt kısmında bir kırılmadır.Midedeki ülsere mide ülseri, bağırsağın ilk kısmındaki ülsere ise duodenal ülser denir.",
+    "precautions": [
+      "yağlı baharatlı yiyeceklerden kaçının",
+      "probiyotik gıda tüketin",
+      "sütü ortadan kaldırmak",
+      "alkolü sınırla"
+    ]
+  },
+  {
+    "disease_id": "aids",
+    "name": "Aids",
+    "description": "Edinilmiş immün yetmezlik sendromu (AIDS), insan immün yetmezlik virüsünün (HIV) neden olduğu kronik, potansiyel olarak yaşamı tehdit eden bir durumdur.HIV, bağışıklık sisteminize zarar vererek vücudunuzun enfeksiyon ve hastalıklarla mücadele etme becerisine müdahale eder.",
+    "precautions": [
+      "açık kesimlerden kaçının",
+      "mümkünse kişisel koruyucu donanım giyin",
+      "doktora danış",
+      "takip etmek"
+    ]
+  },
+  {
+    "disease_id": "diabetes",
+    "name": "Diyabet",
+    "description": "Diyabet, kan şekeri olarak da adlandırılan kan şekerinizin çok yüksek olması durumunda ortaya çıkan bir hastalıktır.Kan şekeri ana enerji kaynağınızdır ve yediğiniz yiyeceklerden gelir.Pankreas tarafından üretilen bir hormon olan insülin, yiyeceklerdeki glikozun enerji için kullanılmak üzere hücrelerinize girmesine yardımcı olur.",
+    "precautions": ["dengeli beslenmek", "egzersiz yapmak", "doktora danış", "takip etmek"]
+  },
+  {
+    "disease_id": "gastroenteritis",
+    "name": "Gastroenterit",
+    "description": "Gastroenterit, sindirim sisteminin, özellikle midenin ve kalın ve ince bağırsakların iltihaplanmasıdır.Viral ve bakteriyel gastroenterit, ishal, karın krampları, bulantı ve kusma semptomlarıyla ilişkili bağırsak enfeksiyonlarıdır.",
+    "precautions": [
+      "bir süre katı yiyecek yemeyi bırakın",
+      "küçük yudumlar su içmeyi deneyin",
+      "dinlenmek",
+      "yemeye geri dönmek"
+    ]
+  },
+  {
+    "disease_id": "bronchial_asthma",
+    "name": "Bronşiyal Astım",
+    "description": "Bronşiyal astım, akciğerlerin hava yolunun şişmesine ve daralmasına neden olan tıbbi bir durumdur.Bu şişme nedeniyle hava yolu aşırı mukus üreterek nefes almayı zorlaştırır, bu da öksürüğe, kısa nefese ve hırıltıya neden olur.Hastalık kroniktir ve günlük çalışmayı engeller.",
+    "precautions": ["bol giysilere geç", "derin nefes al", "tetikten uzaklaş", "yardım istemek"]
+  },
+  {
+    "disease_id": "hypertension",
+    "name": "Hipertansiyon",
+    "description": "Yüksek tansiyon (HBP) olarak da bilinen hipertansiyon (HTN veya HT), arterlerdeki kan basıncının sürekli olarak yükseldiği uzun süreli bir tıbbi durumdur.Yüksek tansiyon genellikle semptomlara neden olmaz.",
+    "precautions": ["meditasyon", "tuz banyoları", "stresi azaltmak", "düzgün uyku al"]
+  },
+  {
+    "disease_id": "migraine",
+    "name": "Migren",
+    "description": "Migren, genellikle başın bir tarafında şiddetli zonklama ağrısına veya nabız atış hissine neden olabilir.Genellikle bulantı, kusma ve ışığa ve sese karşı aşırı hassasiyet eşlik eder.Migren atakları saatlerce hatta günlerce sürebilir ve ağrı o kadar şiddetli olabilir ki günlük aktivitelerinizi etkileyebilir.",
+    "precautions": [
+      "meditasyon",
+      "stresi azaltmak",
+      "güneşte polaroid gözlük kullanın",
+      "doktora danış"
+    ]
+  },
+  {
+    "disease_id": "cervical_spondylosis",
+    "name": "Servikal Spondiloz",
+    "description": "Servikal spondiloz, boynunuzdaki omurilik disklerini etkileyen yaşa bağlı aşınma ve yıpranma için genel bir terimdir.Diskler kuruyup küçüldükçe, kemiklerin kenarları boyunca kemik çıkıntıları (kemik mahmuzları) dahil olmak üzere osteoartrit belirtileri gelişir.",
+    "precautions": [
+      "ısıtma yastığı veya soğuk paket kullanın",
+      "egzersiz yapmak",
+      "otc ağrı kesici al",
+      "doktora danış"
+    ]
+  },
+  {
+    "disease_id": "paralysis_brain_hemorrhage",
+    "name": "Felç (Beyin Kanaması)",
+    "description": "İntraserebral kanama (ICH), kanın aniden beyin dokusuna girerek beyninize zarar vermesidir.Semptomlar genellikle ICH sırasında aniden ortaya çıkar.Bunlar arasında özellikle vücudunuzun bir tarafında baş ağrısı, halsizlik, kafa karışıklığı ve felç bulunur.",
+    "precautions": ["masaj", "sağlıklı beslen", "egzersiz yapmak", "doktora danış"]
+  },
+  {
+    "disease_id": "jaundice",
+    "name": "Sarılık",
+    "description": "Safra pigmenti bilirubinin anormal derecede yüksek kan seviyeleri nedeniyle derinin ve skleranın (gözlerin beyazları) sarı lekelenmesi.Sararma diğer dokulara ve vücut sıvılarına da yayılır.Sarılık bir zamanlar yalnızca bir kralın dokunuşunun iyileştirebileceği inancıyla \"morbus regius\" (kraliyet hastalığı) olarak adlandırılıyordu.",
+    "precautions": [
+      "bol su iç",
+      "deve dikeni tüketin",
+      "meyve ve yüksek lifli yiyecekler yiyin",
+      "ilaç tedavisi"
+    ]
+  },
+  {
+    "disease_id": "malaria",
+    "name": "Sıtma",
+    "description": "Plasmodium familyasından tek hücreli parazitlerin neden olduğu, Anofel sivrisinek ısırığı veya kontamine bir iğne veya kan nakli yoluyla bulaşabilen bulaşıcı bir hastalık.Falciparum sıtması en ölümcül türdür.",
+    "precautions": [
+      "En yakın hastaneye başvurun",
+      "yağlı yiyeceklerden kaçının",
+      "sebze olmayan yiyeceklerden kaçının",
+      "sivrisinekleri uzak tut"
+    ]
+  },
+  {
+    "disease_id": "chicken_pox",
+    "name": "Suçiçeği",
+    "description": "Su çiçeği, varicella-zoster virüsünün (VZV) neden olduğu oldukça bulaşıcı bir hastalıktır.Kaşıntılı, kabarcık benzeri döküntülere neden olabilir.Döküntüler önce göğüste, sırtta ve yüzde ortaya çıkar, daha sonra tüm vücuda yayılır ve 250 ile 500 arasında kaşıntılı kabarcıklara neden olur.",
+    "precautions": [
+      "banyo yaparken neem kullan",
+      "neem yaprağı tüketin",
+      "aşı al",
+      "halka açık yerlerden kaçının"
+    ]
+  },
+  {
+    "disease_id": "dengue",
+    "name": "Dang Humması",
+    "description": "Bir flavivirüsün (Flavivirüs cinsinden Dang virüsü türü) neden olduğu, aedes sivrisinekleri tarafından iletilen ve baş ağrısı, şiddetli eklem ağrısı ve döküntü ile karakterize edilen akut bulaşıcı bir hastalık.- kırık kemik ateşi, dang humması olarak da adlandırılır.",
+    "precautions": [
+      "papaya yaprağı suyu iç",
+      "yağlı baharatlı yiyeceklerden kaçının",
+      "sivrisinekleri uzak tut",
+      "susuz kalmayın"
+    ]
+  },
+  {
+    "disease_id": "typhoid",
+    "name": "Tifo",
+    "description": "Salmonella typhi bakterisi enfeksiyonunun neden olduğu ateşle karakterize akut bir hastalıktır.Tifo ateşi, ateş, baş ağrısı, kabızlık, halsizlik, üşüme ve kas ağrısıyla sinsi bir başlangıca sahiptir.İshal nadirdir ve kusma genellikle şiddetli değildir.",
+    "precautions": [
+      "yüksek kalorili sebzeler yiyin",
+      "antibiyotik tedavisi",
+      "doktora danış",
+      "ilaç tedavisi"
+    ]
+  },
+  {
+    "disease_id": "hepatitis_a",
+    "name": "Hepatit A",
+    "description": "Hepatit A, hepatit A virüsünün neden olduğu oldukça bulaşıcı bir karaciğer enfeksiyonudur.Virüs, iltihaplanmaya neden olan ve karaciğerinizin çalışma yeteneğini etkileyen çeşitli hepatit virüslerinden biridir.",
+    "precautions": [
+      "En yakın hastaneye başvurun",
+      "ellerini yıka",
+      "yağlı baharatlı yiyeceklerden kaçının",
+      "ilaç tedavisi"
+    ]
+  },
+  {
+    "disease_id": "hepatitis_b",
+    "name": "Hepatit B",
+    "description": "Hepatit B karaciğerinizin bir enfeksiyonudur.Organda yara izine, karaciğer yetmezliğine ve kansere neden olabilir.Tedavi edilmezse ölümcül olabilir.İnsanlar hepatit B virüsü taşıyan birinin kanı, açık yaraları veya vücut sıvılarıyla temas ettiğinde yayılır.",
+    "precautions": ["en yakın hastaneye başvurun", "aşı", "sağlıklı beslen", "ilaç tedavisi"]
+  },
+  {
+    "disease_id": "hepatitis_c",
+    "name": "Hepatit C",
+    "description": "Genellikle kan nakli (nadiren), hemodiyaliz ve iğne batması yoluyla yayılan hepatit C virüsüne (HCV) bağlı karaciğer iltihabı.Hepatit C'nin karaciğere verdiği hasar siroz ve komplikasyonlarının yanı sıra kansere de yol açabilir.",
+    "precautions": ["En yakın hastaneye başvurun", "aşı", "sağlıklı beslen", "ilaç tedavisi"]
+  },
+  {
+    "disease_id": "hepatitis_d",
+    "name": "Hepatit D",
+    "description": "Hepatit delta virüsü olarak da bilinen Hepatit D, karaciğerin iltihaplanmasına neden olan bir enfeksiyondur.Bu şişlik karaciğer fonksiyonunu bozabilir ve karaciğerde yara izi ve kanser dahil uzun vadeli karaciğer sorunlarına neden olabilir.Bu duruma hepatit D virüsü (HDV) neden olur.",
+    "precautions": ["doktora danış", "ilaç tedavisi", "sağlıklı beslen", "takip etmek"]
+  },
+  {
+    "disease_id": "hepatitis_e",
+    "name": "Hepatit E",
+    "description": "Hepatit E virüsü (HEV) enfeksiyonunun neden olduğu nadir bir karaciğer iltihabı şekli.Enfekte bir kişi tarafından kullanılan yiyecek veya içecekler yoluyla veya dışkı maddesinin suya karışabileceği bölgelerdeki enfekte su kaynakları yoluyla bulaşır.Hepatit E kronik karaciğer hastalığına neden olmaz.",
+    "precautions": ["alkol tüketimini bırak", "dinlenmek", "doktora danış", "ilaç tedavisi"]
+  },
+  {
+    "disease_id": "alcoholic_hepatitis",
+    "name": "Alkolik Hepatit",
+    "description": "Alkolik hepatit, uzun süreli aşırı alkol tüketiminin neden olduğu, karaciğerin hastalıklı, inflamatuar bir durumudur.Aynı zamanda aşırı içki içmek ve devam eden alkol kullanımıyla da daha da kötüleşir.Bu durumu geliştirirseniz alkol almayı bırakmalısınız",
+    "precautions": ["alkol tüketimini bırak", "doktora danış", "ilaç tedavisi", "takip etmek"]
+  },
+  {
+    "disease_id": "tuberculosis",
+    "name": "Tüberküloz",
+    "description": "Tüberküloz (TB), genellikle Mycobacterium tuberculosis (MTB) bakterisinin neden olduğu bulaşıcı bir hastalıktır.Tüberküloz genel olarak akciğerleri etkilemekle birlikte vücudun diğer kısımlarını da etkileyebilir.Çoğu enfeksiyon hiçbir belirti göstermez, bu durumda gizli tüberküloz olarak bilinir.",
+    "precautions": ["Ağzı kapatmak", "doktora danış", "ilaç tedavisi", "dinlenmek"]
+  },
+  {
+    "disease_id": "common_cold",
+    "name": "Nezle, Soğuk Algınlığı",
+    "description": "Soğuk algınlığı, burnunuzun ve boğazınızın (üst solunum yolu) viral bir enfeksiyonudur.Her ne kadar öyle hissetmese de genellikle zararsızdır.Birçok virüs türü soğuk algınlığına neden olabilir.",
+    "precautions": [
+      "c vitamini açısından zengin içecekler tüketin",
+      "buhar al",
+      "soğuk yiyeceklerden kaçının",
+      "ateşi kontrol altında tutmak"
+    ]
+  },
+  {
+    "disease_id": "pneumonia",
+    "name": "Akciğer Iltihaplanması",
+    "description": "Pnömoni akciğerlerden birinde veya her ikisinde meydana gelen bir enfeksiyondur.Bakteriler, virüsler ve mantarlar buna neden olur.Enfeksiyon akciğerlerinizdeki alveol adı verilen hava keselerinde iltihaplanmaya neden olur.Alveoller sıvı veya irinle dolar ve nefes almayı zorlaştırır.",
+    "precautions": ["doktora danış", "ilaç tedavisi", "dinlenmek", "takip etmek"]
+  },
+  {
+    "disease_id": "dimorphic_hemmorhoids_piles",
+    "name": "Dimorphic hemmorhoids(piles)",
+    "description": null,
+    "precautions": [
+      "yağlı baharatlı yiyeceklerden kaçının",
+      "cadı fındığı tüketin",
+      "Epsom tuzu ile ılık banyo",
+      "aloe vera suyu tüketin"
+    ]
+  },
+  {
+    "disease_id": "heart_attack",
+    "name": "Kalp Krizi",
+    "description": "Kan akışının kesilmesi nedeniyle kalp kasının ölümü.Kan akışının kaybı genellikle kalp kasına kan sağlayan arterlerden biri olan koroner arterin tamamen tıkanmasından kaynaklanır.",
+    "precautions": ["ambulansı ara", "aspirini çiğneyin veya yutun", "kendini tut"]
+  },
+  {
+    "disease_id": "varicose_veins",
+    "name": "Varisli Damarlar",
+    "description": "Genişlemiş ve bükülmüş, sıklıkla deriden açıkça görülebilen şişkin, mavi bir kan damarı gibi görünen bir damar.Varisli damarlar en çok yaşlı yetişkinlerde, özellikle de kadınlarda görülür ve özellikle bacaklarda görülür.",
+    "precautions": [
+      "düz uzanın ve bacağınızı yukarı kaldırın",
+      "merhem kullan",
+      "damar kompresyonunu kullan",
+      "uzun süre hareketsiz durma"
+    ]
+  },
+  {
+    "disease_id": "hypothyroidism",
+    "name": "Hipotiroidizm",
+    "description": "Az aktif tiroid veya düşük tiroid olarak da adlandırılan hipotiroidizm, tiroid bezinin yeterli tiroid hormonu üretmediği endokrin sistem bozukluğudur.",
+    "precautions": ["stresi azaltmak", "egzersiz yapmak", "sağlıklı beslen", "düzgün uyku al"]
+  },
+  {
+    "disease_id": "hyperthyroidism",
+    "name": "Hipertiroidizm",
+    "description": "Hipertiroidizm (aşırı aktif tiroid), tiroid beziniz tiroksin hormonunu çok fazla ürettiğinde ortaya çıkar.Hipertiroidizm vücudunuzun metabolizmasını hızlandırarak istemsiz kilo kaybına ve hızlı veya düzensiz kalp atışına neden olabilir.",
+    "precautions": ["sağlıklı beslen", "masaj", "melisa kullan", "radyoaktif iyot tedavisi almak"]
+  },
+  {
+    "disease_id": "hypoglycemia",
+    "name": "Hipoglisemi",
+    "description": "Hipoglisemi, kan şekeri (glikoz) düzeyinizin normalden düşük olduğu bir durumdur.Glikoz vücudunuzun ana enerji kaynağıdır.Hipoglisemi sıklıkla diyabet tedavisiyle ilişkilidir.Ancak diğer ilaçlar ve çoğu nadir görülen çeşitli durumlar, diyabeti olmayan kişilerde kan şekerinin düşmesine neden olabilir.",
+    "precautions": ["yan yat", "nabzını kontrol et", "şekerli içecekler içmek", "doktora danış"]
+  },
+  {
+    "disease_id": "osteoarthristis",
+    "name": "Osteoartrit",
+    "description": "Osteoartrit, dünya çapında milyonlarca insanı etkileyen, artritin en yaygın şeklidir.Kemiklerinizin uçlarını yastıklayan koruyucu kıkırdak zamanla aşındığında ortaya çıkar.",
+    "precautions": [
+      "parasetamol : asetaminofen",
+      "en yakın hastaneye başvurun",
+      "takip etmek",
+      "tuz banyoları"
+    ]
+  },
+  {
+    "disease_id": "arthritis",
+    "name": "Artrit",
+    "description": "Artrit, bir veya daha fazla ekleminizin şişmesi ve hassasiyetidir.Artritin ana semptomları, genellikle yaşla birlikte kötüleşen eklem ağrısı ve sertliğidir.En yaygın artrit türleri osteoartrit ve romatoid artrittir.",
+    "precautions": [
+      "egzersiz yapmak",
+      "Sıcak ve soğuk terapisini kullanın",
+      "akupunkturu dene",
+      "masaj"
+    ]
+  },
+  {
+    "disease_id": "vertigo_paroymsal_positional_vertigo",
+    "name": "(Vertigo) Paroksismal Pozisyonel Vertigo",
+    "description": "İyi huylu paroksismal pozisyonel vertigo (BPPV), vertigonun en yaygın nedenlerinden biridir; ani bir şekilde döndüğünüz veya başınızın iç kısmının döndüğü hissi.İyi huylu paroksismal pozisyonel vertigo, hafiften yoğuna kadar kısa süreli baş dönmesi ataklarına neden olur.",
+    "precautions": [
+      "yatmak",
+      "Vücuttaki ani değişikliklerden kaçının",
+      "ani kafa hareketlerinden kaçının",
+      "rahatlamak"
+    ]
+  },
+  {
+    "disease_id": "acne",
+    "name": "Akne",
+    "description": "Akne vulgaris, pilosebase ünitelerin (saç folikülleri ve bunlara eşlik eden yağ bezleri) tıkanması ve iltihaplanması sonucu komedon, papül, püstül, nodül ve/veya kist oluşumudur.Akne yüz ve üst gövdede gelişir.Çoğu zaman ergenleri etkiler.",
+    "precautions": [
+      "iki kez banyo yapmak",
+      "yağlı baharatlı yiyeceklerden kaçının",
+      "bol su iç",
+      "çok fazla üründen kaçının"
+    ]
+  },
+  {
+    "disease_id": "urinary_tract_infection",
+    "name": "İdrar Yolu Enfeksiyonu",
+    "description": "İdrar yolu enfeksiyonu: Böbrek, üreter, mesane veya üretranın enfeksiyonu.Kısaltılmış UTI.İdrar yolu enfeksiyonu geçiren herkeste semptomlar görülmez ancak yaygın semptomlar arasında sık idrara çıkma isteği ve idrar yaparken ağrı veya yanma yer alır.",
+    "precautions": ["bol su iç", "c vitamini alımını artırın", "kızılcık suyu iç", "probiyotik al"]
+  },
+  {
+    "disease_id": "psoriasis",
+    "name": "Sedef Hastalığı",
+    "description": "Sedef hastalığı, gümüş pullarla kaplı kalın, kırmızı, inişli çıkışlı lekeler oluşturan yaygın bir cilt hastalığıdır.Her yerde ortaya çıkabilirler, ancak çoğu kafa derisinde, dirseklerde, dizlerde ve sırtın alt kısmında görülür.Sedef hastalığı kişiden kişiye geçemez.Bazen aynı ailenin üyelerinde de olur.",
+    "precautions": [
+      "ellerinizi ılık sabunlu suyla yıkayın",
+      "Basınç uygulayarak kanamayı durdurun",
+      "doktora danış",
+      "tuz banyoları"
+    ]
+  },
+  {
+    "disease_id": "impetigo",
+    "name": "Impetigo",
+    "description": "İmpetigo (im-puh-TIE-go), esas olarak bebekleri ve çocukları etkileyen yaygın ve oldukça bulaşıcı bir cilt enfeksiyonudur.İmpetigo genellikle yüzde, özellikle çocuğun burun ve ağız çevresinde, ellerde ve ayaklarda kırmızı yaralar şeklinde görünür.Yaralar patlar ve bal renginde kabuklar oluşur.",
+    "precautions": [
+      "Etkilenen bölgeyi ılık suya batırın",
+      "antibiyotik kullan",
+      "ıslak sıkıştırılmış bezle kabukları çıkarın",
+      "doktora danış"
+    ]
+  }
+]

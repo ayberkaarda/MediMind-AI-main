@@ -1,0 +1,963 @@
+{
+  "symptoms": [
+    {
+      "id": "painful_walking",
+      "label": "Ağrılı Yürüyüş",
+      "label_en": "painful walking",
+      "region": "legs",
+      "severity": 2
+    },
+    {
+      "id": "family_history",
+      "label": "Aile Geçmişi",
+      "label_en": "family history",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "acute_liver_failure",
+      "label": "Akut Karaciğer Yetmezliği",
+      "label_en": "acute liver failure",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "history_of_alcohol_consumption",
+      "label": "Alkol Tüketimi Geçmişi",
+      "label_en": "history of alcohol consumption",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "pain_in_anal_region",
+      "label": "Anal Bölgede Ağrı",
+      "label_en": "pain in anal region",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "abnormal_menstruation",
+      "label": "Anormal Adet Kanaması",
+      "label_en": "abnormal menstruation",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "irritation_in_anus",
+      "label": "Anüs Tahrişi",
+      "label_en": "irritation in anus",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "acidity",
+      "label": "Asitlik",
+      "label_en": "acidity",
+      "region": "abdomen",
+      "severity": 3
+    },
+    {
+      "id": "excessive_hunger",
+      "label": "Aşırı Açlık",
+      "label_en": "excessive hunger",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "fluid_overload",
+      "label": "Aşırı Sıvı Yükü",
+      "label_en": "fluid overload",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "pain_during_bowel_movements",
+      "label": "Bağırsak Hareketleri Sırasında Ağrı",
+      "label_en": "pain during bowel movements",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "prominent_veins_on_calf",
+      "label": "Baldırda Belirgin Damarlar",
+      "label_en": "prominent veins on calf",
+      "region": "legs",
+      "severity": 6
+    },
+    {
+      "id": "phlegm",
+      "label": "Balgam",
+      "label_en": "phlegm",
+      "region": "chest",
+      "severity": 5
+    },
+    {
+      "id": "blood_in_sputum",
+      "label": "Balgamda Kan",
+      "label_en": "blood in sputum",
+      "region": "chest",
+      "severity": 5
+    },
+    {
+      "id": "headache",
+      "label": "Baş Ağrısı",
+      "label_en": "headache",
+      "region": "head_neck",
+      "severity": 3
+    },
+    {
+      "id": "dizziness",
+      "label": "Baş Dönmesi",
+      "label_en": "dizziness",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "sunken_eyes",
+      "label": "Batık Gözler",
+      "label_en": "sunken eyes",
+      "region": "head_neck",
+      "severity": 3
+    },
+    {
+      "id": "throat_irritation",
+      "label": "Boğaz Tahrişi",
+      "label_en": "throat irritation",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "patches_in_throat",
+      "label": "Boğazdaki Yamalar",
+      "label_en": "patches in throat",
+      "region": "head_neck",
+      "severity": 6
+    },
+    {
+      "id": "neck_pain",
+      "label": "Boyun Ağrısı",
+      "label_en": "neck pain",
+      "region": "head_neck",
+      "severity": 5
+    },
+    {
+      "id": "stiff_neck",
+      "label": "Boyun Tutulması",
+      "label_en": "stiff neck",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "blurred_and_distorted_vision",
+      "label": "Bulanık Ve Bozuk Görüş",
+      "label_en": "blurred and distorted vision",
+      "region": "head_neck",
+      "severity": 5
+    },
+    {
+      "id": "nausea",
+      "label": "Bulantı",
+      "label_en": "nausea",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "runny_nose",
+      "label": "Burun Akması",
+      "label_en": "runny nose",
+      "region": "head_neck",
+      "severity": 5
+    },
+    {
+      "id": "red_sore_around_nose",
+      "label": "Burun Çevresinde Kırmızı Yara",
+      "label_en": "red sore around nose",
+      "region": "skin",
+      "severity": 2
+    },
+    {
+      "id": "skin_peeling",
+      "label": "Cilt Soyulması",
+      "label_en": "skin peeling",
+      "region": "skin",
+      "severity": 3
+    },
+    {
+      "id": "palpitations",
+      "label": "Çarpıntı",
+      "label_en": "palpitations",
+      "region": "chest",
+      "severity": 4
+    },
+    {
+      "id": "altered_sensorium",
+      "label": "Değiştirilmiş Duyu Organı",
+      "label_en": "altered sensorium",
+      "region": "head_neck",
+      "severity": 2
+    },
+    {
+      "id": "dehydration",
+      "label": "Dehidrasyon",
+      "label_en": "dehydration",
+      "region": "general",
+      "severity": 4
+    },
+    {
+      "id": "loss_of_balance",
+      "label": "Denge Kaybı",
+      "label_en": "loss of balance",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "unsteadiness",
+      "label": "Dengesizlik",
+      "label_en": "unsteadiness",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "depression",
+      "label": "Depresyon",
+      "label_en": "depression",
+      "region": "head_neck",
+      "severity": 3
+    },
+    {
+      "id": "skin_rash",
+      "label": "Deri Döküntüsü",
+      "label_en": "skin rash",
+      "region": "skin",
+      "severity": 3
+    },
+    {
+      "id": "ulcers_on_tongue",
+      "label": "Dildeki Ülserler",
+      "label_en": "ulcers on tongue",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "dischromic_patches",
+      "label": "Diskromik Yamalar",
+      "label_en": "dischromic patches",
+      "region": "skin",
+      "severity": 6
+    },
+    {
+      "id": "knee_pain",
+      "label": "Diz Ağrısı",
+      "label_en": "knee pain",
+      "region": "legs",
+      "severity": 3
+    },
+    {
+      "id": "spinning_movements",
+      "label": "Dönme Hareketleri",
+      "label_en": "spinning movements",
+      "region": "general",
+      "severity": 6
+    },
+    {
+      "id": "drying_and_tingling_lips",
+      "label": "Dudakların Kuruması Ve Karıncalanması",
+      "label_en": "drying and tingling lips",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "irregular_sugar_level",
+      "label": "Düzensiz Şeker Seviyesi",
+      "label_en": "irregular sugar level",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "joint_pain",
+      "label": "Eklem Ağrısı",
+      "label_en": "joint pain",
+      "region": "legs",
+      "severity": 3
+    },
+    {
+      "id": "swelling_joints",
+      "label": "Eklemlerin Şişmesi",
+      "label_en": "swelling joints",
+      "region": "legs",
+      "severity": 5
+    },
+    {
+      "id": "anxiety",
+      "label": "Endişe",
+      "label_en": "anxiety",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "extra_marital_contacts",
+      "label": "Evlilik Dışı Bağlantılar",
+      "label_en": "extra marital contacts",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "passage_of_gases",
+      "label": "Gazların Geçişi",
+      "label_en": "passage of gases",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "enlarged_thyroid",
+      "label": "Genişlemiş Tiroid",
+      "label_en": "enlarged thyroid",
+      "region": "head_neck",
+      "severity": 6
+    },
+    {
+      "id": "slurred_speech",
+      "label": "Geveleyerek Konuşma",
+      "label_en": "slurred speech",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "belly_pain",
+      "label": "Göbek Ağrısı",
+      "label_en": "belly pain",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "chest_pain",
+      "label": "Göğüs Ağrısı",
+      "label_en": "chest pain",
+      "region": "chest",
+      "severity": 7
+    },
+    {
+      "id": "visual_disturbances",
+      "label": "Görme Bozuklukları",
+      "label_en": "visual disturbances",
+      "region": "head_neck",
+      "severity": 3
+    },
+    {
+      "id": "watering_from_eyes",
+      "label": "Gözlerden Sulanma",
+      "label_en": "watering from eyes",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "pain_behind_the_eyes",
+      "label": "Gözlerin Arkasındaki Ağrı",
+      "label_en": "pain behind the eyes",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "redness_of_eyes",
+      "label": "Gözlerin Kızarıklığı",
+      "label_en": "redness of eyes",
+      "region": "head_neck",
+      "severity": 5
+    },
+    {
+      "id": "yellowing_of_eyes",
+      "label": "Gözlerin Sararması",
+      "label_en": "yellowing of eyes",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "mild_fever",
+      "label": "Hafif Ateş",
+      "label_en": "mild fever",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "movement_stiffness",
+      "label": "Hareket Sertliği",
+      "label_en": "movement stiffness",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "indigestion",
+      "label": "Hazımsızlık",
+      "label_en": "indigestion",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "fast_heart_rate",
+      "label": "Hızlı Kalp Atış Hızı",
+      "label_en": "fast heart rate",
+      "region": "chest",
+      "severity": 5
+    },
+    {
+      "id": "restlessness",
+      "label": "Huzursuzluk",
+      "label_en": "restlessness",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "internal_itching",
+      "label": "Iç Kaşıntı",
+      "label_en": "internal itching",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "spotting_urination",
+      "label": "Idrara Çıkma Lekelenmesi",
+      "label_en": "spotting urination",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "foul_smell_of_urine",
+      "label": "Idrarın Kötü Kokusu",
+      "label_en": "foul smell of urine",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "inflammatory_nails",
+      "label": "Iltihaplı Tırnaklar",
+      "label_en": "inflammatory nails",
+      "region": "arms",
+      "severity": 2
+    },
+    {
+      "id": "pus_filled_pimples",
+      "label": "Irin Dolu Sivilceler",
+      "label_en": "pus filled pimples",
+      "region": "skin",
+      "severity": 2
+    },
+    {
+      "id": "diarrhoea",
+      "label": "Ishal",
+      "label_en": "diarrhoea",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "increased_appetite",
+      "label": "Iştah Artışı",
+      "label_en": "increased appetite",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "loss_of_appetite",
+      "label": "Iştah Kaybı",
+      "label_en": "loss of appetite",
+      "region": "general",
+      "severity": 4
+    },
+    {
+      "id": "blister",
+      "label": "Kabarcık",
+      "label_en": "blister",
+      "region": "skin",
+      "severity": 4
+    },
+    {
+      "id": "constipation",
+      "label": "Kabızlık",
+      "label_en": "constipation",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "hip_joint_pain",
+      "label": "Kalça Eklemi Ağrısı",
+      "label_en": "hip joint pain",
+      "region": "legs",
+      "severity": 2
+    },
+    {
+      "id": "receiving_blood_transfusion",
+      "label": "Kan Nakli Almak",
+      "label_en": "receiving blood transfusion",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "bloody_stool",
+      "label": "Kanlı Dışkı",
+      "label_en": "bloody stool",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "abdominal_pain",
+      "label": "Karın Ağrısı",
+      "label_en": "abdominal pain",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "distention_of_abdomen",
+      "label": "Karın Şişliği",
+      "label_en": "distention of abdomen",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "muscle_pain",
+      "label": "Kas Ağrısı",
+      "label_en": "muscle pain",
+      "region": "general",
+      "severity": 2
+    },
+    {
+      "id": "muscle_wasting",
+      "label": "Kas Kaybı",
+      "label_en": "muscle wasting",
+      "region": "general",
+      "severity": 3
+    },
+    {
+      "id": "muscle_weakness",
+      "label": "Kas Zayıflığı",
+      "label_en": "muscle weakness",
+      "region": "general",
+      "severity": 2
+    },
+    {
+      "id": "itching",
+      "label": "Kaşıntı",
+      "label_en": "itching",
+      "region": "skin",
+      "severity": 1
+    },
+    {
+      "id": "malaise",
+      "label": "Keyifsizlik",
+      "label_en": "malaise",
+      "region": "general",
+      "severity": 6
+    },
+    {
+      "id": "brittle_nails",
+      "label": "Kırılgan Tırnaklar",
+      "label_en": "brittle nails",
+      "region": "arms",
+      "severity": 5
+    },
+    {
+      "id": "weight_gain",
+      "label": "Kilo Alımı",
+      "label_en": "weight gain",
+      "region": "general",
+      "severity": 3
+    },
+    {
+      "id": "weight_loss",
+      "label": "Kilo Kaybı",
+      "label_en": "weight loss",
+      "region": "general",
+      "severity": 3
+    },
+    {
+      "id": "loss_of_smell",
+      "label": "Koku Kaybı",
+      "label_en": "loss of smell",
+      "region": "head_neck",
+      "severity": 3
+    },
+    {
+      "id": "coma",
+      "label": "Koma",
+      "label_en": "coma",
+      "region": "head_neck",
+      "severity": 7
+    },
+    {
+      "id": "lack_of_concentration",
+      "label": "Konsantrasyon Eksikliği",
+      "label_en": "lack of concentration",
+      "region": "head_neck",
+      "severity": 3
+    },
+    {
+      "id": "scurring",
+      "label": "Koşuşturma",
+      "label_en": "scurring",
+      "region": "skin",
+      "severity": 2
+    },
+    {
+      "id": "dark_urine",
+      "label": "Koyu Renkli Idrar",
+      "label_en": "dark urine",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "cramps",
+      "label": "Kramplar",
+      "label_en": "cramps",
+      "region": "general",
+      "severity": 4
+    },
+    {
+      "id": "vomiting",
+      "label": "Kusma",
+      "label_en": "vomiting",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "lethargy",
+      "label": "Letarji",
+      "label_en": "lethargy",
+      "region": "general",
+      "severity": 2
+    },
+    {
+      "id": "bladder_discomfort",
+      "label": "Mesane Rahatsızlığı",
+      "label_en": "bladder discomfort",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "stomach_pain",
+      "label": "Mide Ağrısı",
+      "label_en": "stomach pain",
+      "region": "abdomen",
+      "severity": 5
+    },
+    {
+      "id": "stomach_bleeding",
+      "label": "Mide Kanaması",
+      "label_en": "stomach bleeding",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "swelling_of_stomach",
+      "label": "Mide Şişmesi",
+      "label_en": "swelling of stomach",
+      "region": "abdomen",
+      "severity": 7
+    },
+    {
+      "id": "bruising",
+      "label": "Morarma",
+      "label_en": "bruising",
+      "region": "skin",
+      "severity": 4
+    },
+    {
+      "id": "mucoid_sputum",
+      "label": "Mukoid Balgam",
+      "label_en": "mucoid sputum",
+      "region": "chest",
+      "severity": 4
+    },
+    {
+      "id": "breathlessness",
+      "label": "Nefes Darlığı",
+      "label_en": "breathlessness",
+      "region": "chest",
+      "severity": 4
+    },
+    {
+      "id": "nodal_skin_eruptions",
+      "label": "Nodal Cilt Döküntüleri",
+      "label_en": "nodal skin eruptions",
+      "region": "skin",
+      "severity": 4
+    },
+    {
+      "id": "obesity",
+      "label": "Obezite",
+      "label_en": "obesity",
+      "region": "general",
+      "severity": 4
+    },
+    {
+      "id": "cough",
+      "label": "Öksürük",
+      "label_en": "cough",
+      "region": "chest",
+      "severity": 4
+    },
+    {
+      "id": "rusty_sputum",
+      "label": "Paslı Balgam",
+      "label_en": "rusty sputum",
+      "region": "chest",
+      "severity": 4
+    },
+    {
+      "id": "polyuria",
+      "label": "Poliüri",
+      "label_en": "polyuria",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "mood_swings",
+      "label": "Ruh Hali Değişimleri",
+      "label_en": "mood swings",
+      "region": "general",
+      "severity": 3
+    },
+    {
+      "id": "yellow_urine",
+      "label": "Sarı Idrar",
+      "label_en": "yellow urine",
+      "region": "abdomen",
+      "severity": 4
+    },
+    {
+      "id": "yellow_crust_ooze",
+      "label": "Sarı Kabuk Sızıntısı",
+      "label_en": "yellow crust ooze",
+      "region": "skin",
+      "severity": 3
+    },
+    {
+      "id": "yellowish_skin",
+      "label": "Sarımsı Cilt",
+      "label_en": "yellowish skin",
+      "region": "skin",
+      "severity": 3
+    },
+    {
+      "id": "back_pain",
+      "label": "Sırt Ağrısı",
+      "label_en": "back pain",
+      "region": "back",
+      "severity": 3
+    },
+    {
+      "id": "irritability",
+      "label": "Sinirlilik",
+      "label_en": "irritability",
+      "region": "head_neck",
+      "severity": 2
+    },
+    {
+      "id": "sinus_pressure",
+      "label": "Sinüs Basıncı",
+      "label_en": "sinus pressure",
+      "region": "head_neck",
+      "severity": 4
+    },
+    {
+      "id": "blackheads",
+      "label": "Siyah Noktalar",
+      "label_en": "blackheads",
+      "region": "skin",
+      "severity": 2
+    },
+    {
+      "id": "cold_hands_and_feets",
+      "label": "Soğuk Eller Ve Ayaklar",
+      "label_en": "cold hands and feets",
+      "region": "arms",
+      "severity": 5
+    },
+    {
+      "id": "receiving_unsterile_injections",
+      "label": "Steril Olmayan Enjeksiyonlar Almak",
+      "label_en": "receiving unsterile injections",
+      "region": "general",
+      "severity": 2
+    },
+    {
+      "id": "continuous_sneezing",
+      "label": "Sürekli Hapşırma",
+      "label_en": "continuous sneezing",
+      "region": "chest",
+      "severity": 4
+    },
+    {
+      "id": "continuous_feel_of_urine",
+      "label": "Sürekli Idrar Hissi",
+      "label_en": "continuous feel of urine",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "swollen_legs",
+      "label": "Şişmiş Bacaklar",
+      "label_en": "swollen legs",
+      "region": "legs",
+      "severity": 5
+    },
+    {
+      "id": "swollen_extremeties",
+      "label": "Şişmiş Ekstremiteler",
+      "label_en": "swollen extremeties",
+      "region": "legs",
+      "severity": 5
+    },
+    {
+      "id": "swollen_blood_vessels",
+      "label": "Şişmiş Kan Damarları",
+      "label_en": "swollen blood vessels",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "swelled_lymph_nodes",
+      "label": "Şişmiş Lenf Düğümleri",
+      "label_en": "swelled lymph nodes",
+      "region": "skin",
+      "severity": 6
+    },
+    {
+      "id": "puffy_face_and_eyes",
+      "label": "Şişmiş Yüz Ve Gözler",
+      "label_en": "puffy face and eyes",
+      "region": "head_neck",
+      "severity": 5
+    },
+    {
+      "id": "sweating",
+      "label": "Terleme",
+      "label_en": "sweating",
+      "region": "general",
+      "severity": 3
+    },
+    {
+      "id": "congestion",
+      "label": "Tıkanıklık",
+      "label_en": "congestion",
+      "region": "chest",
+      "severity": 5
+    },
+    {
+      "id": "small_dents_in_nails",
+      "label": "Tırnaklarda Küçük Ezikler",
+      "label_en": "small dents in nails",
+      "region": "arms",
+      "severity": 2
+    },
+    {
+      "id": "shivering",
+      "label": "Titreme",
+      "label_en": "shivering",
+      "region": "general",
+      "severity": 5
+    },
+    {
+      "id": "silver_like_dusting",
+      "label": "Toz Gibi Gümüş",
+      "label_en": "silver like dusting",
+      "region": "skin",
+      "severity": 2
+    },
+    {
+      "id": "fatigue",
+      "label": "Tükenmişlik",
+      "label_en": "fatigue",
+      "region": "general",
+      "severity": 4
+    },
+    {
+      "id": "weakness_in_limbs",
+      "label": "Uzuvlarda Zayıflık",
+      "label_en": "weakness in limbs",
+      "region": "arms",
+      "severity": 7
+    },
+    {
+      "id": "chills",
+      "label": "Üşüme",
+      "label_en": "chills",
+      "region": "general",
+      "severity": 3
+    },
+    {
+      "id": "weakness_of_one_body_side",
+      "label": "Vücudun Bir Tarafının Zayıflığı",
+      "label_en": "weakness of one body side",
+      "region": "general",
+      "severity": 4
+    },
+    {
+      "id": "red_spots_over_body",
+      "label": "Vücutta Kırmızı Lekeler",
+      "label_en": "red spots over body",
+      "region": "skin",
+      "severity": 3
+    },
+    {
+      "id": "burning_micturition",
+      "label": "Yanan Işeme",
+      "label_en": "burning micturition",
+      "region": "abdomen",
+      "severity": 6
+    },
+    {
+      "id": "high_fever",
+      "label": "Yüksek Ateş",
+      "label_en": "high fever",
+      "region": "general",
+      "severity": 7
+    },
+    {
+      "id": "toxic_look_(typhos)",
+      "label": "Zehirli Görünüm (Tifo)",
+      "label_en": "toxic look (typhos)",
+      "region": "general",
+      "severity": 5
+    }
+  ],
+  "regions": [
+    {
+      "id": "head_neck",
+      "label": "Baş ve boyun",
+      "order": 1
+    },
+    {
+      "id": "chest",
+      "label": "Göğüs",
+      "order": 2
+    },
+    {
+      "id": "abdomen",
+      "label": "Karın",
+      "order": 3
+    },
+    {
+      "id": "back",
+      "label": "Sırt",
+      "order": 4
+    },
+    {
+      "id": "arms",
+      "label": "Kollar",
+      "order": 5
+    },
+    {
+      "id": "legs",
+      "label": "Bacaklar",
+      "order": 6
+    },
+    {
+      "id": "skin",
+      "label": "Cilt",
+      "order": 7
+    },
+    {
+      "id": "general",
+      "label": "Genel",
+      "order": 8
+    }
+  ]
+}
