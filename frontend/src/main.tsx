@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import { ApiError } from './lib/api/client';
 import { cleanupLegacyStorage } from './lib/storage';
+import { shouldEnableMocks } from './lib/mocks';
 
 cleanupLegacyStorage();
 
@@ -22,7 +23,7 @@ const queryClient = new QueryClient({
 });
 
 async function enableMocking(): Promise<void> {
-  if (import.meta.env.VITE_MOCK_API !== 'true') return;
+  if (!(import.meta.env.DEV && shouldEnableMocks(import.meta.env))) return;
   const { worker } = await import('./test/msw/browser');
   await worker.start({ onUnhandledRequest: 'bypass', quiet: true });
 }

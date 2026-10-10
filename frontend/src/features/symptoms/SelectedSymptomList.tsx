@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import type { Ref } from 'react';
 import { Icon } from '../../components/ui/Icon';
 import type { SymptomCatalog } from './catalog';
 import { symptomLabel } from './catalog';
@@ -8,6 +9,7 @@ interface SelectedSymptomListProps {
   selected: readonly string[];
   onRemove: (id: string) => void;
   onClear: () => void;
+  headingRef?: Ref<HTMLHeadingElement>;
 }
 
 interface Group {
@@ -45,6 +47,7 @@ export function SelectedSymptomList({
   selected,
   onRemove,
   onClear,
+  headingRef,
 }: SelectedSymptomListProps) {
   const headingId = useId();
   const groups = groupByRegion(catalog, selected);
@@ -52,11 +55,11 @@ export function SelectedSymptomList({
   return (
     <section aria-labelledby={headingId}>
       <div className="flex min-h-row items-center justify-between gap-4 border-b border-line">
-        <h2 id={headingId} className="text-base font-medium">
+        <h2 id={headingId} ref={headingRef} tabIndex={-1} className="text-base font-medium">
           Seçili belirtiler <span className="text-ink-muted">({selected.length})</span>
         </h2>
         {selected.length > 0 ? (
-          <button type="button" onClick={onClear} className="btn-quiet -mr-3 text-sm">
+          <button type="button" onClick={onClear} className="btn-quiet text-sm">
             Tümünü kaldır
           </button>
         ) : null}
@@ -84,7 +87,7 @@ export function SelectedSymptomList({
                       type="button"
                       onClick={() => onRemove(item.id)}
                       aria-label={`${item.label} belirtisini kaldır`}
-                      className="btn-quiet -mr-3 min-w-row shrink-0 px-0"
+                      className="btn-quiet min-w-row shrink-0 px-0"
                     >
                       <Icon name="close" size={18} />
                     </button>

@@ -16,11 +16,9 @@ export function ActionBar({ count, pending, onEvaluate }: ActionBarProps) {
         onClick={onEvaluate}
         disabled={count === 0 || pending}
       >
-        {pending
-          ? 'Değerlendiriliyor…'
-          : count > 0
-            ? `Değerlendir · ${symptomCountLabel(count)}`
-            : 'Değerlendir'}
+        <span>Değerlendir</span>
+        {count > 0 ? ' ' : null}
+        {count > 0 ? <span>· {symptomCountLabel(count)}</span> : null}
       </button>
     </div>
   );

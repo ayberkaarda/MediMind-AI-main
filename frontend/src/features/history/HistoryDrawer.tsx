@@ -61,7 +61,8 @@ export function HistoryDrawer({ open, onClose, catalog, onLoadSymptoms }: Histor
   const clearAll = useClearHistory();
   const [confirmClear, setConfirmClear] = useState(false);
 
-  const items = history.data?.items ?? [];
+  const items = history.data?.pages.flatMap((page) => page.items) ?? [];
+  const total = history.data?.pages[0]?.total;
   const mutationError = deleteItem.error ?? clearAll.error;
 
   const close = () => {
@@ -107,6 +108,8 @@ export function HistoryDrawer({ open, onClose, catalog, onLoadSymptoms }: Histor
         Bu tarayıcıdan yapılan değerlendirmeler. Kayıtlar anonim bir tarayıcı kimliğiyle saklanır.
       </p>
 
+      {total !== undefined ? <p className="mt-2 text-sm text-ink-muted">{total} kayıt</p> : null}
+
       <StatusMessage className="mt-3">
         {history.isPending ? 'Geçmiş yükleniyor…' : null}
       </StatusMessage>
@@ -135,6 +138,16 @@ export function HistoryDrawer({ open, onClose, catalog, onLoadSymptoms }: Histor
             />
           ))}
         </ul>
+      ) : null}
+      {history.hasNextPage ? (
+        <button
+          type="button"
+          className="btn-secondary mt-4 text-sm"
+          disabled={history.isFetchingNextPage}
+          onClick={() => void history.fetchNextPage()}
+        >
+          Daha fazla yükle
+        </button>
       ) : null}
     </Drawer>
   );

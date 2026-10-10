@@ -9,7 +9,7 @@ export function Header({ onOpenHistory }: HeaderProps) {
   return (
     <header className="screen-only border-b border-line">
       <div className="mx-auto flex h-16 w-full max-w-shell items-center justify-between gap-3 px-4 md:px-6">
-        <a href="/" className="font-serif text-lg font-semibold text-ink">
+        <a href="/" className="font-sans text-lg font-semibold text-ink">
           MediMind
         </a>
         <div className="flex items-center gap-1 sm:gap-2">

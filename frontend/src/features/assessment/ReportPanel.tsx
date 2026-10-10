@@ -58,7 +58,7 @@ export const ReportPanel = forwardRef<HTMLHeadingElement, ReportPanelProps>(func
       </header>
 
       <section aria-label="En yüksek skorlu sonuç" className="flex flex-col gap-3">
-        <p className="font-serif text-xl font-semibold">{top.name}</p>
+        <h3 className="font-serif text-xl font-semibold">{top.name}</h3>
         <p className="text-base font-medium">Model skoru {formatScore(top.probability)}</p>
         {top.description ? (
           <p className="max-w-prose text-base text-ink">{top.description}</p>

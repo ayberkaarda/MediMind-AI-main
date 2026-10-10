@@ -47,6 +47,26 @@ describe('foldTurkish', () => {
 });
 
 describe('SymptomCombobox', () => {
+  it('keeps every keystroke and clears a selected query', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    const input = screen.getByRole('combobox', { name: 'Belirti ara' });
+    await user.type(input, 'karin');
+    expect(input).toHaveValue('karin');
+    await user.keyboard('{Control>}a{/Control}{Backspace}');
+    expect(input).toHaveValue('');
+  });
+
+  it('closes on Escape without restoring an older query', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    const input = screen.getByRole('combobox', { name: 'Belirti ara' });
+    await user.type(input, 'karin');
+    await user.keyboard('{Escape}');
+    expect(input).toHaveValue('karin');
+    expect(input).toHaveAttribute('aria-expanded', 'false');
+  });
+
   it('finds "Baş Ağrısı" from an unaccented query and selects it', async () => {
     const user = userEvent.setup();
     const onAdd = vi.fn();
@@ -79,6 +99,9 @@ describe('SymptomCombobox', () => {
 
     await user.keyboard('{Enter}');
     expect(onAdd).toHaveBeenCalledWith('itching');
+    expect(input).toHaveValue('');
+    const selectedActiveId = input.getAttribute('aria-activedescendant');
+    if (selectedActiveId) expect(document.getElementById(selectedActiveId)).not.toBeNull();
   });
 
   it('removes already selected symptoms from the results', async () => {

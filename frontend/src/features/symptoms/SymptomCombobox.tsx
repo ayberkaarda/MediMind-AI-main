@@ -30,7 +30,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
       () => searchSymptoms(catalog.index, inputValue, { region, exclude }),
       [catalog.index, inputValue, region, exclude],
     );
-    const items = matches.slice(0, MAX_VISIBLE);
+    const items = useMemo(() => matches.slice(0, MAX_VISIBLE), [matches]);
 
     const { isOpen, highlightedIndex, getLabelProps, getInputProps, getMenuProps, getItemProps } =
       useCombobox<Symptom>({
@@ -40,11 +40,13 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         selectedItem: null,
         itemToString: (item) => item?.label ?? '',
         itemToKey: (item) => item?.id,
-        onInputValueChange: ({ inputValue: next }) => setInputValue(next ?? ''),
         onSelectedItemChange: ({ selectedItem }) => {
-          if (selectedItem && !limitReached) onAdd(selectedItem.id);
+          if (selectedItem && !limitReached) {
+            onAdd(selectedItem.id);
+            setInputValue('');
+          }
         },
-        stateReducer: (state, { type, changes }) => {
+        stateReducer: (_state, { type, changes }) => {
           switch (type) {
             case useCombobox.stateChangeTypes.InputKeyDownEnter:
             case useCombobox.stateChangeTypes.ItemClick:
@@ -52,8 +54,10 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
                 ...changes,
                 isOpen: true,
                 inputValue: '',
-                highlightedIndex: state.highlightedIndex,
+                highlightedIndex: -1,
               };
+            case useCombobox.stateChangeTypes.InputKeyDownEscape:
+              return { ...changes, isOpen: false, inputValue, highlightedIndex: -1 };
             default:
               return changes;
           }
@@ -89,6 +93,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
           <input
             {...getInputProps({
               ref: inputRef,
+              onChange: (event) => setInputValue(event.currentTarget.value),
               disabled: disabled || limitReached,
             })}
             type="text"

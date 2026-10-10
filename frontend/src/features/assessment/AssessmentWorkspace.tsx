@@ -32,6 +32,7 @@ export function AssessmentWorkspace({ historyOpen, onCloseHistory }: AssessmentW
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
   const isTablet = useMediaQuery(TABLET_QUERY);
   const inputRef = useRef<HTMLInputElement>(null);
+  const selectedHeadingRef = useRef<HTMLHeadingElement>(null);
   const reportHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const stale = isStale(state);
@@ -56,7 +57,8 @@ export function AssessmentWorkspace({ historyOpen, onCloseHistory }: AssessmentW
 
   const editSymptoms = () => {
     dispatch({ type: 'workspace', workspace: 'figure' });
-    inputRef.current?.focus();
+    if (limitReached) selectedHeadingRef.current?.focus();
+    else inputRef.current?.focus();
   };
 
   const regionPicker = (layout: 'wide' | 'compact', figureHeight: number) =>
@@ -150,8 +152,9 @@ export function AssessmentWorkspace({ historyOpen, onCloseHistory }: AssessmentW
               </div>
             )}
 
-            <div className="lg:max-h-[40vh] lg:overflow-y-auto">
+            <div className="px-1 lg:max-h-[40vh] lg:overflow-y-auto">
               <SelectedSymptomList
+                headingRef={selectedHeadingRef}
                 catalog={catalog}
                 selected={state.selected}
                 onRemove={(id) => dispatch({ type: 'remove', id })}
@@ -191,9 +194,10 @@ export function AssessmentWorkspace({ historyOpen, onCloseHistory }: AssessmentW
                         key={value}
                         type="button"
                         aria-pressed={state.workspace === value}
+                        aria-label={value === 'report' && stale ? `${label} (güncel değil)` : label}
                         onClick={() => dispatch({ type: 'workspace', workspace: value })}
                         className={clsx(
-                          'btn border text-sm',
+                          'btn whitespace-nowrap border text-sm',
                           state.workspace === value
                             ? 'border-ink bg-surface text-ink'
                             : 'border-line text-ink-muted hover:bg-surface-muted hover:text-ink',
@@ -201,7 +205,10 @@ export function AssessmentWorkspace({ historyOpen, onCloseHistory }: AssessmentW
                       >
                         {label}
                         {value === 'report' && stale ? (
-                          <span className="text-ink-muted"> (güncel değil)</span>
+                          <span
+                            aria-hidden="true"
+                            className="h-2 w-2 shrink-0 rounded-full bg-ink-muted"
+                          />
                         ) : null}
                       </button>
                     ))}

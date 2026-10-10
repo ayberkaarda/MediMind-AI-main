@@ -152,8 +152,11 @@ export function createHandlers({
       }
       if (latencyMs) await delay(latencyMs);
       const items = historyFor(clientId);
+      const url = new URL(request.url);
+      const limit = Math.max(1, Number(url.searchParams.get('limit') ?? 50));
+      const offset = Math.max(0, Number(url.searchParams.get('offset') ?? 0));
       return HttpResponse.json(
-        { items, total: items.length },
+        { items: items.slice(offset, offset + limit), total: items.length },
         { headers: { 'X-Request-ID': requestId } },
       );
     }),
