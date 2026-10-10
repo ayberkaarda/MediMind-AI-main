@@ -4,6 +4,24 @@
 }
 
 @media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .body-figure,
+  button,
+  [role='dialog'],
+  .selection-tray {
+    display: none !important;
+  }
+
   @page {
     size: A4;
     margin: 15mm;
@@ -16,8 +34,8 @@
 
   html,
   body {
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--color-paper) !important;
+    color: var(--color-print-ink) !important;
   }
 
   .screen-only {
@@ -26,8 +44,8 @@
 
   .print-report {
     display: block;
-    color: #000;
-    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    color: var(--color-print-ink);
+    font-family: system-ui, sans-serif;
     font-size: 10.5pt;
     line-height: 1.45;
     font-variant-numeric: tabular-nums;
@@ -35,7 +53,7 @@
 
   .print-report h1,
   .print-report h2 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: Georgia, serif;
     font-weight: 600;
     margin: 0;
   }
@@ -68,7 +86,7 @@
     grid-template-columns: auto 1fr;
     gap: 1mm 6mm;
     padding-bottom: 4mm;
-    border-bottom: 0.5pt solid #000;
+    border-bottom: 0.5pt solid var(--color-print-ink);
     margin-top: 3mm;
   }
 
@@ -82,7 +100,7 @@
   }
 
   .print-report__stale {
-    border: 1pt solid #000;
+    border: 1pt solid var(--color-print-ink);
     padding: 2mm 3mm;
     margin-top: 4mm;
     font-weight: 600;
@@ -133,7 +151,7 @@
   .print-report__disclaimer {
     margin-top: 6mm;
     padding-top: 3mm;
-    border-top: 0.5pt solid #000;
+    border-top: 0.5pt solid var(--color-print-ink);
     font-size: 9pt;
   }
 

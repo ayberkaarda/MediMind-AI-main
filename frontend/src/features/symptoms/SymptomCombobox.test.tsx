@@ -1,10 +1,16 @@
+import type { ReactElement } from 'react';
+import { MotionProvider } from '../../app/MotionProvider';
 import { useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render as renderUi, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { SymptomCombobox } from './SymptomCombobox';
 import { foldTurkish, searchSymptoms } from './search';
 import { testCatalog } from '../../test/utils';
+
+function render(ui: ReactElement) {
+  return renderUi(ui, { wrapper: MotionProvider });
+}
 
 function Harness({
   region = null,

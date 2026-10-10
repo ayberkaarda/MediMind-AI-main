@@ -2,19 +2,20 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { useState } from 'react';
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { AssessmentWorkspace } from './AssessmentWorkspace';
+import { FocusStage } from './FocusStage';
 import { STALE_MESSAGE } from './StaleBanner';
+import { DISCLAIMER_TEXT } from './Disclaimer';
 import { server } from '../../test/msw/server';
 import { renderWithClient, testCatalog } from '../../test/utils';
 import historyFixture from '../../test/fixtures/history.json';
 
 function renderWorkspace() {
-  return renderWithClient(<AssessmentWorkspace historyOpen={false} onCloseHistory={() => {}} />);
+  return renderWithClient(<FocusStage historyOpen={false} onCloseHistory={() => {}} />);
 }
 
 function HistoryWorkspaceHarness() {
   const [open, setOpen] = useState(true);
-  return <AssessmentWorkspace historyOpen={open} onCloseHistory={() => setOpen(false)} />;
+  return <FocusStage historyOpen={open} onCloseHistory={() => setOpen(false)} />;
 }
 
 async function pick(
@@ -28,7 +29,7 @@ async function pick(
   await user.click(screen.getByRole('option', { name: label }));
 }
 
-describe('AssessmentWorkspace', () => {
+describe('FocusStage', () => {
   it('focuses the selected heading when editing at the symptom limit', async () => {
     const symptoms = testCatalog.symptoms.slice(0, 17).map((item) => item.id);
     server.use(
@@ -57,6 +58,7 @@ describe('AssessmentWorkspace', () => {
 
     await pick(user, 'kasinti', /^Kaşıntı/);
     await pick(user, 'deri dok', /^Deri Döküntüsü/);
+    expect(bodies).toHaveLength(0);
 
     const selected = screen.getByRole('region', { name: /Seçili belirtiler/ });
     expect(within(selected).getByRole('group', { name: 'Cilt' })).toBeInTheDocument();
@@ -72,7 +74,10 @@ describe('AssessmentWorkspace', () => {
     expect(top).toHaveTextContent('Mantar Enfeksiyonu');
     expect(top).toHaveTextContent('Model skoru %42');
     expect(within(report).getByText(/hastalığa sahip olma olasılığınız/)).toBeInTheDocument();
+    expect(within(report).getByText(DISCLAIMER_TEXT)).toBeInTheDocument();
     expect(within(report).getByRole('heading', { name: 'Önlemler' })).toBeInTheDocument();
+    expect(within(report).getByLabelText('Model skoru')).toHaveAttribute('aria-live', 'polite');
+    expect(within(report).getAllByTestId('ruler-bar')).toHaveLength(5);
     expect(within(report).queryByText(/medium|orta güven/i)).not.toBeInTheDocument();
     expect(screen.queryByText(STALE_MESSAGE)).not.toBeInTheDocument();
 
@@ -93,7 +98,7 @@ describe('AssessmentWorkspace', () => {
 
   it('filters by body region from the inline region picker', async () => {
     const { user } = renderWorkspace();
-    await user.click(await screen.findByRole('button', { name: 'Bölgeden seç' }));
+    await user.click(await screen.findByRole('button', { name: 'Bölgeye göre keşfet' }));
     const regionButton = screen.getByRole('button', { name: 'Göğüs' });
     await user.click(regionButton);
     expect(regionButton).toHaveAttribute('aria-pressed', 'true');

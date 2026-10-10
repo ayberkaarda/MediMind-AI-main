@@ -1,4 +1,6 @@
 import clsx from 'clsx';
+import * as m from 'motion/react-m';
+import { useReducedMotion } from 'motion/react';
 import type { Prediction } from '../../lib/api/schemas';
 import { formatScore, scoreToWidth } from '../../lib/format';
 
@@ -6,7 +8,7 @@ export const RULER_NOTE = 'Bu değer, hastalığa sahip olma olasılığınız o
 
 const TICKS = [0, 25, 50, 75, 100] as const;
 
-interface ProbabilityRulerProps {
+interface ScoreListProps {
   predictions: Prediction[];
   limit?: number;
   /** Monochrome variant used by the printed note. */
@@ -14,13 +16,22 @@ interface ProbabilityRulerProps {
   className?: string;
 }
 
-function Track({ probability, variant }: { probability: number; variant: 'screen' | 'print' }) {
+function Track({
+  probability,
+  variant,
+  index = 0,
+}: {
+  probability: number;
+  variant: 'screen' | 'print';
+  index?: number;
+}) {
+  const reduced = useReducedMotion();
   const width = scoreToWidth(probability);
   return (
     <svg
       viewBox="0 0 100 16"
       preserveAspectRatio="none"
-      className={clsx('block h-4 w-full overflow-visible', variant === 'screen' && 'text-chart-1')}
+      className={clsx('block h-4 w-full overflow-visible', variant === 'screen' && 'text-ink')}
       aria-hidden="true"
       focusable="false"
     >
@@ -49,7 +60,22 @@ function Track({ probability, variant }: { probability: number; variant: 'screen
         strokeWidth={1}
         vectorEffect="non-scaling-stroke"
       />
-      <rect data-testid="ruler-bar" x={0} y={4} height={8} width={width} fill="currentColor" />
+      <m.rect
+        data-testid="ruler-bar"
+        x={0}
+        y={4}
+        height={8}
+        width={width}
+        fill="currentColor"
+        style={{ transformOrigin: '0px 8px' }}
+        initial={variant === 'print' || reduced ? false : { scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{
+          duration: reduced ? 0 : 0.5,
+          delay: reduced ? 0 : index * 0.06,
+          ease: 'easeOut',
+        }}
+      />
     </svg>
   );
 }
@@ -58,12 +84,12 @@ function Track({ probability, variant }: { probability: number; variant: 'screen
  * Model scores on one shared 0–100 axis. Bars are never normalised to the top result,
  * share one colour and carry no emphasis on the first row.
  */
-export function ProbabilityRuler({
+export function ScoreList({
   predictions,
   limit = 5,
   variant = 'screen',
   className,
-}: ProbabilityRulerProps) {
+}: ScoreListProps) {
   const rows = predictions.slice(0, limit);
   if (variant === 'print') {
     return (
@@ -91,9 +117,9 @@ export function ProbabilityRuler({
   }
 
   return (
-    <div className={className}>
+    <div className={className} aria-live="polite" aria-atomic="true" aria-label="Model skoru">
       <ol className="flex flex-col">
-        {rows.map((row) => (
+        {rows.map((row, index) => (
           <li
             key={row.disease_id}
             className="grid grid-cols-[minmax(0,1fr)_3.5rem] items-center gap-x-4 gap-y-1 py-2 md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_3.5rem]"
@@ -104,7 +130,7 @@ export function ProbabilityRuler({
               </span>
               <span aria-hidden="true">{row.name}</span>
             </span>
-            <Track probability={row.probability} variant="screen" />
+            <Track probability={row.probability} variant="screen" index={index} />
             <span className="text-right text-base tabular-nums" aria-hidden="true">
               {formatScore(row.probability)}
             </span>

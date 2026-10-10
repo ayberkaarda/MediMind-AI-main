@@ -1,11 +1,15 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
+import * as m from 'motion/react-m';
+import { useReducedMotion } from 'motion/react';
+import { useLowPower } from '../../../lib/useLowPower';
 import { REGIONS } from './regions';
 import type { FigureView, RegionId } from './regions';
 import { OUTLINE, REGION_PATHS } from './paths';
 import './BodyFigure.css';
 
 export type { FigureView, RegionId } from './regions';
+let contourShown = false;
 export interface BodyFigureProps {
   view: FigureView;
   onViewChange?: (view: FigureView) => void;
@@ -25,8 +29,13 @@ export function BodyFigure({
   height = 420,
   className,
 }: BodyFigureProps) {
-  const instanceId = useId();
-  const patternId = `body-hatch-${instanceId.replace(/:/g, '')}`;
+  const reduced = useReducedMotion();
+  const lowPower = useLowPower();
+  const [drawContour] = useState(() => !contourShown);
+  useEffect(() => {
+    contourShown = true;
+  }, []);
+  const [origin, setOrigin] = useState({ x: 160, y: 320 });
   const [focusedRegion, setFocusedRegion] = useState<RegionId>('head_neck');
   const buttonRefs = useRef<Partial<Record<RegionId, HTMLButtonElement | null>>>({});
   const visible = REGIONS.filter((region) => region.views.includes(view));
@@ -88,66 +97,97 @@ export function BodyFigure({
         </div>
       )}
       <div className="body-figure__layout">
-        <svg
-          className="body-figure__svg"
-          viewBox="0 0 320 640"
-          width={figureHeight / 2}
-          height={figureHeight}
-          aria-hidden="true"
-          focusable="false"
+        <div
+          className="body-figure__canvas"
+          style={{ width: figureHeight / 2, height: figureHeight }}
         >
-          <defs>
-            <pattern
-              id={patternId}
-              patternUnits="userSpaceOnUse"
-              width="6"
-              height="6"
-              patternTransform="rotate(45)"
-            >
-              <path className="body-figure__hatch" d="M0 0 H6" />
-            </pattern>
-          </defs>
-          <path className="body-figure__silhouette" d={OUTLINE[view]} />
-          {visible.map((region) => {
-            const active = activeRegion === region.id;
-            return (
-              <g
-                key={region.id}
-                className="body-figure__region"
-                data-active={active ? 'true' : 'false'}
-                onClick={() => select(region.id)}
-              >
-                <path className="body-figure__hit" d={REGION_PATHS[view][region.id]} />
-                {active && (
-                  <path
-                    className="body-figure__selection"
-                    d={REGION_PATHS[view][region.id]}
-                    fill={`url(#${patternId})`}
-                  />
-                )}
-              </g>
-            );
-          })}
-          <path className="body-figure__contour" d={OUTLINE[view]} />
-          {visible.map((region) => {
-            const count = counts[region.id];
-            const anchor = region.labelAnchor[view];
-            if (!anchor || count === undefined || !Number.isFinite(count) || count <= 0)
-              return null;
-            return (
-              <g
-                key={region.id}
-                className="body-figure__badge"
-                transform={`translate(${anchor.x} ${anchor.y})`}
-              >
-                <circle r="14" />
-                <text textAnchor="middle" dominantBaseline="central">
-                  {count}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+          <m.svg
+            className="body-figure__svg"
+            viewBox="0 0 320 640"
+            width={210}
+            height={420}
+            initial={{ scale: figureHeight / 420, x: 0 }}
+            animate={{ scale: figureHeight / 420, x: figureHeight === 160 ? 16 : 0 }}
+            style={{ transformOrigin: 'center top' }}
+            transition={{
+              duration: reduced ? 0 : figureHeight === 160 ? 0.52 : 0.46,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path className="body-figure__silhouette" d={OUTLINE[view]} />
+            {visible.map((region) => {
+              const active = activeRegion === region.id;
+              return (
+                <g
+                  key={region.id}
+                  className="body-figure__region"
+                  data-active={active ? 'true' : 'false'}
+                  onClick={(event) => {
+                    const svg = event.currentTarget.ownerSVGElement;
+                    const matrix = svg?.getScreenCTM();
+                    if (svg && matrix) {
+                      const point = svg.createSVGPoint();
+                      point.x = event.clientX;
+                      point.y = event.clientY;
+                      const local = point.matrixTransform(matrix.inverse());
+                      setOrigin({ x: local.x, y: local.y });
+                    }
+                    select(region.id);
+                  }}
+                >
+                  <path className="body-figure__hit" d={REGION_PATHS[view][region.id]} />
+                  {active && (
+                    <m.path
+                      initial={
+                        reduced || lowPower
+                          ? { opacity: 0 }
+                          : { clipPath: `circle(0px at ${origin.x}px ${origin.y}px)` }
+                      }
+                      animate={
+                        reduced || lowPower
+                          ? { opacity: 0.2 }
+                          : { clipPath: `circle(720px at ${origin.x}px ${origin.y}px)` }
+                      }
+                      transition={{ duration: reduced || lowPower ? 0.12 : 0.28 }}
+                      className="body-figure__selection"
+                      d={REGION_PATHS[view][region.id]}
+                      fill="var(--color-accent)"
+                    />
+                  )}
+                </g>
+              );
+            })}
+            <m.path
+              className="body-figure__contour"
+              d={OUTLINE[view]}
+              pathLength="1"
+              strokeDasharray="1"
+              initial={{ strokeDashoffset: reduced || lowPower || !drawContour ? 0 : 1 }}
+              animate={{ strokeDashoffset: 0 }}
+              transition={{ duration: reduced || lowPower ? 0 : 0.9, ease: 'easeOut' }}
+            />
+            {visible.map((region) => {
+              const count = counts[region.id];
+              const anchor = region.labelAnchor[view];
+              if (!anchor || count === undefined || !Number.isFinite(count) || count <= 0)
+                return null;
+              return (
+                <g
+                  key={region.id}
+                  className="body-figure__badge"
+                  transform={`translate(${anchor.x} ${anchor.y})`}
+                >
+                  <circle r="14" />
+                  <text textAnchor="middle" dominantBaseline="central">
+                    {count}
+                  </text>
+                </g>
+              );
+            })}
+          </m.svg>
+        </div>
         <div className="body-figure__regions" role="group" aria-label="Bölge seçimi">
           {visible.map((region) => {
             const count = counts[region.id];

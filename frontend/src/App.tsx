@@ -1,12 +1,19 @@
 import { useState } from 'react';
+import { MotionProvider } from './app/MotionProvider';
 import { AppShell } from './app/AppShell';
-import { AssessmentWorkspace } from './features/assessment/AssessmentWorkspace';
+import { FocusStage } from './features/assessment/FocusStage';
 
 export default function App() {
   const [historyOpen, setHistoryOpen] = useState(false);
   return (
-    <AppShell onOpenHistory={() => setHistoryOpen(true)}>
-      <AssessmentWorkspace historyOpen={historyOpen} onCloseHistory={() => setHistoryOpen(false)} />
-    </AppShell>
+    <MotionProvider>
+      <AppShell onOpenHistory={() => setHistoryOpen(true)}>
+        <FocusStage
+          historyOpen={historyOpen}
+          onCloseHistory={() => setHistoryOpen(false)}
+          onOpenHistory={() => setHistoryOpen(true)}
+        />
+      </AppShell>
+    </MotionProvider>
   );
 }

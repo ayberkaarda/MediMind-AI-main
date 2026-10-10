@@ -1,4 +1,6 @@
 import { useId } from 'react';
+import * as m from 'motion/react-m';
+import { useReducedMotion } from 'motion/react';
 import clsx from 'clsx';
 import { BodyFigure } from './body-map/BodyFigure';
 import type { FigureView } from './body-map/regions';
@@ -34,6 +36,7 @@ export function RegionPicker({
   layout,
 }: RegionPickerProps) {
   const listHeadingId = useId();
+  const reduced = useReducedMotion();
   const counts = countByRegion(catalog, selected);
   const selectedSet = new Set(selected);
   const regionSymptoms = region ? catalog.symptoms.filter((s) => s.region === region) : [];
@@ -57,7 +60,14 @@ export function RegionPicker({
         />
       </div>
 
-      <section aria-labelledby={listHeadingId} className="border-t border-line pt-4">
+      <m.section
+        key={region}
+        initial={{ opacity: 0, y: reduced ? 0 : 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: reduced ? 0.12 : 0.24 }}
+        aria-labelledby={listHeadingId}
+        className="border-t border-line pt-4"
+      >
         <h3 id={listHeadingId} className="text-base font-medium">
           {region
             ? `${catalog.regionLabel(region)} bölgesindeki belirtiler`
@@ -92,7 +102,9 @@ export function RegionPicker({
                     >
                       {checked ? <Icon name="check" size={14} strokeWidth={2.25} /> : null}
                     </span>
-                    <span>{symptom.label}</span>
+                    <m.span layoutId={checked || reduced ? undefined : `symptom-${symptom.id}`}>
+                      {symptom.label}
+                    </m.span>
                   </button>
                 </li>
               );
@@ -104,7 +116,7 @@ export function RegionPicker({
             listelenir ve arama da o bölgeyle sınırlanır.
           </p>
         )}
-      </section>
+      </m.section>
     </div>
   );
 }

@@ -16,18 +16,13 @@ export default {
       ink: token('text'),
       'ink-muted': token('text-muted'),
       line: token('border'),
+      'line-strong': token('border-strong'),
+      uncertainty: token('uncertainty'),
       accent: token('accent'),
       'accent-hover': token('accent-hover'),
       'on-accent': token('on-accent'),
       focus: token('focus'),
       error: token('error'),
-      chart: {
-        1: token('chart-1'),
-        2: token('chart-2'),
-        3: token('chart-3'),
-        4: token('chart-4'),
-        5: token('chart-5'),
-      },
     },
     // The type scale is closed: 12 / 14 / 16 / 20 / 28 / 40 px only.
     fontSize: {
@@ -39,14 +34,14 @@ export default {
       '2xl': ['2.5rem', { lineHeight: '3rem' }],
     },
     fontFamily: {
-      serif: ['"Source Serif 4"', 'Georgia', 'serif'],
-      sans: ['"IBM Plex Sans"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+      serif: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+      sans: ['"Inter"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
     },
     borderRadius: {
       none: '0',
-      sm: '2px',
-      DEFAULT: '4px',
-      md: '6px',
+      sm: '10px',
+      DEFAULT: '10px',
+      md: '20px',
       full: '9999px',
     },
     boxShadow: {
@@ -55,11 +50,8 @@ export default {
     },
     extend: {
       transitionDuration: {
-        report: 'var(--dur-report)',
         hatch: 'var(--dur-hatch)',
         disclosure: 'var(--dur-disclosure)',
-        drawer: 'var(--dur-drawer)',
-        banner: 'var(--dur-banner)',
       },
       maxWidth: {
         shell: '75rem',

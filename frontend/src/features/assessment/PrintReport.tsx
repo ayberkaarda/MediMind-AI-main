@@ -4,7 +4,7 @@ import type { SymptomCatalog } from '../symptoms/catalog';
 import { symptomLabel } from '../symptoms/catalog';
 import { DISCLAIMER_TEXT } from './Disclaimer';
 import { sentenceCase } from './PrecautionList';
-import { ProbabilityRuler, RULER_NOTE } from './ProbabilityRuler';
+import { ScoreList, RULER_NOTE } from './ScoreList';
 import { STALE_MESSAGE } from './StaleBanner';
 
 interface PrintReportProps {
@@ -62,7 +62,7 @@ export function PrintReport({ result, catalog, stale }: PrintReportProps) {
 
       <section>
         <h3>Model skorları</h3>
-        <ProbabilityRuler predictions={result.predictions} variant="print" />
+        <ScoreList predictions={result.predictions} variant="print" />
         <p className="print-report__note">{RULER_NOTE}</p>
       </section>
 

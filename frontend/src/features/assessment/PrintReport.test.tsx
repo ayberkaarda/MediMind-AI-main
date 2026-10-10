@@ -1,10 +1,16 @@
-import { render, screen, within } from '@testing-library/react';
+import type { ReactElement } from 'react';
+import { MotionProvider } from '../../app/MotionProvider';
+import { render as renderUi, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { PrintReport } from './PrintReport';
 import { DISCLAIMER_TEXT } from './Disclaimer';
-import { RULER_NOTE } from './ProbabilityRuler';
+import { RULER_NOTE } from './ScoreList';
 import { STALE_MESSAGE } from './StaleBanner';
 import { testCatalog, testPrediction } from '../../test/utils';
+
+function render(ui: ReactElement) {
+  return renderUi(ui, { wrapper: MotionProvider });
+}
 
 describe('PrintReport', () => {
   it('contains the full note: ids, symptoms, ruler, description, precautions, disclaimer', () => {

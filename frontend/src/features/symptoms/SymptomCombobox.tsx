@@ -1,4 +1,6 @@
 import { forwardRef, useId, useMemo, useState } from 'react';
+import * as m from 'motion/react-m';
+import { useReducedMotion } from 'motion/react';
 import { useCombobox } from 'downshift';
 import clsx from 'clsx';
 import type { Symptom } from '../../lib/api/schemas';
@@ -24,6 +26,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
     inputRef,
   ) {
     const [inputValue, setInputValue] = useState('');
+    const reduced = useReducedMotion();
     const inputId = useId();
     const exclude = useMemo(() => new Set(selected), [selected]);
     const matches = useMemo(
@@ -118,7 +121,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         <ul
           {...getMenuProps()}
           className={clsx(
-            'absolute inset-x-0 z-30 mt-1 max-h-80 overflow-y-auto rounded border border-line bg-surface py-1 shadow-drawer',
+            'absolute inset-x-0 z-30 mt-1 max-h-80 overflow-y-auto rounded border border-line bg-surface py-1',
             !(isOpen && items.length > 0) && 'hidden',
           )}
         >
@@ -132,7 +135,9 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
                     highlightedIndex === index && 'bg-surface-muted',
                   )}
                 >
-                  <span>{item.label}</span>
+                  <m.span layoutId={reduced ? undefined : `symptom-${item.id}`}>
+                    {item.label}
+                  </m.span>
                   {!region ? (
                     <span className="shrink-0 text-sm text-ink-muted">
                       {catalog.regionLabel(item.region)}

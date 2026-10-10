@@ -34,8 +34,8 @@ function HistoryEntry({
       <p className="text-sm text-ink-muted">
         <time dateTime={item.created_at}>{formatDateShort(item.created_at)}</time>
       </p>
-      <p className="mt-1 text-base font-medium">{item.top_disease_name}</p>
-      <p className="text-sm">Model skoru {formatScore(item.probability)}</p>
+      <p className="mt-1 font-serif text-lg font-medium">{item.top_disease_name}</p>
+      <p className="text-sm tabular-nums">Model skoru {formatScore(item.probability)}</p>
       <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{labels.join(', ')}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" className="btn-secondary text-sm" onClick={onLoad}>

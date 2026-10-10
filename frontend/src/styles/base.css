@@ -61,7 +61,7 @@
   }
 
   .btn-secondary {
-    @apply btn border border-line bg-surface text-ink;
+    @apply btn border border-line-strong bg-surface text-ink;
   }
 
   .btn-secondary:not(:disabled):hover {
@@ -85,8 +85,8 @@
   }
 
   .field {
-    @apply block w-full rounded border border-line bg-surface px-3 text-base text-ink;
-    min-height: 2.75rem;
+    @apply block w-full rounded border border-line-strong bg-surface px-4 font-serif text-lg text-ink;
+    min-height: 4rem;
   }
 
   .field::placeholder {
@@ -100,7 +100,7 @@
 
   .field:focus-visible {
     @apply border-focus;
-    outline-offset: 0;
+    outline-offset: 2px;
   }
 }
 
@@ -112,51 +112,6 @@
   .safe-bottom {
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   }
-
-  .enter-report {
-    animation: enter-report var(--dur-report) var(--ease-out) both;
-  }
-
-  .enter-fade {
-    animation: enter-fade var(--dur-banner) linear both;
-  }
-
-  .enter-disclosure {
-    animation: enter-fade var(--dur-disclosure) linear both;
-  }
-
-  .enter-drawer {
-    animation: enter-drawer var(--dur-drawer) var(--ease-out) both;
-  }
-}
-
-@keyframes enter-report {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes enter-drawer {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: none;
-  }
-}
-
-@keyframes enter-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -167,4 +122,53 @@
     transition-duration: 0ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+body,
+header,
+input,
+.selection-tray {
+  transition:
+    background-color 200ms,
+    color 200ms,
+    border-color 200ms;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+  transition: transform 100ms;
+}
+
+.selection-tray {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  #main {
+    padding-bottom: calc(40vh + 2rem);
+  }
+
+  .selection-tray {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    margin-top: 0;
+    border-radius: 20px 20px 0 0;
+  }
+}
+
+.theme-changing *,
+.theme-changing *::before,
+.theme-changing *::after {
+  transition:
+    background-color 200ms,
+    color 200ms,
+    border-color 200ms;
 }

@@ -11,7 +11,7 @@ const OPTIONS: { value: ThemePreference; label: string }[] = [
 export function ThemeToggle() {
   const { preference, setPreference } = useTheme();
   return (
-    <div role="group" aria-label="Tema" className="flex rounded border border-line p-0.5">
+    <div role="group" aria-label="Tema" className="flex rounded border border-line-strong p-0.5">
       {OPTIONS.map((option) => {
         const pressed = preference === option.value;
         return (

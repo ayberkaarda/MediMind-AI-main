@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
+import { MotionProvider } from '../../app/MotionProvider';
+import { render as renderUi, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { ProbabilityRuler } from './ProbabilityRuler';
+import { ScoreList } from './ScoreList';
 import { formatScore, scoreToWidth } from '../../lib/format';
 
 const predictions = [
@@ -11,6 +13,10 @@ const predictions = [
   { disease_id: 'e', name: 'Akne', probability: 0.0041 },
   { disease_id: 'f', name: 'Fazladan', probability: 0.001 },
 ];
+
+function render(ui: ReactElement) {
+  return renderUi(ui, { wrapper: MotionProvider });
+}
 
 describe('score formatting', () => {
   it('formats whole percentages in Turkish order', () => {
@@ -28,9 +34,9 @@ describe('score formatting', () => {
   });
 });
 
-describe('ProbabilityRuler', () => {
+describe('ScoreList', () => {
   it('renders at most five rows with absolute widths', () => {
-    render(<ProbabilityRuler predictions={predictions} />);
+    render(<ScoreList predictions={predictions} />);
     const bars = screen.getAllByTestId('ruler-bar');
     expect(bars).toHaveLength(5);
     expect(Number(bars[0]?.getAttribute('width'))).toBeCloseTo(42.13);
@@ -39,7 +45,7 @@ describe('ProbabilityRuler', () => {
   });
 
   it('labels each row with name and score, using "<%1" below one percent', () => {
-    render(<ProbabilityRuler predictions={predictions} />);
+    render(<ScoreList predictions={predictions} />);
     const items = screen.getAllByRole('listitem');
     expect(items[0]).toHaveTextContent('Mantar Enfeksiyonu, model skoru %42');
     expect(items[4]).toHaveTextContent('Akne, model skoru <%1');
@@ -47,7 +53,7 @@ describe('ProbabilityRuler', () => {
   });
 
   it('draws every bar in the same colour', () => {
-    const { container } = render(<ProbabilityRuler predictions={predictions} />);
+    const { container } = render(<ScoreList predictions={predictions} />);
     const svgs = container.querySelectorAll('svg');
     const classes = new Set(Array.from(svgs, (svg) => svg.getAttribute('class')));
     expect(classes.size).toBe(1);

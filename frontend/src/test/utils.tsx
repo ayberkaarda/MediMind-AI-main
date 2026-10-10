@@ -1,3 +1,4 @@
+import { MotionProvider } from '../app/MotionProvider';
 import type { ReactElement } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
@@ -18,7 +19,11 @@ export function createTestQueryClient() {
 
 export function renderWithClient(ui: ReactElement, client = createTestQueryClient()) {
   const user = userEvent.setup();
-  const result = render(<QueryClientProvider client={client}>{ui}</QueryClientProvider>);
+  const result = render(
+    <MotionProvider>
+      <QueryClientProvider client={client}>{ui}</QueryClientProvider>
+    </MotionProvider>,
+  );
   return { ...result, user, client };
 }
 

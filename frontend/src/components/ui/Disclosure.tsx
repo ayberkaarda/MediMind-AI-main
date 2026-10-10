@@ -1,6 +1,8 @@
 import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
+import * as m from 'motion/react-m';
+import { useReducedMotion } from 'motion/react';
 import { Icon } from './Icon';
 
 interface DisclosureProps {
@@ -25,6 +27,7 @@ export function Disclosure({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = controlledOpen ?? uncontrolledOpen;
   const contentId = useId();
+  const reduced = useReducedMotion();
 
   const toggle = () => {
     const next = !open;
@@ -53,9 +56,15 @@ export function Disclosure({
           )}
         />
       </button>
-      <div id={contentId} hidden={!open} className={clsx(open && 'enter-disclosure')}>
+      <m.div
+        id={contentId}
+        hidden={!open}
+        initial={false}
+        animate={{ opacity: open ? 1 : 0 }}
+        transition={{ duration: reduced ? 0.12 : 0.24 }}
+      >
         {open ? children : null}
-      </div>
+      </m.div>
     </div>
   );
 }
