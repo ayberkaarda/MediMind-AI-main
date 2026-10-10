@@ -10,8 +10,9 @@ import pytest
 from fastapi.testclient import TestClient
 from sklearn.linear_model import LogisticRegression
 
+from app.core.config import Settings
 from app.core.paths import DATA_DIR, MODEL_CARD_PATH, MODEL_PATH
-from app.main import app
+from app.main import create_app
 from app.ml.artifact import ModelArtifact, load_artifact
 from app.ml.preprocessing import feature_hash
 from app.ml.registry import DataRegistry
@@ -55,7 +56,31 @@ def mini_dataset() -> Path:
     return FIXTURES / "mini_dataset.csv"
 
 
+CLIENT_A = "11111111-1111-4111-8111-111111111111"
+CLIENT_B = "22222222-2222-4222-8222-222222222222"
+
+
+def make_settings(tmp_path: Path, **overrides: Any) -> Settings:
+    values: dict[str, Any] = {
+        "database_url": f"sqlite:///{(tmp_path / 'test.db').as_posix()}",
+        "app_env": "test",
+        "log_level": "WARNING",
+        **overrides,
+    }
+    return Settings(_env_file=None, **values)
+
+
 @pytest.fixture()
-def client() -> Iterator[TestClient]:
-    with TestClient(app) as test_client:
+def settings(tmp_path: Path) -> Settings:
+    return make_settings(tmp_path)
+
+
+@pytest.fixture()
+def client(settings: Settings) -> Iterator[TestClient]:
+    with TestClient(create_app(settings)) as test_client:
         yield test_client
+
+
+@pytest.fixture()
+def client_id() -> str:
+    return CLIENT_A

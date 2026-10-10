@@ -7,10 +7,16 @@ from app.ml.registry import turkish_sort_key
 FUNGAL = ["itching", "skin_rash", "nodal_skin_eruptions", "dischromic_patches"]
 
 
-def test_root(client: TestClient) -> None:
-    response = client.get("/")
-    assert response.status_code == 200
-    assert "message" in response.json()
+def test_root_redirects_to_docs(client: TestClient) -> None:
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (302, 307)
+    assert response.headers["location"] == "/docs"
+
+
+def test_legacy_routes_are_deprecated(client: TestClient) -> None:
+    paths = client.get("/openapi.json").json()["paths"]
+    assert paths["/symptoms"]["get"]["deprecated"] is True
+    assert paths["/predict"]["post"]["deprecated"] is True
 
 
 def test_symptoms_legacy_shape(client: TestClient) -> None:

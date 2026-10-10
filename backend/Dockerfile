@@ -17,7 +17,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM python:3.12-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    MEDIMIND_APP_ENV=production \
+    MEDIMIND_LOG_FORMAT=json \
+    MEDIMIND_DATABASE_URL=sqlite:////app/data/db/medimind.db
 RUN groupadd --system --gid 10001 medimind \
     && useradd --system --uid 10001 --gid medimind --home-dir /app --no-create-home medimind
 WORKDIR /app

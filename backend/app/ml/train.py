@@ -34,7 +34,11 @@ from app.ml.artifact import ModelArtifact, save_artifact
 from app.ml.evaluate import align_proba, mean_std, summarize, top_k_accuracy
 from app.ml.preprocessing import build_index, feature_hash, normalize_disease, normalize_symptom
 
-C_GRID: tuple[float, ...] = (0.1, 0.3, 1.0, 3.0)
+C_GRID: tuple[float, ...] = (0.3, 1.0, 3.0, 10.0)
+NOTES = (
+    "The dataset is synthetic and nearly separable: even grouped cross-validation reaches 1.0. "
+    "These metrics document the evaluation method; they do not discriminate between models."
+)
 DEFAULT_FOLDS = 5
 DEFAULT_SEED = 42
 PERTURBATION_REPEATS = 3
@@ -309,6 +313,7 @@ def train(
         "metrics": shipped,
         "c_search": c_search,
         "comparison": {name: _comparison_row(r) for name, r in reports.items()},
+        "notes": NOTES,
         "limitations": [
             "Synthetic-looking Kaggle dataset with ~304 distinct combinations.",
             "Scores are model outputs and not calibrated probabilities of disease.",

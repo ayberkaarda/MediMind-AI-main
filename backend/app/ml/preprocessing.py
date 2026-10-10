@@ -54,6 +54,14 @@ def normalize_disease(raw: str) -> str:
     return DISEASE_ALIASES.get(value, value)
 
 
+_NON_SLUG = re.compile(r"[^a-z0-9]+")
+
+
+def disease_slug(name: str) -> str:
+    """URL safe disease id, e.g. "Dimorphic hemorrhoids(piles)" -> "dimorphic_hemorrhoids_piles"."""
+    return _NON_SLUG.sub("_", normalize_disease(name).lower()).strip("_")
+
+
 def canonical_feature_names(raw_names: Iterable[str]) -> list[str]:
     """Normalise, deduplicate and sort symptom names into a feature list."""
     names = {normalize_symptom(name) for name in raw_names if name and name.strip()}

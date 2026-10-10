@@ -38,10 +38,40 @@ Evaluation therefore uses `StratifiedGroupKFold` grouped by symptom set, a
 leave-one-group-out pass over the deduplicated table and a perturbation test
 that drops one symptom per combination. See `models/model_card.json`.
 
+**Honest note:** the dataset is synthetic and nearly separable; even grouped
+cross-validation reaches 1.0 macro-F1. The reported metrics document the
+evaluation method; they do not discriminate between models and say nothing
+about real-world accuracy.
+
+## API
+
+Interactive docs at `/docs`. All v1 routes live under `/api/v1`; errors use
+`application/problem+json` (`type, title, status, detail, code, request_id, errors`).
+Every response carries an `X-Request-ID` header (a valid incoming one is echoed).
+
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/v1/health` | model and database status; 503 when degraded |
+| GET | `/api/v1/symptoms` | symptoms with Turkish labels, region, severity weight; regions |
+| POST | `/api/v1/predict` | `{"symptoms": [...]}`; stored in history when `X-Client-Id` is sent |
+| GET | `/api/v1/diseases`, `/api/v1/diseases/{id}` | descriptions and precautions |
+| GET/DELETE | `/api/v1/history`, `/api/v1/history/{id}` | requires `X-Client-Id` (UUID) |
+
+`GET /symptoms` and `POST /predict` (unversioned) are deprecated and kept for the
+previous frontend.
+
+Configuration uses `MEDIMIND_*` environment variables; see `.env.example`.
+History is stored in SQLite (`data/medimind.db` by default).
+
 ## Layout
 
 ```
-app/main.py            API (legacy /symptoms and /predict)
+app/main.py            create_app() factory and lifespan
+app/core               settings, logging, request id middleware, problem+json errors
+app/api                v1 routers and deprecated legacy routes
+app/services           symptom, disease, prediction and history services
+app/schemas            request and response models
+app/db                 SQLAlchemy models and session helpers
 app/ml/preprocessing   symptom normalisation and vectorisation (no sklearn)
 app/ml/registry        Turkish labels, regions, severity, descriptions, precautions
 app/ml/artifact        model artifact format, save/load/verify

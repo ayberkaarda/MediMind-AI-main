@@ -8,7 +8,7 @@ import pytest
 from app.ml import compare_artifacts
 from app.ml.artifact import load_artifact
 from app.ml.predictor import Predictor
-from app.ml.train import load_dataset, main, make_estimator
+from app.ml.train import C_GRID, load_dataset, main, make_estimator
 
 
 def _train(tmp_path: Path, dataset: Path, *extra: str) -> Path:
@@ -43,7 +43,7 @@ def test_train_lr_with_baseline(tmp_path: Path, mini_dataset: Path) -> None:
     artifact = load_artifact(out / "disease_model.joblib")
     assert artifact.classes == ("Common Cold", "Fungal infection", "Migraine")
     assert artifact.metadata["model_type"] == "lr"
-    assert artifact.metadata["hyperparameters"]["C"] in (0.1, 0.3, 1.0, 3.0)
+    assert artifact.metadata["hyperparameters"]["C"] in C_GRID
 
     card = json.loads((out / "model_card.json").read_text(encoding="utf-8"))
     assert set(card["comparison"]) == {"lr", "rf"}
