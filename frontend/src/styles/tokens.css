@@ -1,5 +1,5 @@
 /*
- * Colour tokens: black/white ink with one saffron colour block.
+ * Colour tokens: deep forest-teal ink on pale mint paper with one aqua colour family.
  * Values are space-separated RGB channels so Tailwind can apply alpha.
  * Motion tokens mirror src/lib/motion.ts for CSS-only transitions.
  */
@@ -7,20 +7,21 @@
   color-scheme: light;
   --color-paper: rgb(255 255 255);
   --color-print-ink: rgb(0 0 0);
-  --c-bg: 246 246 244;
+  --c-bg: 243 250 247;
   --c-surface: 255 255 255;
-  --c-surface-muted: 232 232 228;
-  --c-text: 0 0 0;
-  --c-text-muted: 82 82 78;
-  --c-border: 212 212 206;
-  --c-border-strong: 112 112 106;
-  --c-accent: 242 190 34;
-  --c-accent-hover: 230 172 10;
-  --c-on-accent: 0 0 0;
-  --c-accent-text: 122 82 0;
-  --c-focus: 0 0 0;
+  --c-surface-muted: 227 243 236;
+  --c-text: 16 48 42;
+  --c-text-muted: 63 97 89;
+  --c-border: 180 214 203;
+  --c-border-strong: 76 125 114;
+  --c-block: 191 233 221;
+  --c-accent: 142 220 200;
+  --c-accent-hover: 117 205 183;
+  --c-on-accent: 16 48 42;
+  --c-accent-text: 11 107 87;
+  --c-focus: 11 92 115;
   --c-error: 179 38 30;
-  --c-uncertainty: 122 82 0;
+  --c-uncertainty: 128 82 12;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-shutter: cubic-bezier(0.76, 0, 0.24, 1);
@@ -32,20 +33,21 @@
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --c-bg: 24 24 22;
-  --c-surface: 34 34 32;
-  --c-surface-muted: 48 48 45;
-  --c-text: 245 245 240;
-  --c-text-muted: 178 178 170;
-  --c-border: 64 64 60;
-  --c-border-strong: 130 130 122;
-  --c-accent: 242 190 34;
-  --c-accent-hover: 250 206 76;
-  --c-on-accent: 0 0 0;
-  --c-accent-text: 242 190 34;
-  --c-focus: 242 190 34;
+  --c-bg: 14 29 26;
+  --c-surface: 22 42 38;
+  --c-surface-muted: 32 58 52;
+  --c-text: 230 245 240;
+  --c-text-muted: 160 196 186;
+  --c-border: 48 78 71;
+  --c-border-strong: 112 158 146;
+  --c-block: 159 227 208;
+  --c-accent: 142 220 200;
+  --c-accent-hover: 169 232 215;
+  --c-on-accent: 16 48 42;
+  --c-accent-text: 142 220 200;
+  --c-focus: 142 220 200;
   --c-error: 255 138 128;
-  --c-uncertainty: 242 190 34;
+  --c-uncertainty: 240 207 138;
 }
 
 :root {
@@ -56,6 +58,7 @@
   --color-text-muted: rgb(var(--c-text-muted));
   --color-border: rgb(var(--c-border));
   --color-border-strong: rgb(var(--c-border-strong));
+  --color-block: rgb(var(--c-block));
   --color-accent: rgb(var(--c-accent));
   --color-accent-hover: rgb(var(--c-accent-hover));
   --color-on-accent: rgb(var(--c-on-accent));

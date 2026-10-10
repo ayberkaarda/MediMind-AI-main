@@ -8,7 +8,7 @@ export function ResultScene({ report }: { report: ReactNode }) {
 }
 
 /**
- * Selection-to-result transition: a saffron curtain covers the new report and
+ * Selection-to-result transition: an aqua curtain covers the new report and
  * withdraws to the right, uncovering it in reading order. Low-power devices
  * get a short fade; reduced motion shows the report at once.
  */
@@ -19,7 +19,7 @@ export function ReportReveal({ children }: { children: ReactNode }) {
       {level === 'full' ? (
         <m.div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 origin-right bg-accent"
+          className="pointer-events-none absolute inset-0 z-10 origin-right bg-block"
           initial={{ scaleX: 1 }}
           animate={{ scaleX: 0 }}
           transition={{ duration: DUR.scene, ease: EASE.shutter, delay: 0.05 }}

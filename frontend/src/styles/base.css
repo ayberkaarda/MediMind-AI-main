@@ -98,7 +98,7 @@
     transform: translateY(1px);
   }
 
-  /* Saffron needs the ink border: the fill alone is under 3:1 against the light canvas. */
+  /* The pastel fill needs the ink border: the fill alone is under 3:1 against the light canvas. */
   .btn-primary {
     @apply btn border-2 border-ink bg-accent text-on-accent;
     min-height: 3.5rem;
@@ -171,7 +171,7 @@
     animation: shutter-drop var(--dur-fast) var(--ease-out);
   }
 
-  /* Hover marker: a saffron bar wipes under the row from the left. */
+  /* Hover marker: an aqua bar wipes under the row from the left. */
   .wipe-hover {
     position: relative;
     isolation: isolate;

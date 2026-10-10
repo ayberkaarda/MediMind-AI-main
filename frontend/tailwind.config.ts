@@ -18,6 +18,7 @@ export default {
       line: token('border'),
       'line-strong': token('border-strong'),
       uncertainty: token('uncertainty'),
+      block: token('block'),
       accent: token('accent'),
       'accent-hover': token('accent-hover'),
       'accent-text': token('accent-text'),

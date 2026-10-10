@@ -22,7 +22,7 @@ Backend yeni API ve veri yapısını kullanır; frontend yeniden yazımı devam 
 - Skor politikası: `Model skoru %42` biçimi kullanılır; %1 altı `<%1` olarak gösterilir. Eşik rozeti veya renkli güven kodu kullanılmaz; API'deki `confidence_label` arayüzde gösterilmez. Sabit açıklama: “Bu değer, hastalığa sahip olma olasılığınız olarak yorumlanmamalıdır.”
 - Yazdırılabilir rapor: tarayıcının yazdırma/PDF olarak kaydetme işlevi, `@media print`, A4 ve 15 mm kenar boşluğu kullanılır. Tarih, işlem kimlikleri, belirtiler, cetvel, açıklama, önlemler ve uyarı raporda yer alır.
 - Anonim geçmiş: tarayıcıda saklanan UUID, `X-Client-Id` ile sunucuya gönderilir; değerlendirmeler SQLite'ta bu kimliğe göre listelenir ve silinir. Bu kimlik bir hesap veya kimlik doğrulama mekanizması değildir.
-- Açık, karanlık ve sistem teması; siyah-beyaz mürekkep ve tek bir safran renk bloğu, Archivo yazı ailesi (başlıklarda dar kesim, gövde metninde normal genişlik).
+- Açık, karanlık ve sistem teması; koyu orman-petrol mürekkep, açık nane zemin ve tek bir pastel su yeşili renk ailesi, Archivo yazı ailesi (başlıklarda dar kesim, gövde metninde normal genişlik).
 - Erişilebilirlik: klavye ile kullanılabilen arama ve bölge filtreleri, görünür odak, sonuç başlığına odak aktarımı, ARIA durum bildirimleri ve azaltılmış hareket tercihi. İki temada WCAG AA kontrast hedeflenir.
 - Belirtiler değiştiğinde raporun güncel olmadığını belirten uyarı; belirti ağırlığı yalnızca “Teknik ayrıntılar” bölümünde açıklamalı düz metin olarak sunulur.
 

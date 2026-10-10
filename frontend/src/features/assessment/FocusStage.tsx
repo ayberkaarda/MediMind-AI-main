@@ -166,7 +166,7 @@ export function FocusStage({ historyOpen, onCloseHistory, onOpenHistory }: Focus
     <>
       <main id="main" className="screen-only w-full">
         <section aria-labelledby="page-title">
-          <div className="border-b-2 border-ink bg-accent text-on-accent">
+          <div className="border-b-2 border-ink bg-block text-on-accent">
             <div
               className={
                 showReport
