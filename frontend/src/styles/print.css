@@ -1,0 +1,161 @@
+/* The printed note is a separate, monochrome document rendered by PrintReport. */
+.print-report {
+  display: none;
+}
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .body-figure,
+  button,
+  [role='dialog'],
+  .selection-tray {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  :root,
+  :root[data-theme='dark'] {
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: var(--color-paper) !important;
+    color: var(--color-print-ink) !important;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  .print-report {
+    display: block;
+    color: var(--color-print-ink);
+    font-family: system-ui, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .print-report h1,
+  .print-report h2 {
+    font-family: Georgia, serif;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .print-report h1 {
+    font-size: 21pt;
+    line-height: 1.2;
+  }
+
+  .print-report h2 {
+    font-size: 15pt;
+    margin-top: 6mm;
+  }
+
+  .print-report h3 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin: 6mm 0 2mm;
+  }
+
+  .print-report p,
+  .print-report ul,
+  .print-report ol,
+  .print-report dl {
+    margin: 0 0 2mm;
+  }
+
+  .print-report__meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1mm 6mm;
+    padding-bottom: 4mm;
+    border-bottom: 0.5pt solid var(--color-print-ink);
+    margin-top: 3mm;
+  }
+
+  .print-report__meta dt {
+    font-weight: 600;
+  }
+
+  .print-report__meta dd {
+    margin: 0;
+    word-break: break-all;
+  }
+
+  .print-report__stale {
+    border: 1pt solid var(--color-print-ink);
+    padding: 2mm 3mm;
+    margin-top: 4mm;
+    font-weight: 600;
+  }
+
+  .print-report__ruler {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .print-report__ruler li {
+    display: grid;
+    grid-template-columns: 52mm 1fr 14mm;
+    align-items: center;
+    gap: 3mm;
+    padding: 1.2mm 0;
+    break-inside: avoid;
+  }
+
+  .print-report__ruler svg {
+    width: 100%;
+    height: 4mm;
+    display: block;
+  }
+
+  .print-report__value {
+    text-align: right;
+  }
+
+  .print-report__axis {
+    display: grid;
+    grid-template-columns: 52mm 1fr 14mm;
+    gap: 3mm;
+    font-size: 9pt;
+  }
+
+  .print-report__axis-labels {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .print-report__note {
+    font-size: 9pt;
+    font-style: italic;
+  }
+
+  .print-report__disclaimer {
+    margin-top: 6mm;
+    padding-top: 3mm;
+    border-top: 0.5pt solid var(--color-print-ink);
+    font-size: 9pt;
+  }
+
+  .print-report section {
+    break-inside: avoid;
+  }
+}

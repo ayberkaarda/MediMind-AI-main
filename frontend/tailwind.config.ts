@@ -1,0 +1,72 @@
+import type { Config } from 'tailwindcss';
+
+const token = (name: string) => `rgb(var(--c-${name}) / <alpha-value>)`;
+
+export default {
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: ['selector', '[data-theme="dark"]'],
+  theme: {
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      inherit: 'inherit',
+      canvas: token('bg'),
+      surface: token('surface'),
+      'surface-muted': token('surface-muted'),
+      ink: token('text'),
+      'ink-muted': token('text-muted'),
+      line: token('border'),
+      'line-strong': token('border-strong'),
+      uncertainty: token('uncertainty'),
+      accent: token('accent'),
+      'accent-hover': token('accent-hover'),
+      'on-accent': token('on-accent'),
+      focus: token('focus'),
+      error: token('error'),
+    },
+    // The type scale is closed: 12 / 14 / 16 / 20 / 28 / 40 px only.
+    fontSize: {
+      xs: ['0.75rem', { lineHeight: '1.125rem' }],
+      sm: ['0.875rem', { lineHeight: '1.25rem' }],
+      base: ['1rem', { lineHeight: '1.5rem' }],
+      lg: ['1.25rem', { lineHeight: '1.75rem' }],
+      xl: ['1.75rem', { lineHeight: '2.25rem' }],
+      '2xl': ['2.5rem', { lineHeight: '3rem' }],
+    },
+    fontFamily: {
+      serif: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+      sans: ['"Inter"', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+    },
+    borderRadius: {
+      none: '0',
+      sm: '10px',
+      DEFAULT: '10px',
+      md: '20px',
+      full: '9999px',
+    },
+    boxShadow: {
+      none: 'none',
+      drawer: 'var(--shadow-drawer)',
+    },
+    extend: {
+      transitionDuration: {
+        hatch: 'var(--dur-hatch)',
+        disclosure: 'var(--dur-disclosure)',
+      },
+      maxWidth: {
+        shell: '75rem',
+        prose: '38rem',
+      },
+      height: {
+        row: '2.75rem',
+      },
+      minHeight: {
+        row: '2.75rem',
+      },
+      minWidth: {
+        row: '2.75rem',
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;

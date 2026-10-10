@@ -14,8 +14,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -45,3 +45,15 @@ frontend/dist/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# DevOps and test artifacts
+*.db
+*.db-journal
+backend/.coverage
+backend/htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+backend/.venv/
+frontend/coverage/
+.env

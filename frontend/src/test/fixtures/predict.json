@@ -1,0 +1,57 @@
+{
+  "request_id": "req-7f3a2c9e",
+  "analysis_id": "a1b2c3d4-0000-4000-8000-000000000001",
+  "model_version": "lr-2026.10.1",
+  "input": {
+    "symptoms": ["itching", "skin_rash", "nodal_skin_eruptions"],
+    "count": 3
+  },
+  "top_prediction": {
+    "disease_id": "fungal_infection",
+    "name": "Mantar Enfeksiyonu",
+    "probability": 0.4213,
+    "description": "İnsanlarda mantar enfeksiyonları, istilacı bir mantar vücudun bir alanını ele geçirdiğinde ve bağışıklık sisteminin başa çıkamayacağı kadar fazla olduğunda ortaya çıkar.Mantarlar havada, toprakta, suda ve bitkilerde yaşayabilir.İnsan vücudunda doğal olarak yaşayan bazı mantarlar da vardır.Birçok mikrop gibi yararlı mantarlar ve zararlı mantarlar vardır.",
+    "precautions": [
+      "iki kez banyo yapmak",
+      "Banyo suyunda dettol veya neem kullanın",
+      "enfekte bölgeyi kuru tutun",
+      "temiz bezler kullan"
+    ]
+  },
+  "predictions": [
+    {
+      "disease_id": "fungal_infection",
+      "name": "Mantar Enfeksiyonu",
+      "probability": 0.4213
+    },
+    {
+      "disease_id": "allergy",
+      "name": "Alerji",
+      "probability": 0.1876
+    },
+    {
+      "disease_id": "drug_reaction",
+      "name": "İlaç Reaksiyonu",
+      "probability": 0.0912
+    },
+    {
+      "disease_id": "chicken_pox",
+      "name": "Suçiçeği",
+      "probability": 0.0204
+    },
+    {
+      "disease_id": "acne",
+      "name": "Akne",
+      "probability": 0.0041
+    }
+  ],
+  "severity": {
+    "score": 8,
+    "max_possible": 21,
+    "mean_weight": 2.6667,
+    "level": "low"
+  },
+  "confidence_label": "medium",
+  "disclaimer": true,
+  "created_at": "2026-10-10T14:32:05Z"
+}

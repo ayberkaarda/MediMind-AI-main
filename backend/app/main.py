@@ -1,173 +1,75 @@
-from fastapi import FastAPI, HTTPException
+"""MediMind HTTP API application factory."""
+
+from __future__ import annotations
+
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import joblib
-import pandas as pd
-import numpy as np
-import os
-import json
-from typing import List
+from fastapi.responses import RedirectResponse
 
-app = FastAPI(title="MediMind AI API (Turkish)")
+from app.api.router import api_router
+from app.core.config import Settings, get_settings
+from app.core.errors import register_exception_handlers
+from app.core.logging import configure_logging
+from app.core.middleware import REQUEST_ID_HEADER, RequestContextMiddleware
+from app.services.container import build_container
 
-# CORS Yapılandırması
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+DESCRIPTION = (
+    "Ranks diseases from a symptom checklist using a model trained on a small public "
+    "dataset. Results are model outputs, not a diagnosis."
 )
 
-# Global değişkenler
-model = None
-unique_symptoms = None
-symptom_map = None
-disease_map = None
-description_df = None
-precaution_df = None
+OPENAPI_TAGS = [
+    {"name": "health", "description": "Liveness and model status."},
+    {"name": "symptoms", "description": "Symptom catalogue and body regions."},
+    {"name": "predict", "description": "Disease ranking for selected symptoms."},
+    {"name": "diseases", "description": "Disease descriptions and precautions."},
+    {"name": "history", "description": "Per-client analysis history (X-Client-Id)."},
+]
 
-class SymptomRequest(BaseModel):
-    symptoms: List[str]
 
-@app.on_event("startup")
-def load_artifacts():
-    global model, unique_symptoms, symptom_map, disease_map, description_df, precaution_df
-    
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    models_dir = os.path.join(base_dir, 'models')
-    data_dir = os.path.join(base_dir, 'data')
-    
-    # 1. Modeli ve Semptom Listesini Yükle
-    try:
-        model = joblib.load(os.path.join(models_dir, 'disease_model.joblib'))
-        unique_symptoms = joblib.load(os.path.join(models_dir, 'symptoms_list.joblib'))
-        print("Model and symptoms loaded successfully.")
-    except Exception as e:
-        print(f"Error loading model: {e}")
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
+    configure_logging(settings.log_level, settings.log_format)
 
-    # 2. Semptom Haritasını Yükle (İngilizce -> Türkçe)
-    try:
-        map_path = os.path.join(data_dir, 'symptoms_tr_map.json')
-        with open(map_path, 'r', encoding='utf-8') as f:
-            symptom_map = json.load(f)
-    except Exception as e:
-        print(f"Error loading symptom map: {e}")
-        symptom_map = {}
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        container = build_container(settings)
+        app.state.container = container
+        try:
+            yield
+        finally:
+            container.close()
 
-    # 3. Hastalık Haritasını Yükle (İngilizce -> Türkçe)
-    try:
-        d_map_path = os.path.join(data_dir, 'diseases_tr_map.json')
-        with open(d_map_path, 'r', encoding='utf-8') as f:
-            disease_map = json.load(f)
-    except Exception as e:
-        print(f"Error loading disease map: {e}")
-        disease_map = {}
+    app = FastAPI(
+        title="MediMind API",
+        version=settings.app_version,
+        description=DESCRIPTION,
+        openapi_tags=OPENAPI_TAGS,
+        lifespan=lifespan,
+    )
+    app.state.settings = settings
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+        allow_headers=["Content-Type", "X-Client-Id", REQUEST_ID_HEADER],
+        expose_headers=[REQUEST_ID_HEADER],
+    )
+    # Added last so it is the outermost layer: every response, including CORS
+    # preflights, carries X-Request-ID. Rejected preflights stay plain text (CORS spec).
+    app.add_middleware(RequestContextMiddleware)
+    register_exception_handlers(app)
+    app.include_router(api_router)
 
-    # 4. Türkçe Açıklamaları Yükle
-    try:
-        desc_path = os.path.join(data_dir, 'symptom_Description_TR.csv')
-        description_df = pd.read_csv(desc_path)
-        description_df['Disease'] = description_df['Disease'].str.strip()
-    except Exception as e:
-        print(f"Error loading descriptions: {e}")
+    @app.get("/", include_in_schema=False)
+    def root() -> RedirectResponse:
+        return RedirectResponse(url="/docs")
 
-    # 5. Türkçe Önlemleri Yükle
-    try:
-        prec_path = os.path.join(data_dir, 'symptom_precaution_TR.csv')
-        precaution_df = pd.read_csv(prec_path)
-        precaution_df['Disease'] = precaution_df['Disease'].str.strip()
-    except Exception as e:
-        print(f"Error loading precautions: {e}")
+    return app
 
-@app.get("/")
-def read_root():
-    return {"message": "MediMind AI API is running (Turkish Mode)"}
 
-@app.get("/symptoms")
-def get_symptoms():
-    if unique_symptoms is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
-    
-    # Format: [{ "label": "Karın Ağrısı", "value": "stomach_pain" }, ...]
-    formatted_symptoms = []
-    for sym in unique_symptoms:
-        # Haritadan Türkçe etiketi al, yoksa İngilizce başlık durumuna dön
-        label = symptom_map.get(sym, sym.replace('_', ' ').title())
-        formatted_symptoms.append({
-            "label": label,
-            "value": sym
-        })
-    
-    # Daha iyi kullanıcı deneyimi için Türkçe etikete göre sırala
-    formatted_symptoms.sort(key=lambda x: x['label'])
-    
-    return {"symptoms": formatted_symptoms} # Frontend { symptoms: [...] } bekliyor
-
-@app.post("/predict")
-def predict_disease(request: SymptomRequest):
-    if model is None or unique_symptoms is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
-    
-    user_symptoms = request.symptoms
-    
-    # Eğitim özellik adlarıyla eşleşmesi için giriş vektörünü DataFrame olarak oluştur
-    input_vector = pd.DataFrame(0, index=[0], columns=unique_symptoms)
-    
-    # Mevcut semptomlar için 1 ayarla
-    for symptom in user_symptoms:
-        if symptom in unique_symptoms:
-            input_vector.loc[0, symptom] = 1
-            
-    # Predict
-    prediction = model.predict(input_vector)[0]
-    probabilities = model.predict_proba(input_vector)[0]
-    
-    # En iyi 5 tahmini al
-    class_probs = list(zip(model.classes_, probabilities))
-    # Olasılığa göre azalan sırada sırala
-    class_probs.sort(key=lambda x: x[1], reverse=True)
-    top_predictions = class_probs[:5]
-    
-    # Frontend için en iyi tahminleri biçimlendir
-    top_predictions_formatted = []
-    for disease, prob in top_predictions:
-        if prob > 0.01: # Sadece %1'den büyükse dahil et
-            # Hastalık adını çevir
-            tr_name = disease_map.get(disease, disease) if disease_map else disease
-            top_predictions_formatted.append({
-                "name": tr_name,
-                "value": float(prob)
-            })
-
-    # Güven skorunu al
-    class_index = list(model.classes_).index(prediction)
-    confidence = float(probabilities[class_index])
-    
-    # Türkçe Açıklamayı Al
-    description = "Tanım bulunamadı."
-    if description_df is not None:
-        desc_row = description_df[description_df['Disease'] == prediction]
-        if not desc_row.empty:
-            description = desc_row.iloc[0]['Description']
-            
-    # Türkçe Önlemleri Al
-    precautions = []
-    if precaution_df is not None:
-        prec_row = precaution_df[precaution_df['Disease'] == prediction]
-        if not prec_row.empty:
-            p_cols = [col for col in prec_row.columns if 'Precaution' in col]
-            precautions = [prec_row.iloc[0][col] for col in p_cols if pd.notna(prec_row.iloc[0][col]) and str(prec_row.iloc[0][col]).strip() != ""]
-            # Metinleri temizle
-            precautions = [str(p).strip().capitalize() for p in precautions]
-
-    # Ana tahmini çevir
-    prediction_tr = disease_map.get(prediction, prediction) if disease_map else prediction
-
-    return {
-        "disease": prediction_tr, 
-        "confidence": confidence,
-        "description": description,
-        "precautions": precautions,
-        "top_predictions": top_predictions_formatted
-    }
+app = create_app()

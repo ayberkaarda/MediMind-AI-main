@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Belirti değerlendirmesi · MediMind</title>
+    <meta
+      name="description"
+      content="Belirtilerinizi seçin, bir makine öğrenmesi modelinin ön değerlendirmesini okunaklı ve yazdırılabilir bir not olarak alın. Teşhis yerine geçmez."
+    />
+    <meta name="theme-color" content="#F2F4F8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A1120" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      (function () {
+        var key = 'medimind.theme';
+        var pref = 'system';
+        try {
+          var stored = localStorage.getItem(key);
+          var legacy = localStorage.getItem('theme');
+          if (!stored && (legacy === 'dark' || legacy === 'light')) {
+            stored = legacy;
+            localStorage.setItem(key, legacy);
+          }
+          if (legacy !== null) localStorage.removeItem('theme');
+          if (stored === 'light' || stored === 'dark' || stored === 'system') pref = stored;
+        } catch (e) {}
+        var dark =
+          pref === 'dark' ||
+          (pref === 'system' &&
+            window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var root = document.documentElement;
+        root.setAttribute('data-theme', dark ? 'dark' : 'light');
+        root.style.colorScheme = dark ? 'dark' : 'light';
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..700&family=Inter:wght@400;500;600&subset=latin-ext&display=swap"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Bu uygulama JavaScript gerektirir.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

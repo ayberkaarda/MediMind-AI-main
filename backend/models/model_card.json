@@ -1,0 +1,168 @@
+{
+  "model_version": "20261010-lr-59a12e81",
+  "model_type": "lr",
+  "trained_at": "2026-10-10T18:03:13+00:00",
+  "intended_use": "Educational demo that ranks diseases from a symptom checklist. Not a diagnostic tool.",
+  "data": {
+    "source": "dataset.csv",
+    "dataset_sha256": "84af3e52ecbb94c433a726c8f838e9e16982054d739072c20529cd3f87ec3e4c",
+    "n_rows": 4920,
+    "n_distinct_symptom_sets": 304,
+    "n_features": 131,
+    "n_classes": 41,
+    "feature_hash": "59a12e8139b141a75bc6aac53abb1b066215ac5dfed13b18c3c607f8a5e2c4df"
+  },
+  "config": {
+    "selection": "nested_group_cv",
+    "folds": 5,
+    "inner_folds": 3,
+    "seed": 42,
+    "c_grid": [
+      0.3,
+      1.0,
+      3.0,
+      10.0
+    ],
+    "outer_selected_C": [
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
+    ],
+    "selected_C": 10.0,
+    "final_C_rule": "most frequent C across outer folds (ties: smaller C)",
+    "perturbation_repeats": 3,
+    "rf_trees": 200,
+    "dedup_logo_note": "dedup-LOGO uses the final C; it is a secondary, non-nested view"
+  },
+  "metrics": {
+    "grouped_cv": {
+      "folds": 5,
+      "per_fold": {
+        "accuracy": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "macro_f1": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "top3": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "log_loss": {
+          "mean": 0.0042,
+          "std": 0.0009
+        },
+        "brier": {
+          "mean": 0.0001,
+          "std": 0.0001
+        }
+      },
+      "pooled": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "top3": 1.0,
+        "log_loss": 0.0042,
+        "brier": 0.0001
+      },
+      "fold_details": [
+        {
+          "fold": 0,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1133,
+            "1.0": 0.0445,
+            "3.0": 0.0199,
+            "10.0": 0.0081
+          }
+        },
+        {
+          "fold": 1,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1133,
+            "1.0": 0.0423,
+            "3.0": 0.0186,
+            "10.0": 0.0074
+          }
+        },
+        {
+          "fold": 2,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1158,
+            "1.0": 0.0458,
+            "3.0": 0.0208,
+            "10.0": 0.0086
+          }
+        },
+        {
+          "fold": 3,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1129,
+            "1.0": 0.0427,
+            "3.0": 0.0186,
+            "10.0": 0.0076
+          }
+        },
+        {
+          "fold": 4,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.117,
+            "1.0": 0.0447,
+            "3.0": 0.0199,
+            "10.0": 0.0077
+          }
+        }
+      ],
+      "perturbation": {
+        "description": "exactly one random symptom removed from each held-out combination",
+        "repeats": 3,
+        "n_combinations": 304,
+        "n": 912,
+        "top1": 0.9967,
+        "top3": 1.0
+      }
+    },
+    "dedup_logo": {
+      "n_rows": 304,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "top3": 1.0
+    }
+  },
+  "comparison": {
+    "lr": {
+      "grouped_cv_macro_f1": 1.0,
+      "grouped_cv_top3": 1.0,
+      "grouped_cv_log_loss": 0.0042,
+      "grouped_cv_brier": 0.0001,
+      "dedup_logo_macro_f1": 1.0,
+      "perturbation_top3": 1.0
+    },
+    "rf": {
+      "grouped_cv_macro_f1": 0.9974,
+      "grouped_cv_top3": 1.0,
+      "grouped_cv_log_loss": 0.1395,
+      "grouped_cv_brier": 0.0515,
+      "dedup_logo_macro_f1": 1.0,
+      "perturbation_top3": 1.0
+    }
+  },
+  "notes": "The dataset is synthetic and nearly separable: even grouped cross-validation reaches 1.0. These metrics document the evaluation method; they do not discriminate between models.",
+  "limitations": [
+    "Synthetic-looking Kaggle dataset with ~304 distinct combinations.",
+    "Scores are model outputs and not calibrated probabilities of disease.",
+    "Severity weights come from the dataset and are not clinical triage."
+  ],
+  "environment": {
+    "sklearn_version": "1.9.1",
+    "python_version": "3.12.14",
+    "git_sha": "1d416e9"
+  }
+}
