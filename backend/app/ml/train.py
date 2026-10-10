@@ -14,6 +14,7 @@ import platform
 import subprocess
 import sys
 import time
+from collections import Counter
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -31,7 +32,7 @@ from sklearn.model_selection import LeaveOneGroupOut, StratifiedGroupKFold, cros
 
 from app.core.paths import DATASET_PATH, MODEL_CARD_FILENAME, MODEL_FILENAME, SYMPTOMS_PATH
 from app.ml.artifact import ModelArtifact, save_artifact
-from app.ml.evaluate import align_proba, mean_std, summarize, top_k_accuracy
+from app.ml.evaluate import align_proba, log_loss, mean_std, summarize, top_k_accuracy
 from app.ml.preprocessing import build_index, feature_hash, normalize_disease, normalize_symptom
 
 C_GRID: tuple[float, ...] = (0.3, 1.0, 3.0, 10.0)
@@ -40,6 +41,7 @@ NOTES = (
     "These metrics document the evaluation method; they do not discriminate between models."
 )
 DEFAULT_FOLDS = 5
+DEFAULT_INNER_FOLDS = 3
 DEFAULT_SEED = 42
 PERTURBATION_REPEATS = 3
 RF_TREES = 200
@@ -102,59 +104,127 @@ def make_estimator(kind: str, c: float = 1.0, seed: int = DEFAULT_SEED) -> Estim
     raise ValueError(f"Unknown model type: {kind}")
 
 
-def _perturbation_hits(
-    estimator: Estimator,
-    X_test: npt.NDArray[np.uint8],
-    y_test: npt.NDArray[np.object_],
-    classes: Sequence[str],
-    rng: np.random.Generator,
-) -> tuple[list[Any], npt.NDArray[np.float64]]:
-    """Drop one random symptom from each distinct test combination and predict."""
-    _, first = np.unique(X_test, axis=0, return_index=True)
-    rows, labels = [], []
-    for i in sorted(first):
-        active = np.flatnonzero(X_test[i])
+def perturb_rows(
+    X: npt.NDArray[np.uint8], rng: np.random.Generator, repeats: int = PERTURBATION_REPEATS
+) -> tuple[npt.NDArray[np.uint8], npt.NDArray[np.intp]]:
+    """Copies of each distinct row (with >= 2 symptoms) with exactly one symptom removed.
+
+    Returns the perturbed rows and the index of the source row for each of them.
+    """
+    _, first = np.unique(X, axis=0, return_index=True)
+    rows: list[npt.NDArray[np.uint8]] = []
+    sources: list[int] = []
+    for i in sorted(first.tolist()):
+        active = np.flatnonzero(X[i])
         if active.size < 2:
             continue
-        for _ in range(PERTURBATION_REPEATS):
-            row = X_test[i].copy()
+        for _ in range(repeats):
+            row = X[i].copy()
             row[rng.choice(active)] = 0
             rows.append(row)
-            labels.append(y_test[i])
+            sources.append(i)
     if not rows:
-        return [], np.zeros((0, len(classes)))
-    proba = estimator.predict_proba(np.vstack(rows))
-    return labels, align_proba(proba, estimator.classes_, classes)
+        return np.zeros((0, X.shape[1]), dtype=np.uint8), np.zeros(0, dtype=np.intp)
+    return np.vstack(rows), np.asarray(sources, dtype=np.intp)
 
 
-def grouped_cv(ds: Dataset, factory: EstimatorFactory, folds: int, seed: int) -> dict[str, Any]:
-    """StratifiedGroupKFold evaluation plus perturbation robustness on held-out groups."""
+FoldPlanner = Callable[[npt.NDArray[np.intp]], tuple[EstimatorFactory, dict[str, Any]]]
+
+
+def _fixed(factory: EstimatorFactory) -> FoldPlanner:
+    def plan(train_idx: npt.NDArray[np.intp]) -> tuple[EstimatorFactory, dict[str, Any]]:
+        return factory, {}
+
+    return plan
+
+
+def inner_select_c(
+    ds: Dataset,
+    train_idx: npt.NDArray[np.intp],
+    grid: Sequence[float],
+    folds: int,
+    seed: int,
+) -> tuple[float, dict[str, float]]:
+    """Choose C by pooled log-loss of a grouped CV run on the outer training part only."""
+    X, y, groups = ds.X[train_idx], ds.y[train_idx], ds.groups[train_idx]
+    cv = StratifiedGroupKFold(n_splits=folds, shuffle=True, random_state=seed)
+    splits = list(cv.split(X, y, groups))
+    losses: dict[str, float] = {}
+    for c in grid:
+        oof = np.zeros((len(y), len(ds.classes)))
+        for tr, te in splits:
+            estimator = make_estimator("lr", c, seed).fit(X[tr], y[tr])
+            oof[te] = align_proba(estimator.predict_proba(X[te]), estimator.classes_, ds.classes)
+        losses[str(c)] = round(log_loss(y, oof, ds.classes), 4)
+    best = min(grid, key=lambda c: (losses[str(c)], c))
+    return float(best), losses
+
+
+def nested_lr_planner(
+    ds: Dataset, grid: Sequence[float], inner_folds: int, seed: int
+) -> FoldPlanner:
+    def plan(train_idx: npt.NDArray[np.intp]) -> tuple[EstimatorFactory, dict[str, Any]]:
+        c, losses = inner_select_c(ds, train_idx, grid, inner_folds, seed)
+        return partial(make_estimator, "lr", c, seed), {"C": c, "inner_log_loss": losses}
+
+    return plan
+
+
+def grouped_cv(
+    ds: Dataset,
+    planner: FoldPlanner,
+    folds: int,
+    seed: int,
+    repeats: int = PERTURBATION_REPEATS,
+) -> dict[str, Any]:
+    """Outer StratifiedGroupKFold evaluation plus perturbation robustness on held-out groups.
+
+    ``planner`` receives the outer training indices and returns the estimator factory
+    for that fold, so hyperparameters can be tuned without seeing the test groups.
+    """
     cv = StratifiedGroupKFold(n_splits=folds, shuffle=True, random_state=seed)
     rng = np.random.default_rng(seed)
     oof = np.zeros((len(ds.y), len(ds.classes)))
     per_fold: list[dict[str, float]] = []
+    fold_info: list[dict[str, Any]] = []
     pert_labels: list[Any] = []
     pert_proba: list[npt.NDArray[np.float64]] = []
-    for train_idx, test_idx in cv.split(ds.X, ds.y, ds.groups):
+    n_combinations = 0
+    for fold, (train_idx, test_idx) in enumerate(cv.split(ds.X, ds.y, ds.groups)):
+        factory, info = planner(train_idx)
         estimator = factory()
         estimator.fit(ds.X[train_idx], ds.y[train_idx])
         proba = align_proba(estimator.predict_proba(ds.X[test_idx]), estimator.classes_, ds.classes)
         oof[test_idx] = proba
         per_fold.append(summarize(ds.y[test_idx], proba, ds.classes))
-        labels, p = _perturbation_hits(estimator, ds.X[test_idx], ds.y[test_idx], ds.classes, rng)
-        pert_labels.extend(labels)
-        pert_proba.append(p)
+        fold_info.append({"fold": fold, **info})
+
+        X_test, y_test = ds.X[test_idx], ds.y[test_idx]
+        rows, sources = perturb_rows(X_test, rng, repeats)
+        n_combinations += len(set(sources.tolist()))
+        if len(rows):
+            pert_labels.extend(y_test[sources].tolist())
+            pert_proba.append(
+                align_proba(estimator.predict_proba(rows), estimator.classes_, ds.classes)
+            )
     pooled = summarize(ds.y, oof, ds.classes)
-    pert = np.vstack(pert_proba)
+    pert = np.vstack(pert_proba) if pert_proba else np.zeros((0, len(ds.classes)))
     return {
         "folds": folds,
         "per_fold": {k: mean_std([f[k] for f in per_fold]) for k in per_fold[0]},
         "pooled": {k: round(v, 4) for k, v in pooled.items()},
+        "fold_details": fold_info,
         "perturbation": {
-            "description": "one random symptom removed from each held-out combination",
+            "description": "exactly one random symptom removed from each held-out combination",
+            "repeats": repeats,
+            "n_combinations": n_combinations,
             "n": len(pert_labels),
-            "top1": round(top_k_accuracy(pert_labels, pert, ds.classes, k=1), 4),
-            "top3": round(top_k_accuracy(pert_labels, pert, ds.classes, k=3), 4),
+            "top1": round(top_k_accuracy(pert_labels, pert, ds.classes, k=1), 4)
+            if pert_labels
+            else 0.0,
+            "top3": round(top_k_accuracy(pert_labels, pert, ds.classes, k=3), 4)
+            if pert_labels
+            else 0.0,
         },
     }
 
@@ -173,17 +243,10 @@ def dedup_logo(ds: Dataset, factory: EstimatorFactory) -> dict[str, Any]:
     }
 
 
-def select_c(
-    ds: Dataset, folds: int, seed: int, grid: Sequence[float]
-) -> tuple[float, list[dict[str, Any]]]:
-    """Pick the LogisticRegression C with the lowest pooled grouped-CV log-loss."""
-    results = []
-    for c in grid:
-        report = grouped_cv(ds, partial(make_estimator, "lr", c, seed), folds, seed)
-        results.append({"C": c, "log_loss": report["pooled"]["log_loss"], "report": report})
-        print(f"  C={c:<5} grouped-CV log-loss={report['pooled']['log_loss']:.4f}")
-    best = min(results, key=lambda r: (r["log_loss"], r["C"]))
-    return float(best["C"]), results
+def most_frequent_c(selected: Sequence[float]) -> float:
+    """Most frequently selected C; ties go to the smaller (more regularised) value."""
+    counts = Counter(selected)
+    return float(min(counts, key=lambda c: (-counts[c], c)))
 
 
 def _git_sha() -> str | None:
@@ -198,16 +261,6 @@ def _git_sha() -> str | None:
     except (OSError, subprocess.SubprocessError):
         return None
     return out.stdout.strip() or None
-
-
-def _evaluate_model(
-    kind: str, ds: Dataset, folds: int, seed: int, c: float | None = None
-) -> dict[str, Any]:
-    def factory() -> Estimator:
-        return make_estimator(kind, c if c is not None else 1.0, seed)
-
-    cv_report = grouped_cv(ds, factory, folds, seed)
-    return {"grouped_cv": cv_report, "dedup_logo": dedup_logo(ds, factory)}
 
 
 def _comparison_row(report: dict[str, Any]) -> dict[str, float]:
@@ -228,11 +281,13 @@ def train(
     model: str = "lr",
     symptoms_out: Path | None = SYMPTOMS_PATH,
     folds: int = DEFAULT_FOLDS,
+    inner_folds: int = DEFAULT_INNER_FOLDS,
     seed: int = DEFAULT_SEED,
     c_grid: Sequence[float] = C_GRID,
     baseline: bool = True,
+    perturbation_repeats: int = PERTURBATION_REPEATS,
 ) -> dict[str, Any]:
-    """Evaluate, fit on all rows and write artifact, model card and symptom list."""
+    """Evaluate with nested grouped CV, fit on all rows, write artifact, card and symptom list."""
     started = time.perf_counter()
     ds = load_dataset(dataset_path)
     print(
@@ -241,23 +296,34 @@ def train(
     )
 
     reports: dict[str, dict[str, Any]] = {}
-    c_search: list[dict[str, Any]] = []
-    selected_c: float | None = None
+    outer_cs: list[float] = []
+    final_c: float | None = None
     if model == "lr" or baseline:
-        print("Selecting C for logistic regression (grouped CV log-loss):")
-        selected_c, search = select_c(ds, folds, seed, c_grid)
-        c_search = [{"C": r["C"], "log_loss": r["log_loss"]} for r in search]
-        lr_cv = next(r["report"] for r in search if r["C"] == selected_c)
+        print(
+            f"Logistic regression: outer {folds}-fold grouped CV, "
+            f"C chosen per outer fold by inner {inner_folds}-fold grouped CV log-loss"
+        )
+        cv_report = grouped_cv(
+            ds, nested_lr_planner(ds, c_grid, inner_folds, seed), folds, seed, perturbation_repeats
+        )
+        outer_cs = [float(f["C"]) for f in cv_report["fold_details"]]
+        for f in cv_report["fold_details"]:
+            print(f"  outer fold {f['fold']}: C={f['C']} inner log-loss={f['inner_log_loss']}")
+        final_c = most_frequent_c(outer_cs)
         reports["lr"] = {
-            "grouped_cv": lr_cv,
-            "dedup_logo": dedup_logo(ds, lambda: make_estimator("lr", selected_c, seed)),
+            "grouped_cv": cv_report,
+            "dedup_logo": dedup_logo(ds, partial(make_estimator, "lr", final_c, seed)),
         }
     if model == "rf" or baseline:
-        print("Evaluating random forest baseline:")
-        reports["rf"] = _evaluate_model("rf", ds, folds, seed)
+        print("Evaluating random forest baseline (same outer folds, no tuning)")
+        rf_factory = partial(make_estimator, "rf", 1.0, seed)
+        reports["rf"] = {
+            "grouped_cv": grouped_cv(ds, _fixed(rf_factory), folds, seed, perturbation_repeats),
+            "dedup_logo": dedup_logo(ds, rf_factory),
+        }
 
-    final_c = selected_c if model == "lr" and selected_c is not None else 1.0
-    estimator = make_estimator(model, final_c, seed)
+    fit_c = final_c if model == "lr" and final_c is not None else 1.0
+    estimator = make_estimator(model, fit_c, seed)
     estimator.fit(ds.X, ds.y)
     if model == "rf":
         estimator.set_params(n_jobs=None)
@@ -274,7 +340,7 @@ def train(
         "dataset_sha256": ds.sha256,
         "n_train_rows": len(ds.y),
         "git_sha": _git_sha(),
-        "hyperparameters": {"C": final_c} if model == "lr" else {"n_estimators": RF_TREES},
+        "hyperparameters": {"C": fit_c} if model == "lr" else {"n_estimators": RF_TREES},
     }
     artifact = ModelArtifact(
         estimator=estimator,
@@ -303,15 +369,19 @@ def train(
             "feature_hash": fhash,
         },
         "config": {
+            "selection": "nested_group_cv",
             "folds": folds,
+            "inner_folds": inner_folds,
             "seed": seed,
             "c_grid": list(c_grid),
-            "selected_C": selected_c,
-            "perturbation_repeats": PERTURBATION_REPEATS,
+            "outer_selected_C": outer_cs,
+            "selected_C": final_c,
+            "final_C_rule": "most frequent C across outer folds (ties: smaller C)",
+            "perturbation_repeats": perturbation_repeats,
             "rf_trees": RF_TREES,
+            "dedup_logo_note": "dedup-LOGO uses the final C; it is a secondary, non-nested view",
         },
         "metrics": shipped,
-        "c_search": c_search,
         "comparison": {name: _comparison_row(r) for name, r in reports.items()},
         "notes": NOTES,
         "limitations": [
@@ -343,7 +413,11 @@ def _write_json(path: Path, payload: Any) -> None:
 
 def _print_summary(card: dict[str, Any], model_path: Path, card_path: Path, seconds: float) -> None:
     cv = card["metrics"]["grouped_cv"]
-    print(f"\nShipped model: {card['model_type']} (selected C={card['config']['selected_C']})")
+    cfg = card["config"]
+    print(
+        f"\nShipped model: {card['model_type']} (selection={cfg['selection']}, "
+        f"outer C={cfg['outer_selected_C']}, final C={cfg['selected_C']})"
+    )
     for key in ("accuracy", "macro_f1", "top3", "log_loss", "brier"):
         stat = cv["per_fold"][key]
         print(f"  grouped-CV {key:<9} {stat['mean']:.4f} +/- {stat['std']:.4f}")
@@ -353,7 +427,10 @@ def _print_summary(card: dict[str, Any], model_path: Path, card_path: Path, seco
         f"macro_f1={logo['macro_f1']:.4f} top3={logo['top3']:.4f}"
     )
     pert = cv["perturbation"]
-    print(f"  perturbation (n={pert['n']}) top1={pert['top1']:.4f} top3={pert['top3']:.4f}")
+    print(
+        f"  perturbation (combinations={pert['n_combinations']}, n={pert['n']}) "
+        f"top1={pert['top1']:.4f} top3={pert['top3']:.4f}"
+    )
     print("\nComparison:")
     header = ["model", *next(iter(card["comparison"].values())).keys()]
     print("  " + " | ".join(header))
@@ -376,7 +453,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="where to write the canonical symptom list (default: data/symptoms.json)",
     )
     parser.add_argument("--no-symptoms", action="store_true", help="do not write symptoms.json")
-    parser.add_argument("--folds", type=int, default=DEFAULT_FOLDS)
+    parser.add_argument("--folds", type=int, default=DEFAULT_FOLDS, help="outer grouped CV folds")
+    parser.add_argument("--inner-folds", type=int, default=DEFAULT_INNER_FOLDS)
+    parser.add_argument("--perturbation-repeats", type=int, default=PERTURBATION_REPEATS)
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     parser.add_argument("--no-baseline", action="store_true", help="skip the comparison model")
     args = parser.parse_args(argv)
@@ -390,6 +469,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         model=args.model,
         symptoms_out=None if args.no_symptoms else args.symptoms_out,
         folds=args.folds,
+        inner_folds=args.inner_folds,
+        perturbation_repeats=args.perturbation_repeats,
         seed=args.seed,
         baseline=not args.no_baseline,
     )

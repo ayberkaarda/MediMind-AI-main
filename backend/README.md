@@ -34,9 +34,13 @@ Training writes `models/disease_model.joblib`, `models/model_card.json` and
 
 The dataset contains 4920 rows but only ~304 distinct (symptom set, disease)
 combinations, so a random row split leaks duplicates into the test fold.
-Evaluation therefore uses `StratifiedGroupKFold` grouped by symptom set, a
+Evaluation therefore uses nested grouped cross-validation: an outer
+`StratifiedGroupKFold(5)` grouped by symptom set reports the metrics, and in each
+outer fold an inner grouped CV on the training part alone picks `C` by log-loss.
+The shipped model is refit on all rows with the `C` chosen most often. A
 leave-one-group-out pass over the deduplicated table and a perturbation test
-that drops one symptom per combination. See `models/model_card.json`.
+that removes exactly one symptom per held-out combination complete the picture.
+See `models/model_card.json`.
 
 **Honest note:** the dataset is synthetic and nearly separable; even grouped
 cross-validation reaches 1.0 macro-F1. The reported metrics document the
@@ -47,7 +51,12 @@ about real-world accuracy.
 
 Interactive docs at `/docs`. All v1 routes live under `/api/v1`; errors use
 `application/problem+json` (`type, title, status, detail, code, request_id, errors`).
-Every response carries an `X-Request-ID` header (a valid incoming one is echoed).
+Every response, including CORS preflights, carries an `X-Request-ID` header (a valid
+incoming one, at most 128 characters of `[A-Za-z0-9._:-]`, is echoed). Preflights
+rejected by CORS stay plain text, as the CORS middleware produces them. The
+deprecated unversioned routes keep FastAPI's original `{"detail": ...}` error body.
+`predictions` holds up to `top_k` diseases scoring at least `min_prob`; the highest
+ranked disease is always included even when it is below the threshold.
 
 | Method | Path | Notes |
 |---|---|---|

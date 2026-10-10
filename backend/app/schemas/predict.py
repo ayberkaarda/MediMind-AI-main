@@ -1,12 +1,20 @@
 from __future__ import annotations
 
-from datetime import datetime
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+
+from app.schemas.common import UtcDatetime
 
 MAX_REQUEST_ITEMS = 131
 LEGACY_MAX_SYMPTOMS = 17
+MAX_SYMPTOM_LENGTH = 64
+# Symptom ids are snake_case; spaces (legacy form), parentheses and hyphens are tolerated.
+SYMPTOM_PATTERN = r"^[A-Za-z0-9_ ()\-]+$"
+
+SymptomInput = Annotated[
+    str, StringConstraints(min_length=1, max_length=MAX_SYMPTOM_LENGTH, pattern=SYMPTOM_PATTERN)
+]
 
 FUNGAL_EXAMPLE: list[Any] = ["itching", "skin_rash", "nodal_skin_eruptions", "dischromic_patches"]
 
@@ -14,7 +22,7 @@ FUNGAL_EXAMPLE: list[Any] = ["itching", "skin_rash", "nodal_skin_eruptions", "di
 class PredictRequest(BaseModel):
     model_config = ConfigDict(json_schema_extra={"example": {"symptoms": FUNGAL_EXAMPLE}})
 
-    symptoms: list[str] = Field(
+    symptoms: list[SymptomInput] = Field(
         min_length=1,
         max_length=MAX_REQUEST_ITEMS,
         description="Symptom ids; legacy space separated names are accepted and normalised.",
@@ -89,15 +97,20 @@ class PredictResponse(BaseModel):
     model_version: str
     input: InputEcho
     top_prediction: TopPrediction
-    predictions: list[PredictionItem]
+    predictions: list[PredictionItem] = Field(
+        description=(
+            "Up to top_k diseases whose score is at least min_prob, best first. "
+            "The highest ranked disease is always included, even below min_prob."
+        )
+    )
     severity: Severity
     confidence_label: Literal["high", "medium", "low"]
     disclaimer: Literal[True] = True
-    created_at: datetime
+    created_at: UtcDatetime
 
 
 class LegacyPredictRequest(BaseModel):
-    symptoms: list[str] = Field(min_length=1, max_length=LEGACY_MAX_SYMPTOMS)
+    symptoms: list[SymptomInput] = Field(min_length=1, max_length=LEGACY_MAX_SYMPTOMS)
 
 
 class LegacyRankedDisease(BaseModel):

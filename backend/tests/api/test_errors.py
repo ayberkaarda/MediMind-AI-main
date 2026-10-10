@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi.testclient import TestClient
 
 from app.core.config import Settings
-from app.core.errors import PROBLEM_JSON, AppError, problem_response
+from app.core.errors import PROBLEM_JSON, AppError, UnknownSymptomsError, problem_response
 from app.main import create_app
 
 
@@ -68,3 +68,10 @@ def test_cors_exposes_request_id(client: TestClient) -> None:
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
     simple = client.get("/api/v1/symptoms", headers={"Origin": "http://localhost:5173"})
     assert "x-request-id" in simple.headers["access-control-expose-headers"].lower()
+
+
+def test_unknown_symptoms_error_clips_echo() -> None:
+    err = UnknownSymptomsError(["y" * 100, "short"])
+    assert len(err.unknown[0]) == 64
+    assert err.unknown[1] == "short"
+    assert err.errors == [{"symptom": err.unknown[0]}, {"symptom": "short"}]

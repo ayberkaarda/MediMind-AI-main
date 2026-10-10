@@ -5,7 +5,7 @@ import math
 import pytest
 
 from app.ml.artifact import ModelArtifact
-from app.ml.predictor import Predictor
+from app.ml.predictor import Prediction, PredictionResult, Predictor
 from app.ml.preprocessing import UnknownSymptomError
 
 
@@ -30,7 +30,8 @@ def test_top_k(real_artifact: ModelArtifact) -> None:
     result = Predictor(real_artifact).predict(["itching", "skin_rash"])
     assert len(result.top_k(3)) == 3
     assert all(p.probability > 0.01 for p in result.top_k(5, 0.01))
-    assert result.top_k(5, 1.0) == []
+    # nothing reaches the threshold: the best candidate is still returned
+    assert result.top_k(5, 1.0) == [result.top]
 
 
 def test_legacy_spaced_input(real_artifact: ModelArtifact) -> None:
@@ -49,3 +50,15 @@ def test_unknown_symptom(real_artifact: ModelArtifact) -> None:
 def test_empty_input(real_artifact: ModelArtifact) -> None:
     with pytest.raises(ValueError, match="At least one"):
         Predictor(real_artifact).predict(["  "])
+
+
+def test_top_k_threshold_is_inclusive() -> None:
+    result = PredictionResult(
+        symptoms=("a",),
+        ranked=(Prediction("x", 0.5), Prediction("y", 0.3), Prediction("z", 0.2)),
+    )
+    assert [p.disease for p in result.top_k(3, 0.3)] == ["x", "y"]
+    assert [p.disease for p in result.top_k(2, 0.0)] == ["x", "y"]
+    assert [p.disease for p in result.top_k(3, 0.6)] == ["x"]
+    with pytest.raises(ValueError, match="k must be"):
+        result.top_k(0)

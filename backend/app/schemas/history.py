@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from datetime import datetime
-
 from pydantic import BaseModel, ConfigDict
+
+from app.schemas.common import UtcDatetime
 
 
 class HistoryItem(BaseModel):
     id: int
-    created_at: datetime
+    created_at: UtcDatetime
     symptoms: list[str]
     top_disease_id: str
     top_disease_name: str

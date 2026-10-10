@@ -15,7 +15,7 @@ from app.core.logging import request_id_var
 
 REQUEST_ID_HEADER = "X-Request-ID"
 CLIENT_ID_HEADER = "X-Client-Id"
-_VALID_REQUEST_ID = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
+_VALID_REQUEST_ID = re.compile(r"[A-Za-z0-9._:-]{1,128}")
 
 access_logger = logging.getLogger("medimind.access")
 error_logger = logging.getLogger("medimind.errors")
@@ -23,7 +23,7 @@ error_logger = logging.getLogger("medimind.errors")
 
 def resolve_request_id(incoming: str | None) -> str:
     """Accept a well-formed client supplied id, otherwise generate one."""
-    if incoming and _VALID_REQUEST_ID.match(incoming):
+    if incoming and _VALID_REQUEST_ID.fullmatch(incoming):
         return incoming
     return uuid.uuid4().hex
 

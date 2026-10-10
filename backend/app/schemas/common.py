@@ -1,8 +1,17 @@
 from __future__ import annotations
 
-from typing import Any
+from datetime import UTC, datetime
+from typing import Annotated, Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, PlainSerializer
+
+
+def _iso_utc(value: datetime) -> str:
+    return value.astimezone(UTC).isoformat()
+
+
+# Timezone-aware UTC timestamp serialised with an explicit "+00:00" offset.
+UtcDatetime = Annotated[datetime, PlainSerializer(_iso_utc, return_type=str, when_used="json")]
 
 
 class ProblemDetail(BaseModel):

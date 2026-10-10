@@ -59,3 +59,20 @@ def test_severity_thresholds_come_from_settings(tmp_path: Path, registry: DataRe
     assert service.severity(["lethargy"]).level == "moderate"  # weight 2
     assert service.severity(["skin_rash"]).level == "high"  # weight 3
     assert service.severity([]).max_possible == 0
+
+
+def test_service_uses_settings_top_k_and_min_prob(
+    tmp_path: Path, registry: DataRegistry, real_artifact: ModelArtifact
+) -> None:
+    predictor = Predictor(real_artifact)
+    strict = PredictionService(registry, predictor, make_settings(tmp_path, min_prob=0.999))
+    outcome = strict.predict(["headache"])
+    assert outcome.predictions == (outcome.top,)
+    assert outcome.top.probability < 0.999
+
+    wide = PredictionService(registry, predictor, make_settings(tmp_path, top_k=2, min_prob=0.0))
+    assert len(wide.predict(["headache"]).predictions) == 2
+
+    threshold = outcome.top.probability
+    exact = PredictionService(registry, predictor, make_settings(tmp_path, min_prob=threshold))
+    assert exact.predict(["headache"]).predictions[0] == outcome.top

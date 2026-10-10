@@ -11,7 +11,13 @@ from sqlalchemy.orm import Session, sessionmaker
 from app.core.config import Settings
 from app.core.paths import MODEL_FILENAME
 from app.db.session import create_db_engine, create_session_factory, init_db
-from app.ml.artifact import ArtifactError, ModelArtifact, load_artifact, verify_artifact
+from app.ml.artifact import (
+    ArtifactError,
+    ArtifactMismatchError,
+    ModelArtifact,
+    load_artifact,
+    verify_artifact,
+)
 from app.ml.predictor import Predictor
 from app.ml.registry import DataRegistry
 from app.services.disease_service import DiseaseService
@@ -42,12 +48,14 @@ def _load_model(settings: Settings, registry: DataRegistry) -> ModelArtifact | N
     path = settings.model_dir / MODEL_FILENAME
     try:
         artifact = load_artifact(path)
+        verify_artifact(artifact, registry)
+    except ArtifactMismatchError:
+        # A model built for another feature space would give wrong answers: fail fast.
+        raise
     except ArtifactError as exc:
-        # Serve reference data in degraded mode; /predict answers 503.
+        # Missing or broken model: serve reference data in degraded mode, /predict answers 503.
         logger.error("Model unavailable: %s", exc)
         return None
-    # Inconsistent artifacts would give wrong answers: fail fast.
-    verify_artifact(artifact, registry)
     logger.info(
         "Loaded model %s (%d features, %d classes)",
         artifact.model_version,

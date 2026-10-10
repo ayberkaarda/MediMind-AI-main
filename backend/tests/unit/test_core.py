@@ -75,8 +75,17 @@ def test_text_logging(capsys: pytest.CaptureFixture[str]) -> None:
 def test_resolve_request_id() -> None:
     assert resolve_request_id("abc.DEF-1_2:3") == "abc.DEF-1_2:3"
     assert len(resolve_request_id(None)) == 32
+    assert resolve_request_id("x" * 128) == "x" * 128
     assert resolve_request_id("x" * 129) != "x" * 129
     assert resolve_request_id("has space") != "has space"
+
+
+@pytest.mark.parametrize("value", ["abc\n", "abc\r\n", "a\nb", "abc\x00", "tab\there", "\x7f"])
+def test_request_id_rejects_line_breaks_and_control_chars(value: str) -> None:
+    generated = resolve_request_id(value)
+    assert generated != value
+    assert len(generated) == 32
+    assert generated.isalnum()
 
 
 def test_utc_datetime_rejects_naive() -> None:

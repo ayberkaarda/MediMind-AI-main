@@ -17,6 +17,7 @@ from app.core.logging import request_id_var
 
 PROBLEM_JSON = "application/problem+json"
 PROBLEM_TYPE_BASE = "urn:medimind:problem:"
+API_PREFIX = "/api/"
 
 logger = logging.getLogger("medimind.errors")
 
@@ -48,14 +49,26 @@ class ModelNotLoadedError(AppError):
     code = "model_not_loaded"
 
 
+MAX_ECHOED_ITEMS = 10
+MAX_ECHOED_LENGTH = 64
+
+
+def _clip(value: str) -> str:
+    return value if len(value) <= MAX_ECHOED_LENGTH else value[: MAX_ECHOED_LENGTH - 1] + "…"
+
+
 class UnknownSymptomsError(AppError):
+    """Unknown input symptoms; at most 10 are echoed back, each clipped to 64 characters."""
+
     status = 422
     code = "unknown_symptom"
 
     def __init__(self, unknown: Sequence[str]) -> None:
-        self.unknown = list(unknown)
+        self.unknown = [_clip(s) for s in list(unknown)[:MAX_ECHOED_ITEMS]]
+        more = len(unknown) - len(self.unknown)
+        suffix = f" (+{more} more)" if more > 0 else ""
         super().__init__(
-            f"Unknown symptom(s): {', '.join(self.unknown)}",
+            f"Unknown symptom(s): {', '.join(self.unknown)}{suffix}",
             errors=[{"symptom": s} for s in self.unknown],
         )
 
@@ -126,12 +139,21 @@ async def _app_error_handler(request: Request, exc: Exception) -> JSONResponse:
     return problem_response(exc.status, exc.code, exc.detail, title=exc.title, errors=exc.errors)
 
 
+def is_versioned_path(path: str) -> bool:
+    return path.startswith(API_PREFIX)
+
+
 async def _validation_handler(request: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, RequestValidationError)
     errors = [
         {"loc": list(err.get("loc", ())), "msg": err.get("msg", ""), "type": err.get("type", "")}
         for err in exc.errors()
     ]
+    if not is_versioned_path(request.url.path):
+        # Deprecated unversioned routes keep FastAPI's original {"detail": [...]} body.
+        return JSONResponse(
+            {"detail": errors}, status_code=422, headers={"X-Request-ID": request_id_var.get()}
+        )
     return problem_response(422, "validation_error", "Request validation failed.", errors=errors)
 
 

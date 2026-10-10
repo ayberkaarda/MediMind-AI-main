@@ -93,7 +93,7 @@ def test_validation_problems(client: TestClient) -> None:
     missing = client.post(URL, json={})
     assert missing.json()["code"] == "validation_error"
 
-    blank = client.post(URL, json={"symptoms": ["  ", ""]})
+    blank = client.post(URL, json={"symptoms": ["  "]})
     assert blank.status_code == 422
     assert blank.json()["code"] == "empty_symptoms"
 
@@ -110,3 +110,25 @@ def test_invalid_client_id(client: TestClient) -> None:
     response = client.post(URL, json={"symptoms": FUNGAL}, headers={"X-Client-Id": "nope"})
     assert response.status_code == 400
     assert response.json()["code"] == "invalid_client_id"
+
+
+def test_symptom_item_limits(client: TestClient) -> None:
+    for bad in ["", "x" * 65, "<script>", "itching;drop", "a\nb"]:
+        response = client.post(URL, json={"symptoms": [bad]})
+        assert response.status_code == 422, bad
+        body = response.json()
+        assert body["code"] == "validation_error"
+        assert body["errors"][0]["loc"][:2] == ["body", "symptoms"]
+        assert "input" not in body["errors"][0]
+    ok = client.post(URL, json={"symptoms": ["toxic_look_(typhos)", "Skin Rash"]})
+    assert ok.status_code == 200
+
+
+def test_unknown_symptom_echo_is_bounded(client: TestClient) -> None:
+    unknown = [f"made_up_{i:02d}_" + "z" * 50 for i in range(15)]
+    response = client.post(URL, json={"symptoms": unknown})
+    assert response.status_code == 422
+    body = response.json()
+    assert len(body["errors"]) == 10
+    assert all(len(e["symptom"]) <= 64 for e in body["errors"])
+    assert body["detail"].endswith("(+5 more)")

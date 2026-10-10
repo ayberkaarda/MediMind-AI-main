@@ -53,7 +53,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
     app.state.settings = settings
-    app.add_middleware(RequestContextMiddleware)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
@@ -62,6 +61,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["Content-Type", "X-Client-Id", REQUEST_ID_HEADER],
         expose_headers=[REQUEST_ID_HEADER],
     )
+    # Added last so it is the outermost layer: every response, including CORS
+    # preflights, carries X-Request-ID. Rejected preflights stay plain text (CORS spec).
+    app.add_middleware(RequestContextMiddleware)
     register_exception_handlers(app)
     app.include_router(api_router)
     app.include_router(legacy.router)

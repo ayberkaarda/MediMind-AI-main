@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import dataclasses
 from pathlib import Path
+from typing import Any
 
 import joblib
+import numpy as np
 import pytest
 
 from app.ml.artifact import (
     ArtifactError,
+    ArtifactMismatchError,
     ModelArtifact,
     load_artifact,
     save_artifact,
@@ -96,3 +99,75 @@ def test_verify_warnings(real_artifact: ModelArtifact, registry: DataRegistry) -
     assert any("Missing Turkish label" in w for w in warnings)
     assert any("Missing Turkish description" in w for w in warnings)
     assert any("scikit-learn 0.1.0" in w for w in warnings)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("feature_names", None, "feature_names"),
+        ("feature_names", ["a", 1], "feature_names"),
+        ("feature_names", ["a", "a"], "duplicates"),
+        ("classes", [], "is empty"),
+        ("metadata", None, "metadata"),
+    ],
+)
+def test_load_rejects_bad_field_types(
+    tmp_path: Path, tiny_artifact: ModelArtifact, field: str, value: object, message: str
+) -> None:
+    path = save_artifact(tiny_artifact, tmp_path / "m.joblib")
+    payload = joblib.load(path)
+    payload[field] = value
+    joblib.dump(payload, path)
+    with pytest.raises(ArtifactError, match=message):
+        load_artifact(path)
+
+
+def test_feature_mismatch_is_mismatch_error(
+    tiny_artifact: ModelArtifact, registry: DataRegistry
+) -> None:
+    with pytest.raises(ArtifactMismatchError):
+        verify_artifact(tiny_artifact, registry)
+
+
+class _FakeEstimator:
+    def __init__(self, classes: tuple[str, ...], n_features: int, output: Any) -> None:
+        self.classes_ = np.array(classes)
+        self.n_features_in_ = n_features
+        self._output = output
+
+    def predict_proba(self, x: Any) -> Any:
+        if isinstance(self._output, Exception):
+            raise self._output
+        return self._output
+
+
+def _with_estimator(artifact: ModelArtifact, estimator: object) -> ModelArtifact:
+    return dataclasses.replace(artifact, estimator=estimator)  # type: ignore[arg-type]
+
+
+def test_verify_estimator_checks(real_artifact: ModelArtifact, registry: DataRegistry) -> None:
+    classes, n = real_artifact.classes, len(real_artifact.feature_names)
+    uniform = np.full((1, len(classes)), 1 / len(classes))
+    cases: list[tuple[ModelArtifact, str]] = [
+        (dataclasses.replace(real_artifact, classes=()), "no classes"),
+        (_with_estimator(real_artifact, object()), "predict_proba"),
+        (_with_estimator(real_artifact, _FakeEstimator(classes, 3, uniform)), "expects 3"),
+        (
+            _with_estimator(real_artifact, _FakeEstimator(classes, n, RuntimeError("boom"))),
+            "sample input",
+        ),
+        (
+            _with_estimator(real_artifact, _FakeEstimator(classes, n, np.ones((1, 2)))),
+            "output shape",
+        ),
+        (
+            _with_estimator(real_artifact, _FakeEstimator(classes, n, uniform * 2)),
+            "probability distribution",
+        ),
+    ]
+    for artifact, message in cases:
+        with pytest.raises(ArtifactError, match=message) as info:
+            verify_artifact(artifact, registry)
+        assert not isinstance(info.value, ArtifactMismatchError)
+    fine = _with_estimator(real_artifact, _FakeEstimator(classes, n, uniform))
+    assert verify_artifact(fine, registry) == []

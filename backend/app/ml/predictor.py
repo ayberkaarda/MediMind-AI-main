@@ -25,7 +25,15 @@ class PredictionResult:
         return self.ranked[0]
 
     def top_k(self, k: int, min_probability: float = 0.0) -> list[Prediction]:
-        return [p for p in self.ranked[:k] if p.probability > min_probability]
+        """Up to ``k`` best diseases with probability >= ``min_probability``.
+
+        The highest ranked disease is always returned, even when it falls below
+        the threshold, so callers never receive an empty ranking.
+        """
+        if k < 1:
+            raise ValueError("k must be at least 1")
+        selected = [p for p in self.ranked[:k] if p.probability >= min_probability]
+        return selected or [self.ranked[0]]
 
 
 class Predictor:

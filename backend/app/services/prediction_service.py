@@ -71,11 +71,7 @@ class PredictionService:
         except UnknownSymptomError as exc:
             raise UnknownSymptomsError(exc.unknown) from exc
 
-        listed = [
-            p
-            for p in result.ranked[: self._settings.top_k]
-            if p.probability >= self._settings.min_prob
-        ] or [result.top]
+        listed = result.top_k(self._settings.top_k, self._settings.min_prob)
         outcome = PredictionOutcome(
             symptoms=result.symptoms,
             top=result.top,

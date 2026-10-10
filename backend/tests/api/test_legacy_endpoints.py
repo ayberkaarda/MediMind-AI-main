@@ -83,3 +83,19 @@ def test_predict_validation(client: TestClient) -> None:
     blank = client.post("/predict", json={"symptoms": ["  "]})
     assert blank.status_code == 422
     assert blank.json()["detail"]["code"] == "empty_symptoms"
+
+
+def test_legacy_validation_keeps_detail_body(client: TestClient) -> None:
+    for kwargs in (
+        {"json": {"symptoms": []}},
+        {"json": {}},
+        {"content": b"{broken", "headers": {"content-type": "application/json"}},
+    ):
+        response = client.post("/predict", **kwargs)  # type: ignore[arg-type]
+        assert response.status_code == 422
+        assert response.headers["content-type"] == "application/json"
+        body = response.json()
+        assert set(body) == {"detail"}
+        assert isinstance(body["detail"], list)
+        assert {"loc", "msg", "type"} <= set(body["detail"][0])
+        assert response.headers["x-request-id"]

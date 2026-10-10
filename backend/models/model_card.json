@@ -1,7 +1,7 @@
 {
   "model_version": "20261010-lr-59a12e81",
   "model_type": "lr",
-  "trained_at": "2026-10-10T17:50:18+00:00",
+  "trained_at": "2026-10-10T18:03:13+00:00",
   "intended_use": "Educational demo that ranks diseases from a symptom checklist. Not a diagnostic tool.",
   "data": {
     "source": "dataset.csv",
@@ -13,7 +13,9 @@
     "feature_hash": "59a12e8139b141a75bc6aac53abb1b066215ac5dfed13b18c3c607f8a5e2c4df"
   },
   "config": {
+    "selection": "nested_group_cv",
     "folds": 5,
+    "inner_folds": 3,
     "seed": 42,
     "c_grid": [
       0.3,
@@ -21,9 +23,18 @@
       3.0,
       10.0
     ],
+    "outer_selected_C": [
+      10.0,
+      10.0,
+      10.0,
+      10.0,
+      10.0
+    ],
     "selected_C": 10.0,
+    "final_C_rule": "most frequent C across outer folds (ties: smaller C)",
     "perturbation_repeats": 3,
-    "rf_trees": 200
+    "rf_trees": 200,
+    "dedup_logo_note": "dedup-LOGO uses the final C; it is a secondary, non-nested view"
   },
   "metrics": {
     "grouped_cv": {
@@ -57,8 +68,62 @@
         "log_loss": 0.0042,
         "brier": 0.0001
       },
+      "fold_details": [
+        {
+          "fold": 0,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1133,
+            "1.0": 0.0445,
+            "3.0": 0.0199,
+            "10.0": 0.0081
+          }
+        },
+        {
+          "fold": 1,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1133,
+            "1.0": 0.0423,
+            "3.0": 0.0186,
+            "10.0": 0.0074
+          }
+        },
+        {
+          "fold": 2,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1158,
+            "1.0": 0.0458,
+            "3.0": 0.0208,
+            "10.0": 0.0086
+          }
+        },
+        {
+          "fold": 3,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.1129,
+            "1.0": 0.0427,
+            "3.0": 0.0186,
+            "10.0": 0.0076
+          }
+        },
+        {
+          "fold": 4,
+          "C": 10.0,
+          "inner_log_loss": {
+            "0.3": 0.117,
+            "1.0": 0.0447,
+            "3.0": 0.0199,
+            "10.0": 0.0077
+          }
+        }
+      ],
       "perturbation": {
-        "description": "one random symptom removed from each held-out combination",
+        "description": "exactly one random symptom removed from each held-out combination",
+        "repeats": 3,
+        "n_combinations": 304,
         "n": 912,
         "top1": 0.9967,
         "top3": 1.0
@@ -71,24 +136,6 @@
       "top3": 1.0
     }
   },
-  "c_search": [
-    {
-      "C": 0.3,
-      "log_loss": 0.0781
-    },
-    {
-      "C": 1.0,
-      "log_loss": 0.0297
-    },
-    {
-      "C": 3.0,
-      "log_loss": 0.0128
-    },
-    {
-      "C": 10.0,
-      "log_loss": 0.0042
-    }
-  ],
   "comparison": {
     "lr": {
       "grouped_cv_macro_f1": 1.0,
@@ -116,6 +163,6 @@
   "environment": {
     "sklearn_version": "1.9.1",
     "python_version": "3.12.14",
-    "git_sha": "839a117"
+    "git_sha": "1d416e9"
   }
 }
