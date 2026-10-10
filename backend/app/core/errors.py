@@ -17,7 +17,6 @@ from app.core.logging import request_id_var
 
 PROBLEM_JSON = "application/problem+json"
 PROBLEM_TYPE_BASE = "urn:medimind:problem:"
-API_PREFIX = "/api/"
 
 logger = logging.getLogger("medimind.errors")
 
@@ -139,21 +138,12 @@ async def _app_error_handler(request: Request, exc: Exception) -> JSONResponse:
     return problem_response(exc.status, exc.code, exc.detail, title=exc.title, errors=exc.errors)
 
 
-def is_versioned_path(path: str) -> bool:
-    return path.startswith(API_PREFIX)
-
-
 async def _validation_handler(request: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, RequestValidationError)
     errors = [
         {"loc": list(err.get("loc", ())), "msg": err.get("msg", ""), "type": err.get("type", "")}
         for err in exc.errors()
     ]
-    if not is_versioned_path(request.url.path):
-        # Deprecated unversioned routes keep FastAPI's original {"detail": [...]} body.
-        return JSONResponse(
-            {"detail": errors}, status_code=422, headers={"X-Request-ID": request_id_var.get()}
-        )
     return problem_response(422, "validation_error", "Request validation failed.", errors=errors)
 
 

@@ -38,9 +38,5 @@ def test_degraded_without_model(tmp_path: Path) -> None:
         assert predict.status_code == 503
         assert predict.json()["code"] == "model_not_loaded"
 
-        legacy = client.post("/predict", json={"symptoms": ["itching"]})
-        assert legacy.status_code == 503
-        assert legacy.json() == {"detail": "Model not loaded"}
-
         assert client.get("/api/v1/symptoms").status_code == 200
         assert len(client.get("/api/v1/diseases").json()["diseases"]) == 41

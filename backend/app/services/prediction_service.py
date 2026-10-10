@@ -15,8 +15,6 @@ from app.ml.preprocessing import UnknownSymptomError, disease_slug, normalize_sy
 from app.ml.registry import DataRegistry
 from app.schemas.predict import (
     InputEcho,
-    LegacyPredictResponse,
-    LegacyRankedDisease,
     PredictionItem,
     PredictResponse,
     Severity,
@@ -26,7 +24,6 @@ from app.schemas.predict import (
 logger = logging.getLogger("medimind.prediction")
 
 MAX_SEVERITY_WEIGHT = 7
-NO_DESCRIPTION = "Tanım bulunamadı."
 ConfidenceLabel = Literal["high", "medium", "low"]
 SeverityLevel = Literal["low", "moderate", "high"]
 
@@ -154,25 +151,4 @@ class PredictionService:
             severity=outcome.severity,
             confidence_label=outcome.confidence_label,
             created_at=created_at,
-        )
-
-    def to_legacy(self, outcome: PredictionOutcome) -> LegacyPredictResponse:
-        registry = self._registry
-        top = outcome.top
-        return LegacyPredictResponse(
-            disease=registry.disease_label(top.disease),
-            confidence=top.probability,
-            description=registry.description(top.disease) or NO_DESCRIPTION,
-            precautions=list(registry.precautions_for(top.disease)),
-            top_predictions=[
-                LegacyRankedDisease(
-                    name=registry.disease_label(p.disease),
-                    value=p.probability,
-                    disease_id=p.disease,
-                )
-                for p in outcome.predictions
-            ],
-            disease_id=top.disease,
-            symptoms=list(outcome.symptoms),
-            model_version=outcome.model_version,
         )

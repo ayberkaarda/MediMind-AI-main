@@ -7,7 +7,6 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 from app.schemas.common import UtcDatetime
 
 MAX_REQUEST_ITEMS = 131
-LEGACY_MAX_SYMPTOMS = 17
 MAX_SYMPTOM_LENGTH = 64
 # Symptom ids are snake_case; spaces (legacy form), parentheses and hyphens are tolerated.
 SYMPTOM_PATTERN = r"^[A-Za-z0-9_ ()\-]+$"
@@ -107,24 +106,3 @@ class PredictResponse(BaseModel):
     confidence_label: Literal["high", "medium", "low"]
     disclaimer: Literal[True] = True
     created_at: UtcDatetime
-
-
-class LegacyPredictRequest(BaseModel):
-    symptoms: list[SymptomInput] = Field(min_length=1, max_length=LEGACY_MAX_SYMPTOMS)
-
-
-class LegacyRankedDisease(BaseModel):
-    name: str
-    value: float
-    disease_id: str
-
-
-class LegacyPredictResponse(BaseModel):
-    disease: str
-    confidence: float
-    description: str
-    precautions: list[str]
-    top_predictions: list[LegacyRankedDisease]
-    disease_id: str
-    symptoms: list[str]
-    model_version: str

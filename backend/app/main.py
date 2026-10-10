@@ -9,7 +9,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
-from app.api import legacy
 from app.api.router import api_router
 from app.core.config import Settings, get_settings
 from app.core.errors import register_exception_handlers
@@ -28,7 +27,6 @@ OPENAPI_TAGS = [
     {"name": "predict", "description": "Disease ranking for selected symptoms."},
     {"name": "diseases", "description": "Disease descriptions and precautions."},
     {"name": "history", "description": "Per-client analysis history (X-Client-Id)."},
-    {"name": "legacy", "description": "Deprecated unversioned routes."},
 ]
 
 
@@ -66,7 +64,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.add_middleware(RequestContextMiddleware)
     register_exception_handlers(app)
     app.include_router(api_router)
-    app.include_router(legacy.router)
 
     @app.get("/", include_in_schema=False)
     def root() -> RedirectResponse:

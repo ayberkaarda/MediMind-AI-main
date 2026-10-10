@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from app.ml.registry import DataRegistry, turkish_sort_key
 from app.schemas.symptoms import (
-    LegacySymptom,
-    LegacySymptomsResponse,
     RegionOut,
     SymptomOut,
     SymptomsResponse,
@@ -39,22 +37,6 @@ class SymptomService:
             ],
             regions=regions,
         )
-        self._legacy = LegacySymptomsResponse(
-            symptoms=[
-                LegacySymptom(
-                    label=item.label,
-                    value=item.id,
-                    id=item.id,
-                    region=item.region,
-                    severity=item.severity,
-                )
-                for item in self._catalog.symptoms
-            ],
-            regions=regions,
-        )
 
     def catalog(self) -> SymptomsResponse:
         return self._catalog
-
-    def legacy_catalog(self) -> LegacySymptomsResponse:
-        return self._legacy

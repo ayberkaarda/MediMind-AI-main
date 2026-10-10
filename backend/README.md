@@ -53,8 +53,7 @@ Interactive docs at `/docs`. All v1 routes live under `/api/v1`; errors use
 `application/problem+json` (`type, title, status, detail, code, request_id, errors`).
 Every response, including CORS preflights, carries an `X-Request-ID` header (a valid
 incoming one, at most 128 characters of `[A-Za-z0-9._:-]`, is echoed). Preflights
-rejected by CORS stay plain text, as the CORS middleware produces them. The
-deprecated unversioned routes keep FastAPI's original `{"detail": ...}` error body.
+rejected by CORS stay plain text, as the CORS middleware produces them.
 `predictions` holds up to `top_k` diseases scoring at least `min_prob`; the highest
 ranked disease is always included even when it is below the threshold.
 
@@ -66,9 +65,6 @@ ranked disease is always included even when it is below the threshold.
 | GET | `/api/v1/diseases`, `/api/v1/diseases/{id}` | descriptions and precautions |
 | GET/DELETE | `/api/v1/history`, `/api/v1/history/{id}` | requires `X-Client-Id` (UUID) |
 
-`GET /symptoms` and `POST /predict` (unversioned) are deprecated and kept for the
-previous frontend.
-
 Configuration uses `MEDIMIND_*` environment variables; see `.env.example`.
 History is stored in SQLite (`data/medimind.db` by default).
 
@@ -77,7 +73,7 @@ History is stored in SQLite (`data/medimind.db` by default).
 ```
 app/main.py            create_app() factory and lifespan
 app/core               settings, logging, request id middleware, problem+json errors
-app/api                v1 routers and deprecated legacy routes
+app/api                v1 routers and dependencies
 app/services           symptom, disease, prediction and history services
 app/schemas            request and response models
 app/db                 SQLAlchemy models and session helpers

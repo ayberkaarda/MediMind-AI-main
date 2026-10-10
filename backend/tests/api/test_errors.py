@@ -75,3 +75,16 @@ def test_unknown_symptoms_error_clips_echo() -> None:
     assert len(err.unknown[0]) == 64
     assert err.unknown[1] == "short"
     assert err.errors == [{"symptom": err.unknown[0]}, {"symptom": "short"}]
+
+
+def test_root_redirects_to_docs(client: TestClient) -> None:
+    response = client.get("/", follow_redirects=False)
+    assert response.status_code in (302, 307)
+    assert response.headers["location"] == "/docs"
+
+
+def test_unversioned_routes_are_gone(client: TestClient) -> None:
+    assert client.get("/symptoms").status_code == 404
+    assert client.post("/predict", json={"symptoms": ["itching"]}).status_code == 404
+    paths = client.get("/openapi.json").json()["paths"]
+    assert all(path.startswith("/api/v1/") for path in paths)

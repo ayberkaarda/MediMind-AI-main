@@ -38,16 +38,3 @@ class SymptomsResponse(BaseModel):
 
     symptoms: list[SymptomOut]
     regions: list[RegionOut]
-
-
-class LegacySymptom(BaseModel):
-    label: str
-    value: str
-    id: str
-    region: str
-    severity: int | None
-
-
-class LegacySymptomsResponse(BaseModel):
-    symptoms: list[LegacySymptom]
-    regions: list[RegionOut]
