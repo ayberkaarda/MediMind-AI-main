@@ -68,7 +68,7 @@ def test_disease_tables_cover_all_classes(
     missing = registry.missing_disease_info(real_artifact.classes)
     assert missing == {"label": [], "description": [], "precautions": []}
     assert registry.disease_label("Fungal infection") == "Mantar Enfeksiyonu"
-    assert registry.disease_label("Dimorphic hemorrhoids(piles)").startswith("Dimorfik")
+    assert registry.disease_label("Dimorphic hemorrhoids(piles)") == "Hemoroid (Basur)"
     assert registry.precautions_for("Diabetes")
 
 
