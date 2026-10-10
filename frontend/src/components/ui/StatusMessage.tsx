@@ -13,7 +13,11 @@ export function StatusMessage({ tone = 'neutral', children, className }: StatusM
     <div
       role={tone === 'error' ? 'alert' : 'status'}
       aria-live={tone === 'error' ? 'assertive' : 'polite'}
-      className={clsx('text-sm', tone === 'error' ? 'text-error' : 'text-ink-muted', className)}
+      className={clsx(
+        'text-sm',
+        tone === 'error' ? 'font-semibold text-error' : 'text-ink-muted',
+        className,
+      )}
     >
       {children}
     </div>

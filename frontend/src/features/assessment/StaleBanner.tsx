@@ -1,5 +1,4 @@
-import * as m from 'motion/react-m';
-import { useReducedMotion } from 'motion/react';
+import { Icon } from '../../components/ui/Icon';
 
 export const STALE_MESSAGE = 'Belirtiler değişti — sonuç güncel değil';
 
@@ -10,16 +9,15 @@ interface StaleBannerProps {
 }
 
 export function StaleBanner({ onReassess, pending, disabled = false }: StaleBannerProps) {
-  const reduced = useReducedMotion();
   return (
-    <m.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: reduced ? 0.12 : 0.15 }}
+    <div
       role="status"
-      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded border border-accent bg-surface-muted p-3"
+      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded border border-line-strong bg-surface-muted p-4"
     >
-      <p className="text-base font-medium">{STALE_MESSAGE}</p>
+      <p className="flex items-center gap-2 text-base font-semibold">
+        <Icon name="refresh" className="shrink-0" />
+        {STALE_MESSAGE}
+      </p>
       <button
         type="button"
         className="btn-secondary"
@@ -28,6 +26,6 @@ export function StaleBanner({ onReassess, pending, disabled = false }: StaleBann
       >
         {pending ? 'Değerlendiriliyor…' : 'Yeniden değerlendir'}
       </button>
-    </m.div>
+    </div>
   );
 }

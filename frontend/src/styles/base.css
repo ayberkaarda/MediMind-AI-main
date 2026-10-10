@@ -10,12 +10,11 @@
 
   body {
     @apply bg-canvas font-sans text-base text-ink antialiased;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: 'tnum' 1;
   }
 
   ::selection {
-    background: rgb(var(--c-accent) / 0.22);
+    background: rgb(var(--c-block));
+    color: rgb(var(--c-text));
   }
 
   :focus-visible {
@@ -32,15 +31,46 @@
   h3 {
     text-wrap: balance;
   }
+
+  p {
+    text-wrap: pretty;
+  }
 }
 
 @layer components {
+  /* Serif voice for the question, the condition name and section titles. */
+  .type-title {
+    @apply font-serif font-semibold text-ink;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+
+  .type-disease {
+    @apply font-serif font-semibold text-ink;
+    font-size: 2.25rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .type-heading {
+    @apply font-serif text-xl font-semibold text-ink;
+  }
+
+  .type-label {
+    @apply text-sm font-semibold text-ink;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
   .btn {
-    @apply inline-flex min-h-row items-center justify-center gap-2 rounded px-4 text-base font-medium;
+    @apply inline-flex min-h-row items-center justify-center gap-2 rounded px-4 text-base font-semibold;
     transition:
-      background-color var(--dur-hatch) linear,
-      border-color var(--dur-hatch) linear,
-      color var(--dur-hatch) linear;
+      background-color var(--dur-tap) linear,
+      border-color var(--dur-tap) linear,
+      color var(--dur-tap) linear;
   }
 
   .btn:disabled {
@@ -49,11 +79,8 @@
 
   .btn-primary {
     @apply btn bg-accent text-on-accent;
-  }
-
-  /* The focus outline sits on the page with a 2px gap; the inner ring keeps it visible on the accent fill. */
-  .btn-primary:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--color-on-accent);
+    min-height: 3rem;
+    padding-inline: 1.5rem;
   }
 
   .btn-primary:not(:disabled):hover {
@@ -65,28 +92,48 @@
   }
 
   .btn-secondary:not(:disabled):hover {
-    @apply border-ink-muted bg-surface-muted;
+    @apply bg-surface-muted;
   }
 
   .btn-quiet {
-    @apply btn px-3 text-ink-muted;
+    @apply btn px-3 text-ink;
   }
 
   .btn-quiet:not(:disabled):hover {
-    @apply bg-surface-muted text-ink;
+    @apply bg-surface-muted;
   }
 
   .link {
-    @apply text-accent underline decoration-1 underline-offset-4;
+    @apply font-semibold text-accent underline decoration-1 underline-offset-4;
   }
 
   .link:hover {
     @apply decoration-2;
   }
 
+  /* Region filter chip: fully rounded, the pressed state fills with the block tone. */
+  .chip {
+    @apply inline-flex min-h-10 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-sm font-semibold text-ink;
+    transition:
+      background-color var(--dur-tap) linear,
+      border-color var(--dur-tap) linear;
+  }
+
+  .chip:hover {
+    @apply bg-surface-muted;
+  }
+
+  .chip[aria-pressed='true'] {
+    @apply border-accent bg-block;
+  }
+
+  .count-badge {
+    @apply tabular inline-grid h-6 min-w-6 place-items-center rounded-full bg-accent px-1.5 text-xs font-semibold text-on-accent;
+  }
+
   .field {
-    @apply block w-full rounded border border-line-strong bg-surface px-4 font-serif text-lg text-ink;
-    min-height: 4rem;
+    @apply block h-12 w-full rounded border border-line-strong bg-surface pl-11 pr-4 font-sans text-lg text-ink;
+    transition: border-color var(--dur-tap) linear;
   }
 
   .field::placeholder {
@@ -94,13 +141,32 @@
     opacity: 1;
   }
 
-  .field:hover {
-    @apply border-ink-muted;
+  .field:focus {
+    @apply border-accent;
   }
 
-  .field:focus-visible {
-    @apply border-focus;
-    outline-offset: 2px;
+  .field:disabled {
+    @apply cursor-not-allowed bg-surface-muted opacity-70;
+  }
+
+  .segmented {
+    @apply inline-flex rounded-full bg-surface-muted p-1;
+  }
+
+  .segmented > button {
+    @apply min-h-9 rounded-full px-3 text-sm font-semibold text-ink-muted;
+    transition:
+      background-color var(--dur-tap) linear,
+      color var(--dur-tap) linear;
+  }
+
+  .segmented > button:hover {
+    @apply text-ink;
+  }
+
+  .segmented > button[aria-pressed='true'] {
+    @apply bg-surface text-ink;
+    box-shadow: inset 0 0 0 1px rgb(var(--c-border-strong));
   }
 }
 
@@ -114,61 +180,29 @@
   }
 }
 
+/* Fallback for browsers without view transitions: a short colour cross-fade. */
+.theme-changing *,
+.theme-changing *::before,
+.theme-changing *::after {
+  transition:
+    background-color var(--dur-fast),
+    color var(--dur-fast),
+    border-color var(--dur-fast);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0ms !important;
+    animation-delay: 0ms !important;
     transition-duration: 0ms !important;
     scroll-behavior: auto !important;
   }
-}
 
-body,
-header,
-input,
-.selection-tray {
-  transition:
-    background-color 200ms,
-    color 200ms,
-    border-color 200ms;
-}
-
-.btn:active:not(:disabled) {
-  transform: scale(0.98);
-  transition: transform 100ms;
-}
-
-.selection-tray {
-  max-height: 40vh;
-  overflow-y: auto;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .btn:active:not(:disabled) {
-    transform: none;
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
-}
-
-@media (max-width: 1023px) {
-  #main {
-    padding-bottom: calc(40vh + 2rem);
-  }
-
-  .selection-tray {
-    position: fixed;
-    inset-inline: 0;
-    bottom: 0;
-    margin-top: 0;
-    border-radius: 20px 20px 0 0;
-  }
-}
-
-.theme-changing *,
-.theme-changing *::before,
-.theme-changing *::after {
-  transition:
-    background-color 200ms,
-    color 200ms,
-    border-color 200ms;
 }

@@ -10,20 +10,21 @@ export function PrecautionList({ precautions }: { precautions: string[] }) {
   const headingId = useId();
   const items = precautions.map(sentenceCase).filter(Boolean);
   return (
-    <section aria-labelledby={headingId}>
-      <h3 id={headingId} className="text-base font-medium">
+    <section aria-labelledby={headingId} className="flex flex-col gap-3">
+      <h3 id={headingId} className="type-heading">
         Önlemler
       </h3>
       {items.length === 0 ? (
-        <p className="mt-2 text-sm text-ink-muted">Bu sonuç için kayıtlı önlem yok.</p>
+        <p className="text-sm text-ink-muted">Bu sonuç için kayıtlı önlem yok.</p>
       ) : (
-        <ul className="mt-2 max-w-prose">
+        <ul className="flex flex-col gap-2.5">
           {items.map((item) => (
-            <li
-              key={item}
-              className="flex gap-3 border-b border-line py-2 before:mt-[0.6875rem] before:h-px before:w-3 before:shrink-0 before:bg-ink-muted before:content-[''] last:border-b-0"
-            >
-              {item}
+            <li key={item} className="flex gap-3 text-base">
+              <span
+                aria-hidden="true"
+                className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+              />
+              <span>{item}</span>
             </li>
           ))}
         </ul>

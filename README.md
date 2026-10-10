@@ -1,76 +1,80 @@
+**English** | [Türkçe](README.tr.md)
+
 ## MediMind
 
-MediMind, seçilen belirtilerden hastalıkları makine öğrenmesi modeliyle sıralayan Türkçe bir ön değerlendirme aracıdır. Hastalık açıklamalarını ve veri setindeki önlemleri sunar; teşhis koymaz ve hekim değerlendirmesinin yerine geçmez. Eğitim ve bilgilendirme amacıyla geliştirilmiştir.
+MediMind is a Turkish preliminary assessment tool that ranks diseases using a machine learning model based on selected symptoms. It presents disease descriptions and precautions from the dataset; it does not diagnose or replace a physician's assessment. It was developed for educational and informational purposes.
 
-## Ekran görüntüleri
+## Screenshots
 
-| Genel görünüm | Görsel |
+| View | Image |
 |---|---|
-| Açık tema: belirti seçimi | ![Açık tema belirti seçimi](screenshots/light-home.jpg) |
-| Açık tema: sonuç | ![Açık tema sonuç](screenshots/light-result.jpg) |
-| Karanlık tema: belirti seçimi | ![Karanlık tema belirti seçimi](screenshots/dark-home.jpg) |
-| Karanlık tema: sonuç | ![Karanlık tema sonuç](screenshots/dark-result.jpg) |
+| Light theme: start | ![Light theme: start](screenshots/light-home.jpg) |
+| Light theme: selection | ![Light theme: selection](screenshots/light-selection.jpg) |
+| Light theme: result | ![Light theme: result](screenshots/light-result.jpg) |
+| Dark theme: start | ![Dark theme: start](screenshots/dark-home.jpg) |
+| Dark theme: selection | ![Dark theme: selection](screenshots/dark-selection.jpg) |
+| Dark theme: result | ![Dark theme: result](screenshots/dark-result.jpg) |
 
-## Özellikler
+## Features
 
-Backend yeni API ve veri yapısını kullanır; frontend yeniden yazımı devam etmektedir. Arayüzün tasarım hedefleri:
+The backend uses the new API and data structure; the frontend rewrite is in progress. The interface design goals are:
 
-- Olasılık cetveli: en fazla beş hastalık, ortak 0–100 ekseninde tek renkli çubuklarla gösterilir; görüntülenen skorlar yeniden %100'e normalize edilmez.
-- Vücut figürü ile bölge filtresi: Baş-boyun, Göğüs, Karın, Sırt, Kollar ve Bacaklar; Cilt ve Genel ayrı filtrelerdir. Bölge seçimi listeyi filtreler, otomatik belirti seçmez. Eşlemelerin kaynağı `backend/data/body_regions.json` dosyasıdır.
-- Skor politikası: `Model skoru %42` biçimi kullanılır; %1 altı `<%1` olarak gösterilir. Eşik rozeti veya renkli güven kodu kullanılmaz; API'deki `confidence_label` arayüzde gösterilmez. Sabit açıklama: “Bu değer, hastalığa sahip olma olasılığınız olarak yorumlanmamalıdır.”
-- Yazdırılabilir rapor: tarayıcının yazdırma/PDF olarak kaydetme işlevi, `@media print`, A4 ve 15 mm kenar boşluğu kullanılır. Tarih, işlem kimlikleri, belirtiler, cetvel, açıklama, önlemler ve uyarı raporda yer alır.
-- Anonim geçmiş: tarayıcıda saklanan UUID, `X-Client-Id` ile sunucuya gönderilir; değerlendirmeler SQLite'ta bu kimliğe göre listelenir ve silinir. Bu kimlik bir hesap veya kimlik doğrulama mekanizması değildir.
-- Açık, karanlık ve sistem teması; Source Serif 4 başlıklar ve IBM Plex Sans gövde metni.
-- Erişilebilirlik: klavye ile kullanılabilen arama ve bölge filtreleri, görünür odak, sonuç başlığına odak aktarımı, ARIA durum bildirimleri ve azaltılmış hareket tercihi. İki temada WCAG AA kontrast hedeflenir.
-- Belirtiler değiştiğinde raporun güncel olmadığını belirten uyarı; belirti ağırlığı yalnızca “Teknik ayrıntılar” bölümünde açıklamalı düz metin olarak sunulur.
+- Probability scale: up to five diseases are shown with single-color bars on a shared 0–100 scale; displayed scores are not renormalized to 100%.
+- Body figure with region filter: Head and neck, Chest, Abdomen, Back, Arms, and Legs; Skin and General are separate filters. Selecting a region filters the list and does not select symptoms automatically. The mappings come from `backend/data/body_regions.json`.
+- Score policy: the format `Model skoru` (Model score) `%42` is used; values below 1% are shown as `<%1`. No threshold badge or color-coded confidence system is used; the API's `confidence_label` is not shown in the interface. Fixed explanation: “This value should not be interpreted as your probability of having the disease.”
+- Printable report: the browser's print/save as PDF function uses `@media print`, A4, and 15 mm margins. The report includes the date, request IDs, symptoms, scale, explanation, precautions, and warning.
+- Anonymous history: a UUID stored in the browser is sent to the server via `X-Client-Id`; assessments are listed and deleted in SQLite by this ID. This ID is not an account or an authentication mechanism.
+- Light, dark, and system themes; a low-chroma slate and mist palette (slate-blue accent on a cool mist ground), Source Serif 4 for headings and the condition name, Source Sans 3 for interface and body text. A single focus window frames the chosen body region and moves to frame the result heading.
+- Accessibility: keyboard-operable search and region filters, visible focus, focus transfer to the result heading, ARIA status announcements, and reduced motion preference. WCAG AA contrast is targeted in both themes.
+- A warning that the report is out of date when symptoms change; symptom severity is presented only as plain text with an explanation in the “Teknik ayrıntılar” (Technical details) section.
 
-## Mimari
+## Architecture
 
-Backend FastAPI, Pydantic v2 ve SQLAlchemy 2.0 kullanır. Uygulama açılışında model artifact'i ve veri kayıtları (registry) yüklenir; özellik kümesi ve hash tutarlılığı doğrulanır. Tahmin mantığı HTTP katmanından bağımsızdır; geçmiş SQLite'ta tutulur. Frontend Vite, React 18, TypeScript, Tailwind CSS, TanStack Query ve Zod üzerine kuruludur.
+The backend uses FastAPI, Pydantic v2, and SQLAlchemy 2.0. On application startup, the model artifact and data registry are loaded; feature set and hash consistency are validated. Prediction logic is independent of the HTTP layer; history is stored in SQLite. The frontend is built with Vite, React 18, TypeScript, Tailwind CSS, TanStack Query, and Zod.
 
-Docker dağıtımında nginx statik frontend dosyalarını sunar ve `/api/` isteklerini backend'e yönlendirir. Yerel geliştirmede aynı yönlendirmeyi Vite yapar.
+In Docker deployment, nginx serves the static frontend files and routes `/api/` requests to the backend. In local development, Vite provides the same routing.
 
 ```mermaid
 flowchart LR
-    browser["Tarayıcı"] --> nginx["nginx: statik frontend ve /api proxy"]
+    browser["Browser"] --> nginx["nginx: static frontend and /api proxy"]
     nginx --> api["FastAPI /api/v1"]
     api --> model["Model / registry"]
     api --> db[(SQLite)]
 ```
 
-Aşağıdaki ağaç backend paketlerini ve frontend için hedeflenen modüler yapıyı özetler:
+The tree below summarizes the backend packages and the planned modular structure for the frontend:
 
 ```text
 .
 ├── backend/
 │   ├── app/
-│   │   ├── main.py               # create_app ve lifespan
+│   │   ├── main.py               # create_app and lifespan
 │   │   ├── core/                 # config, logging, middleware, errors, paths
-│   │   ├── schemas/              # istek ve yanıt şemaları
+│   │   ├── schemas/              # request and response schemas
 │   │   ├── ml/                   # preprocessing, artifact, registry, predictor,
 │   │   │                         # evaluate, train, compare_artifacts
-│   │   ├── services/             # belirti, hastalık, tahmin ve geçmiş servisleri
-│   │   ├── db/                   # modeller ve oturum yönetimi
+│   │   ├── services/             # symptom, disease, prediction, and history services
+│   │   ├── db/                   # models and session management
 │   │   └── api/v1/               # health, symptoms, predict, diseases, history
 │   ├── data/                     # CSV/JSON, symptoms.json, body_regions.json
 │   ├── models/                   # disease_model.joblib, model_card.json
-│   ├── scripts/                  # tek seferlik veri araçları
+│   ├── scripts/                  # one-off data tools
 │   ├── tests/                    # unit, api, ml, fixtures
 │   ├── pyproject.toml
 │   └── uv.lock
 ├── frontend/
 │   ├── src/
 │   │   ├── main.tsx, App.tsx
-│   │   ├── app/                  # kabuk, başlık, tema anahtarı
+│   │   ├── app/                  # shell, heading, theme toggle
 │   │   ├── styles/               # tokens.css, base.css, print.css
-│   │   ├── lib/api/              # istemci, Zod şemaları, sorgular
-│   │   ├── lib/                  # clientId, tema, biçimleme
+│   │   ├── lib/api/              # client, Zod schemas, queries
+│   │   ├── lib/                  # clientId, theme, formatting
 │   │   ├── features/
-│   │   │   ├── symptoms/body-map/ # belirti seçimi ve vücut figürü
-│   │   │   ├── assessment/       # rapor, cetvel, yazdırma, güncellik uyarısı
-│   │   │   └── history/          # geçmiş çekmecesi
-│   │   ├── components/ui/        # ortak arayüz bileşenleri
-│   │   └── test/                 # kurulum, MSW, fixtures
+│   │   │   ├── symptoms/body-map/ # symptom selection and body figure
+│   │   │   ├── assessment/       # report, scale, printing, freshness warning
+│   │   │   └── history/          # history drawer
+│   │   ├── components/ui/        # shared interface components
+│   │   └── test/                 # setup, MSW, fixtures
 │   ├── package.json
 │   └── nginx.conf
 ├── screenshots/
@@ -81,22 +85,22 @@ Aşağıdaki ağaç backend paketlerini ve frontend için hedeflenen modüler ya
 
 ## API (v1)
 
-Temel yol `/api/v1`; yerel OpenAPI arayüzü `http://localhost:8000/docs` adresindedir. `X-Request-ID` tüm isteklerde isteğe bağlıdır; geçerli gelen kimlik yanıt başlığında yankılanır, yoksa sunucu bir kimlik oluşturur. `X-Client-Id` UUID biçimindedir. Docker üzerinden erişimde nginx, backend'e kendi `$request_id` değerini iletir; istemcinin gönderdiği istek kimliği bu katmanda değiştirilir.
+The base path is `/api/v1`; the local OpenAPI interface is at `http://localhost:8000/docs`. `X-Request-ID` is optional on all requests; a valid incoming ID is echoed in the response header, or the server creates one if none is provided. `X-Client-Id` must be in UUID format. When accessed through Docker, nginx passes its own `$request_id` value to the backend; the client's request ID is replaced at this layer.
 
-| Method | Yol | Açıklama | `X-Client-Id` | `X-Request-ID` |
+| Method | Path | Description | `X-Client-Id` | `X-Request-ID` |
 |---|---|---|---|---|
-| GET | `/api/v1/health` | Model ve veritabanı durumu; bozulmuş durumda 503 | Gerekmez | İsteğe bağlı; yanıtta döner |
-| GET | `/api/v1/symptoms` | Türkçe etiket, bölge, ağırlık ve bölge listesi; `Cache-Control: max-age=3600` | Gerekmez | İsteğe bağlı; yanıtta döner |
-| POST | `/api/v1/predict` | Belirtileri değerlendirir; kimlik varsa geçmişe kaydeder | İsteğe bağlı | İsteğe bağlı; yanıtta döner |
-| GET | `/api/v1/diseases` | Hastalık listesi | Gerekmez | İsteğe bağlı; yanıtta döner |
-| GET | `/api/v1/diseases/{id}` | Hastalık açıklaması ve önlemler; bulunamazsa 404 | Gerekmez | İsteğe bağlı; yanıtta döner |
-| GET | `/api/v1/history?limit=50&offset=0` | Kimliğe ait geçmiş; `limit` 1–500, `offset` en az 0 | Zorunlu | İsteğe bağlı; yanıtta döner |
-| DELETE | `/api/v1/history` | Kimliğe ait tüm geçmişi siler; 204 | Zorunlu | İsteğe bağlı; yanıtta döner |
-| DELETE | `/api/v1/history/{id}` | Kimliğe ait tek kaydı siler; 204, bulunamazsa 404 | Zorunlu | İsteğe bağlı; yanıtta döner |
+| GET | `/api/v1/health` | Model and database status; 503 when unhealthy | Not required | Optional; returned in response |
+| GET | `/api/v1/symptoms` | Turkish label, region, weight, and region list; `Cache-Control: max-age=3600` | Not required | Optional; returned in response |
+| POST | `/api/v1/predict` | Evaluates symptoms; saves to history if an ID is present | Optional | Optional; returned in response |
+| GET | `/api/v1/diseases` | Disease list | Not required | Optional; returned in response |
+| GET | `/api/v1/diseases/{id}` | Disease description and precautions; 404 if not found | Not required | Optional; returned in response |
+| GET | `/api/v1/history?limit=50&offset=0` | History for the ID; `limit` 1–500, `offset` at least 0 | Required | Optional; returned in response |
+| DELETE | `/api/v1/history` | Deletes all history for the ID; 204 | Required | Optional; returned in response |
+| DELETE | `/api/v1/history/{id}` | Deletes one record for the ID; 204, 404 if not found | Required | Optional; returned in response |
 
-`predict` en az bir belirti kabul eder; normalizasyon ve tekilleştirmeden sonra varsayılan sınır 17 belirtidir. Bilinmeyen belirti 422, geçersiz veya zorunlu olduğu halde eksik istemci kimliği 400 döndürür. `X-Client-Id` gönderilmezse tahmin kaydedilmez ve `analysis_id` değeri `null` olur. Eski `/symptoms` ve `/predict` rotaları geçiş uyumluluğu için kullanım dışına çıkarılmak üzere işaretlenmiştir; yeni istemciler v1 kullanmalıdır.
+`predict` accepts at least one symptom; the default limit is 17 symptoms after normalization and deduplication. An unknown symptom returns 422; an invalid or required-but-missing client ID returns 400. If `X-Client-Id` is not sent, the prediction is not saved and `analysis_id` is `null`. The legacy `/symptoms` and `/predict` routes are marked for deprecation for backward compatibility; new clients should use v1.
 
-Hatalar `Content-Type: application/problem+json` ile döner. Bilinmeyen belirti örneği:
+Errors are returned with `Content-Type: application/problem+json`. Example of an unknown symptom:
 
 ```json
 {
@@ -110,7 +114,7 @@ Hatalar `Content-Type: application/problem+json` ile döner. Bilinmeyen belirti 
 }
 ```
 
-Bash veya Git Bash üzerinden örnek istek:
+Example request from Bash or Git Bash:
 
 ```bash
 curl -sS -X POST http://localhost:8000/api/v1/predict \
@@ -120,7 +124,7 @@ curl -sS -X POST http://localhost:8000/api/v1/predict \
   -d '{"symptoms":["itching","skin_rash","nodal_skin_eruptions","dischromic_patches"]}'
 ```
 
-Yanıt şemasını gösteren temsili örnek; skor, kayıt kimliği ve zaman gerçek çalıştırmada değişebilir:
+Representative example showing the response schema; the score, record ID, and time may vary in an actual run:
 
 ```json
 {
@@ -149,51 +153,51 @@ Yanıt şemasını gösteren temsili örnek; skor, kayıt kimliği ve zaman ger�
 }
 ```
 
-`predictions`, varsayılan olarak en fazla beş sonuç ve en az `0.01` skor içerir. `probability` alanı model çıktısıdır; kişinin hastalığa sahip olma olasılığı olarak yorumlanmamalıdır.
+`predictions` contains up to five results by default and includes scores of at least `0.01`. The `probability` field is a model output; it should not be interpreted as a person's probability of having the disease.
 
-## Model ve veri
+## Model and data
 
-Kaynak: [Disease Symptom Prediction](https://www.kaggle.com/datasets/itachi9604/disease-symptom-description-dataset). Veri setinde 4.920 satır, 131 belirti, 41 hastalık ve yalnızca 304 farklı belirti kümesi vardır. Rastgele satır bazlı eğitim/test ayrımı tekrarları iki tarafa dağıtarak veri sızıntısına yol açar.
+Source: [Disease Symptom Prediction](https://www.kaggle.com/datasets/itachi9604/disease-symptom-description-dataset). The dataset contains 4,920 rows, 131 symptoms, 41 diseases, and only 304 distinct symptom combinations. A random row-based train/test split causes data leakage by distributing duplicates across both sets.
 
-Belirti adları kanonik `snake_case` biçimine çevrilir; boşluklar ve tekrarlanan alt çizgiler düzeltilir, bilinen yazım hataları alias eşlemeleriyle birleştirilir. Eski boşluklu adlar da kabul edilir. Belirti kümeleri ikili özellik vektörlerine dönüştürülür; Türkçe etiketler, bölge eşlemeleri, açıklamalar, önlemler ve belirti ağırlıkları registry üzerinden sağlanır.
+Symptom names are converted to canonical `snake_case`; spaces and repeated underscores are corrected, and known typos are consolidated through alias mappings. Legacy names with spaces are also accepted. Symptom combinations are converted into binary feature vectors; Turkish labels, region mappings, descriptions, precautions, and symptom weights are provided through the registry.
 
-Dağıtılan model `lbfgs` çözücülü multinomial lojistik regresyondur. [Model kartına](backend/models/model_card.json) göre `[0.3, 1.0, 3.0, 10.0]` aralığında grup-CV log-loss ile seçilen **C=10.0**, seed 42'dir. Model sürümü `20261010-lr-59a12e81`; artifact `backend/models/disease_model.joblib` içindedir. Random forest yalnızca karşılaştırma modelidir.
+The distributed model is multinomial logistic regression with the `lbfgs` solver. According to the [model card](backend/models/model_card.json), **C=10.0**, selected by group-CV log-loss from the range `[0.3, 1.0, 3.0, 10.0]`, uses seed 42. The model version is `20261010-lr-59a12e81`; the artifact is at `backend/models/disease_model.joblib`. Random forest is only a comparison model.
 
-Değerlendirme üç görünüm kullanır: belirti kümesi hash'iyle gruplanmış beş katlı `StratifiedGroupKFold`, 304 satırlık tekilleştirilmiş tabloda `LeaveOneGroupOut` (LOGO) ve test kombinasyonlarından rastgele bir belirti çıkarılan perturbasyon testi. Perturbasyon üç tekrar, toplam 912 değerlendirme içerir.
+Evaluation uses three views: five-fold `StratifiedGroupKFold` grouped by symptom-combination hash, `LeaveOneGroupOut` (LOGO) on the 304-row deduplicated table, and a perturbation test that randomly removes one symptom from test combinations. Perturbation includes three repetitions, for a total of 912 evaluations.
 
-| Ölçüm | Model kartındaki değer |
+| Metric | Value in model card |
 |---|---|
-| Grup-CV accuracy (ortalama ± std) | 1.0 ± 0.0 |
-| Grup-CV macro-F1 (ortalama ± std) | 1.0 ± 0.0 |
-| Grup-CV top-3 (ortalama ± std) | 1.0 ± 0.0 |
-| Grup-CV log-loss (ortalama ± std) | 0.0042 ± 0.0009 |
-| Grup-CV çok sınıflı Brier (ortalama ± std) | 0.0001 ± 0.0001 |
+| Group-CV accuracy (mean ± std) | 1.0 ± 0.0 |
+| Group-CV macro-F1 (mean ± std) | 1.0 ± 0.0 |
+| Group-CV top-3 (mean ± std) | 1.0 ± 0.0 |
+| Group-CV log-loss (mean ± std) | 0.0042 ± 0.0009 |
+| Group-CV multiclass Brier (mean ± std) | 0.0001 ± 0.0001 |
 | Dedup LOGO accuracy / macro-F1 / top-3 | 1.0 / 1.0 / 1.0 |
-| Perturbasyon top-1 / top-3 | 0.9967 / 1.0 |
+| Perturbation top-1 / top-3 | 0.9967 / 1.0 |
 
-| Karşılaştırma | Lojistik regresyon | Random forest |
+| Comparison | Logistic regression | Random forest |
 |---|---|---|
-| Grup-CV macro-F1 | 1.0 | 0.9974 |
-| Grup-CV top-3 | 1.0 | 1.0 |
-| Grup-CV log-loss | 0.0042 | 0.1395 |
-| Grup-CV Brier | 0.0001 | 0.0515 |
+| Group-CV macro-F1 | 1.0 | 0.9974 |
+| Group-CV top-3 | 1.0 | 1.0 |
+| Group-CV log-loss | 0.0042 | 0.1395 |
+| Group-CV Brier | 0.0001 | 0.0515 |
 | Dedup LOGO macro-F1 | 1.0 | 1.0 |
-| Perturbasyon top-3 | 1.0 | 1.0 |
+| Perturbation top-3 | 1.0 | 1.0 |
 
-**Dürüst not:** Veri seti sentetik ve neredeyse ayrılabilirdir; grup bazlı çapraz doğrulama bile 1.0 sonucuna ulaşır. Bu metrikler değerlendirme yöntemini belgeler, modeller arasında ayırt edici değildir ve gerçek dünyadaki doğruluğu göstermez. Skorlar klinik hastalık olasılığı olarak kalibre edilmiş değildir. Şiddet skoru veri setindeki belirti ağırlıklarından hesaplanır; klinik ciddiyet veya aciliyet göstergesi değildir ve triyaj amacıyla kullanılamaz.
+**Honest note:** The dataset is synthetic and near-separable; even group-based cross-validation reaches 1.0. These metrics document the evaluation method, do not distinguish between models, and do not show real-world accuracy. The scores are not calibrated as clinical disease probabilities. The severity score is calculated from symptom weights in the dataset; it is not an indicator of clinical seriousness or urgency and cannot be used for triage.
 
-## Kurulum ve çalıştırma
+## Setup and run
 
-Gereksinimler: `uv`, Python 3.12 (`>=3.12,<3.13`; eksikse uv kurabilir), Node.js 22 ve npm. Make hedefleri için GNU Make ve uygun bir kabuk; `make setup` için PATH üzerinde `pre-commit` gerekir. Docker Compose isteğe bağlıdır.
+Requirements: `uv`, Python 3.12 (`>=3.12,<3.13`; uv can install it if missing), Node.js 22, and npm. GNU Make and a compatible shell are needed for Make targets; `pre-commit` must be on PATH for `make setup`. Docker Compose is optional.
 
-Pre-commit aracını kurup kök dizinde bağımlılıkları hazırlayın:
+Install the pre-commit tool and set up dependencies from the root directory:
 
 ```bash
 uv tool install pre-commit
 make setup
 ```
 
-İki ayrı terminalde çalıştırın:
+Run in two separate terminals:
 
 ```bash
 make dev-backend
@@ -203,9 +207,9 @@ make dev-backend
 make dev-frontend
 ```
 
-Frontend `http://localhost:5173`, backend `http://localhost:8000`, API belgeleri `http://localhost:8000/docs` adresindedir. Hazır model artifact'i kullanılır; ilk çalıştırma için eğitim gerekmez.
+The frontend is at `http://localhost:5173`, the backend at `http://localhost:8000`, and the API documentation at `http://localhost:8000/docs`. The ready-made model artifact is used; training is not required for the first run.
 
-Windows'ta `make` yoksa Makefile içindeki komutları doğrudan çalıştırın. Kök dizinden PowerShell ile bağımlılık kurulumu:
+If Make is unavailable on Windows, run the commands from the Makefile directly. Install dependencies from the root directory using PowerShell:
 
 ```powershell
 uv tool install pre-commit
@@ -217,54 +221,54 @@ Set-Location ..
 pre-commit install
 ```
 
-Kök dizinden açılan birinci terminal:
+First terminal opened from the root directory:
 
 ```powershell
 Set-Location backend
 uv run uvicorn app.main:app --reload --port 8000
 ```
 
-İkinci terminal:
+Second terminal:
 
 ```powershell
 Set-Location frontend
 npm run dev
 ```
 
-Docker ile kök dizinde:
+With Docker, from the root directory:
 
 ```bash
 cp .env.example .env
 docker compose up --build
 ```
 
-PowerShell'de kopyalama komutunun karşılığı `Copy-Item .env.example .env` olur. Uygulamayı `http://localhost:8080` üzerinden açın. Backend dışarıya port yayımlamaz; nginx üzerinden erişilir. SQLite verisi `medimind-db` adlı kalıcı volume içinde tutulur.
+The equivalent copy command in PowerShell is `Copy-Item .env.example .env`. Open the app at `http://localhost:8080`. The backend does not publish a port externally; it is accessed through nginx. SQLite data is stored in the persistent volume named `medimind-db`.
 
-Yerel backend ayarları için `backend/.env.example` dosyasını `backend/.env` olarak kopyalayabilirsiniz. Kökteki `.env.example` Docker içindir; buradaki `/app/data/db` veritabanı yolu yerel çalıştırma için uygun değildir. Frontend ayarları `frontend/.env` üzerinden okunur. `VITE_API_BASE_URL` boşsa `/api/v1` aynı origin üzerinden Vite/nginx proxy'sine gider; doluysa yalnızca origin yazılır (örneğin `http://localhost:8000`), `/api/v1` istemci tarafından eklenir.
+For local backend settings, you can copy `backend/.env.example` to `backend/.env`. The root `.env.example` is for Docker; its `/app/data/db` database path is not suitable for local runs. Frontend settings are read from `frontend/.env`. If `VITE_API_BASE_URL` is empty, `/api/v1` goes through the Vite/nginx proxy on the same origin; if set, provide only the origin (for example, `http://localhost:8000`), and `/api/v1` is appended on the client side.
 
-| Değişken | Yerel varsayılan | Açıklama / Docker örneği |
+| Variable | Local default | Description / Docker example |
 |---|---|---|
 | `MEDIMIND_APP_ENV` | `development` | `development`, `test`, `production`; Docker: `production` |
-| `MEDIMIND_APP_VERSION` | `0.2.0` | Sağlık yanıtındaki uygulama sürümü |
-| `MEDIMIND_LOG_LEVEL` | `INFO` | Log seviyesi |
-| `MEDIMIND_LOG_FORMAT` | `text` | `text` veya `json`; Docker: `json` |
-| `MEDIMIND_DATABASE_URL` | `sqlite:///./data/medimind.db` | Göreli SQLite yolu backend'e göre çözülür; Docker: `sqlite:////app/data/db/medimind.db` |
-| `MEDIMIND_CORS_ORIGINS` | `["http://localhost:5173","http://127.0.0.1:5173"]` | JSON listesi; Docker: `["http://localhost:8080"]` |
-| `MEDIMIND_DATA_DIR` | `backend/data` | Veri kayıtlarının dizini |
-| `MEDIMIND_MODEL_DIR` | `backend/models` | Artifact ve model kartının dizini |
-| `MEDIMIND_MAX_SYMPTOMS` | `17` | Tekilleştirilmiş belirti sınırı (1–131) |
-| `MEDIMIND_TOP_K` | `5` | En fazla sonuç sayısı (1–41) |
-| `MEDIMIND_MIN_PROB` | `0.01` | Listeye alınan sonuçlar için en düşük model skoru |
-| `MEDIMIND_HISTORY_LIMIT` | `50` | Varsayılan geçmiş sayfa boyutu (1–500) |
-| `MEDIMIND_SEVERITY_LOW_BELOW` | `3.0` | Ortalama veri seti ağırlığında düşük seviye sınırı |
-| `MEDIMIND_SEVERITY_MODERATE_BELOW` | `5.0` | Ortalama veri seti ağırlığında orta seviye sınırı |
-| `MEDIMIND_CONFIDENCE_HIGH_AT` | `0.6` | API güven etiketi eşiği; arayüzde gösterilmez |
-| `MEDIMIND_CONFIDENCE_MEDIUM_AT` | `0.3` | API güven etiketi eşiği; arayüzde gösterilmez |
-| `VITE_API_BASE_URL` | Boş | API origin'i; derleme sırasında frontend'e alınır |
+| `MEDIMIND_APP_VERSION` | `0.2.0` | Application version in the health response |
+| `MEDIMIND_LOG_LEVEL` | `INFO` | Log level |
+| `MEDIMIND_LOG_FORMAT` | `text` | `text` or `json`; Docker: `json` |
+| `MEDIMIND_DATABASE_URL` | `sqlite:///./data/medimind.db` | Relative SQLite path is resolved from the backend; Docker: `sqlite:////app/data/db/medimind.db` |
+| `MEDIMIND_CORS_ORIGINS` | `["http://localhost:5173","http://127.0.0.1:5173"]` | JSON list; Docker: `["http://localhost:8080"]` |
+| `MEDIMIND_DATA_DIR` | `backend/data` | Data registry directory |
+| `MEDIMIND_MODEL_DIR` | `backend/models` | Artifact and model card directory |
+| `MEDIMIND_MAX_SYMPTOMS` | `17` | Deduplicated symptom limit (1–131) |
+| `MEDIMIND_TOP_K` | `5` | Maximum number of results (1–41) |
+| `MEDIMIND_MIN_PROB` | `0.01` | Minimum model score for results to be included in the list |
+| `MEDIMIND_HISTORY_LIMIT` | `50` | Default history page size (1–500) |
+| `MEDIMIND_SEVERITY_LOW_BELOW` | `3.0` | Low-level threshold for average dataset weight |
+| `MEDIMIND_SEVERITY_MODERATE_BELOW` | `5.0` | Moderate-level threshold for average dataset weight |
+| `MEDIMIND_CONFIDENCE_HIGH_AT` | `0.6` | API confidence label threshold; not shown in the interface |
+| `MEDIMIND_CONFIDENCE_MEDIUM_AT` | `0.3` | API confidence label threshold; not shown in the interface |
+| `VITE_API_BASE_URL` | Empty | API origin; embedded in the frontend at build time |
 
-## Geliştirme
+## Development
 
-Kök dizinden ortak hedefler:
+Common targets from the root directory:
 
 ```bash
 make test
@@ -273,9 +277,9 @@ make typecheck
 make format
 ```
 
-`make test`, backend testlerini kapsam raporuyla ve frontend testlerini tek seferde çalıştırır. `make lint`, Ruff lint/format kontrolü, mypy, ESLint ve Prettier kontrolünü kapsar; `make typecheck` ayrıca frontend TypeScript kontrolünü çalıştırır. `make format` dosyaları biçimlendirir ve Ruff düzeltmelerini uygular.
+`make test` runs backend tests with a coverage report and frontend tests in one go. `make lint` covers Ruff lint/format checks, mypy, ESLint, and Prettier checks; `make typecheck` also runs the frontend TypeScript check. `make format` formats files and applies Ruff fixes.
 
-Make olmadan backend dizininde:
+Without Make, from the backend directory:
 
 ```bash
 uv run pytest
@@ -285,7 +289,7 @@ uv run ruff format --check .
 uv run mypy app
 ```
 
-Frontend dizininde:
+From the frontend directory:
 
 ```bash
 npm test -- --run
@@ -295,9 +299,9 @@ npm run typecheck
 npm run build
 ```
 
-Backend testleri normalizasyon, registry kapsamı, artifact doğrulaması, tahmin mantığı, API hata biçimi ve geçmiş izolasyonunu kapsar. Kapsam kontrolünün alt sınırı %85'tir. Frontend test hedefleri belirti seçimi, filtreleme, rapor/güncellik akışı, API hataları ve yazdırma görünümüdür; bu arayüzün uygulaması devam etmektedir.
+Backend tests cover normalization, registry coverage, artifact validation, prediction logic, API error format, and history isolation. The minimum coverage threshold is 85%. Frontend test targets are symptom selection, filtering, report/freshness flow, API errors, and print view; implementation of this interface is in progress.
 
-Pre-commit kurulumu `make setup` içinde yer alır; ayrı kurulum ve kontrol için kök dizinde:
+Pre-commit setup is included in `make setup`; to install and run checks separately, from the root directory:
 
 ```bash
 uv tool install pre-commit
@@ -305,31 +309,32 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-Hook'lar satır sonu boşluklarını, dosya sonunu, YAML'ı, birleştirme işaretlerini ve 2.048 KB üzerindeki yeni dosyaları kontrol eder; backend'de Ruff düzeltme/format, frontend'de lint ve format kontrolü çalıştırır.
+Hooks check trailing whitespace, end-of-file, YAML, merge markers, and new files over 2,048 KB; they run Ruff fixes/formatting in the backend and lint and format checks in the frontend.
 
-CI, `main` push'ları ve pull request'lerde backend için Python 3.12, `uv sync --frozen --all-groups`, Ruff, mypy ve kapsamlı pytest; frontend için Node 22, `npm ci`, lint, format kontrolü, typecheck, test ve build çalıştırır. `train-check` modeli yeniden eğitip artifact karşılaştırması yapar. `main` üzerinde backend ve frontend işleri başarılı olduktan sonra Docker imajları derlenir.
+CI runs Python 3.12, `uv sync --frozen --all-groups`, Ruff, mypy, and pytest with coverage for the backend; and Node 22, `npm ci`, lint, format check, typecheck, tests, and build for the frontend on `main` pushes and pull requests. `train-check` retrains the model and compares artifacts. On `main`, Docker images are built after the backend and frontend jobs succeed.
 
-Yeniden eğitim için backend dizininde:
+To retrain, from the backend directory:
 
 ```bash
 uv run medimind-train --out models
 ```
 
-Bu komut model artifact'ini, model kartını ve `data/symptoms.json` dosyasını yeniler. Mevcut artifact'i koruyarak sürüklenme kontrolü yapmak için ayrı çıktı dizini kullanın:
+This command refreshes the model artifact, model card, and `data/symptoms.json`. To check for drift while preserving the current artifact, use a separate output directory:
 
 ```bash
 uv run medimind-train --out models/retrain
 uv run python -m app.ml.compare_artifacts models/disease_model.joblib models/retrain/disease_model.joblib
 ```
 
-`compare_artifacts`, özellik hash'inin ve sıralı sınıf listesinin eşitliğini kontrol eder; yan model kartlarındaki grup-CV macro-F1 ortalamalarının mutlak farkı varsayılan `0.02` toleransını aşarsa başarısız olur. Bu kontrol klinik geçerlilik veya kalibrasyon doğrulaması değildir. CI aynı işlemi `/tmp/retrain` çıktı diziniyle yapar.
+`compare_artifacts` checks that the feature hash and ordered class list match; it fails if the absolute difference between the group-CV macro-F1 means in the model cards exceeds the default `0.02` tolerance. This check is not clinical validity or calibration validation. CI performs the same operation with the `/tmp/retrain` output directory.
 
-## Yasal uyarı
+## Medical disclaimer
 
-Bu proje yalnızca eğitim ve bilgilendirme amaçlıdır. Sonuç bir teşhis değildir; sınırlı bir veri seti üzerinde eğitilmiş makine öğrenmesi modelinin çıktısıdır. Hastalık açıklamaları ve önlemler kişiye özel tıbbi tavsiye veya tedavi planı oluşturmaz. Sağlık sorunlarınız için uzman bir hekime başvurun; sonuçları kullanarak tedaviyi başlatmayın, değiştirmeyin veya ertelemeyin. **Acil durumda değerlendirme sonucunu beklemeden 112'yi arayın.**
+This project is for educational and informational purposes only. The result is not a diagnosis; it is the output of a machine learning model trained on a limited dataset. Disease descriptions and precautions do not constitute personalized medical advice or a treatment plan. Consult a qualified physician about your health concerns; do not start, change, or delay treatment based on the results. **In an emergency, call 112 in Turkey without waiting for the assessment result.**
 
-## Lisans
+## License
 
-[MIT Lisansı](LICENSE.txt).
+[MIT License](LICENSE.txt).
 
-Geliştirici: **Ayberk Arda**.
+Developer: **Ayberk Arda**.
+

@@ -17,4 +17,3 @@ export function useMediaQuery(query: string): boolean {
 
 /** Two-column desktop shell; everything narrower uses the single-column flow. */
 export const DESKTOP_QUERY = '(min-width: 1024px)';
-export const TABLET_QUERY = '(min-width: 768px)';

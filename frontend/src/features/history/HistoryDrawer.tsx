@@ -30,12 +30,15 @@ function HistoryEntry({
 }) {
   const labels = item.symptoms.map((id) => symptomLabel(catalog, id));
   return (
-    <li className="border-b border-line py-4 last:border-b-0">
+    <li className="border-b border-line py-5 last:border-b-0">
       <p className="text-sm text-ink-muted">
         <time dateTime={item.created_at}>{formatDateShort(item.created_at)}</time>
       </p>
-      <p className="mt-1 font-serif text-lg font-medium">{item.top_disease_name}</p>
-      <p className="text-sm tabular-nums">Model skoru {formatScore(item.probability)}</p>
+      <p className="type-heading mt-1">{item.top_disease_name}</p>
+      <p className="mt-1 text-sm">
+        <span className="text-ink-muted">Model skoru</span>{' '}
+        <span className="tabular font-semibold">{formatScore(item.probability)}</span>
+      </p>
       <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{labels.join(', ')}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" className="btn-secondary text-sm" onClick={onLoad}>

@@ -40,3 +40,26 @@ export const REGION_LABELS: Record<RegionId, string> = {
   arms: 'Kollar',
   legs: 'Bacaklar',
 };
+
+export interface FrameBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Focus window rectangles in the 320 × 640 figure space: each region's bounds plus a
+ * 10-unit margin, so the window sits just outside the highlighted shape.
+ */
+export const FRAME_BOXES: Record<RegionId, FrameBox> = {
+  head_neck: { x: 123, y: 8, width: 74, height: 112 },
+  chest: { x: 104, y: 100, width: 112, height: 141 },
+  abdomen: { x: 100, y: 213, width: 120, height: 140 },
+  back: { x: 100, y: 100, width: 120, height: 241 },
+  arms: { x: 64, y: 115, width: 192, height: 292 },
+  legs: { x: 100, y: 309, width: 120, height: 323 },
+};
+
+/** The whole figure: used before a region is chosen and for skin or general symptoms. */
+export const WHOLE_FIGURE_BOX: FrameBox = { x: 56, y: 4, width: 208, height: 632 };

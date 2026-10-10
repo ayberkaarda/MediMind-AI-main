@@ -1,8 +1,6 @@
 import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import * as m from 'motion/react-m';
-import { useReducedMotion } from 'motion/react';
 import { Icon } from './Icon';
 
 interface DisclosureProps {
@@ -27,7 +25,6 @@ export function Disclosure({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = controlledOpen ?? uncontrolledOpen;
   const contentId = useId();
-  const reduced = useReducedMotion();
 
   const toggle = () => {
     const next = !open;
@@ -43,7 +40,7 @@ export function Disclosure({
         aria-controls={contentId}
         onClick={toggle}
         className={clsx(
-          'flex min-h-row w-full items-center justify-between gap-3 text-left text-base font-medium text-ink',
+          'flex min-h-row w-full items-center justify-between gap-3 rounded text-left text-base font-semibold text-ink',
           buttonClassName,
         )}
       >
@@ -51,20 +48,14 @@ export function Disclosure({
         <Icon
           name="chevronDown"
           className={clsx(
-            'shrink-0 text-ink-muted transition-transform duration-disclosure',
+            'shrink-0 transition-transform duration-fast ease-out',
             open && 'rotate-180',
           )}
         />
       </button>
-      <m.div
-        id={contentId}
-        hidden={!open}
-        initial={false}
-        animate={{ opacity: open ? 1 : 0 }}
-        transition={{ duration: reduced ? 0.12 : 0.24 }}
-      >
+      <div id={contentId} hidden={!open}>
         {open ? children : null}
-      </m.div>
+      </div>
     </div>
   );
 }
