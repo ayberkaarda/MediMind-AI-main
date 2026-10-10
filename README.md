@@ -8,11 +8,10 @@ Bu görseller önceki arayüze aittir; yeni tasarım tamamlandığında aynı do
 
 | Genel görünüm | Görsel |
 |---|---|
-| Banner | ![Genel görünüm](screenshots/banner.png) |
-| Açık tema: belirti seçimi | ![Açık tema belirti seçimi](screenshots/light1.png) |
-| Açık tema: sonuç | ![Açık tema sonuç](screenshots/light2.png) |
-| Karanlık tema: belirti seçimi | ![Karanlık tema belirti seçimi](screenshots/dark1.png) |
-| Karanlık tema: sonuç | ![Karanlık tema sonuç](screenshots/dark2.png) |
+| Açık tema: belirti seçimi | ![Açık tema belirti seçimi](screenshots/light-home.jpg) |
+| Açık tema: sonuç | ![Açık tema sonuç](screenshots/light-result.jpg) |
+| Karanlık tema: belirti seçimi | ![Karanlık tema belirti seçimi](screenshots/dark-home.jpg) |
+| Karanlık tema: sonuç | ![Karanlık tema sonuç](screenshots/dark-result.jpg) |
 
 ## Özellikler
 
