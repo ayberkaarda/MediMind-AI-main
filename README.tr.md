@@ -6,12 +6,14 @@ MediMind, seçilen belirtilerden hastalıkları makine öğrenmesi modeliyle sı
 
 ## Ekran görüntüleri
 
-| Genel görünüm | Görsel |
+| Görünüm | Görsel |
 |---|---|
-| Açık tema: belirti seçimi | ![Açık tema belirti seçimi](screenshots/light-home.jpg) |
-| Açık tema: sonuç | ![Açık tema sonuç](screenshots/light-result.jpg) |
-| Karanlık tema: belirti seçimi | ![Karanlık tema belirti seçimi](screenshots/dark-home.jpg) |
-| Karanlık tema: sonuç | ![Karanlık tema sonuç](screenshots/dark-result.jpg) |
+| Açık tema: başlangıç | ![Açık tema: başlangıç](screenshots/light-home.jpg) |
+| Açık tema: belirti seçimi | ![Açık tema: belirti seçimi](screenshots/light-selection.jpg) |
+| Açık tema: sonuç | ![Açık tema: sonuç](screenshots/light-result.jpg) |
+| Koyu tema: başlangıç | ![Koyu tema: başlangıç](screenshots/dark-home.jpg) |
+| Koyu tema: belirti seçimi | ![Koyu tema: belirti seçimi](screenshots/dark-selection.jpg) |
+| Koyu tema: sonuç | ![Koyu tema: sonuç](screenshots/dark-result.jpg) |
 
 ## Özellikler
 

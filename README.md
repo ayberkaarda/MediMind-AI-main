@@ -6,12 +6,14 @@ MediMind is a Turkish preliminary assessment tool that ranks diseases using a ma
 
 ## Screenshots
 
-| Overview | Image |
+| View | Image |
 |---|---|
-| Light theme: symptom selection | ![Light theme symptom selection](screenshots/light-home.jpg) |
-| Light theme: result | ![Light theme result](screenshots/light-result.jpg) |
-| Dark theme: symptom selection | ![Dark theme symptom selection](screenshots/dark-home.jpg) |
-| Dark theme: result | ![Dark theme result](screenshots/dark-result.jpg) |
+| Light theme: start | ![Light theme: start](screenshots/light-home.jpg) |
+| Light theme: selection | ![Light theme: selection](screenshots/light-selection.jpg) |
+| Light theme: result | ![Light theme: result](screenshots/light-result.jpg) |
+| Dark theme: start | ![Dark theme: start](screenshots/dark-home.jpg) |
+| Dark theme: selection | ![Dark theme: selection](screenshots/dark-selection.jpg) |
+| Dark theme: result | ![Dark theme: result](screenshots/dark-result.jpg) |
 
 ## Features
 
