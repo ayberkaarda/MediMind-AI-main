@@ -19,7 +19,7 @@
   .body-figure,
   button,
   [role='dialog'],
-  .selection-tray {
+  .focus-frame {
     display: none !important;
   }
 
@@ -46,7 +46,7 @@
   .print-report {
     display: block;
     color: var(--color-print-ink);
-    font-family: system-ui, sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
     font-size: 10.5pt;
     line-height: 1.45;
     font-variant-numeric: tabular-nums;
@@ -54,7 +54,7 @@
 
   .print-report h1,
   .print-report h2 {
-    font-family: ui-serif, Georgia, serif;
+    font-family: 'Source Serif 4', Georgia, serif;
     font-weight: 600;
     margin: 0;
   }

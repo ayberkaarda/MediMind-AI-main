@@ -1,9 +1,7 @@
 import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
-import * as m from 'motion/react-m';
 import { Icon } from './Icon';
-import { shutter, useMotionLevel } from '../../lib/motion';
 
 interface DisclosureProps {
   summary: ReactNode;
@@ -27,7 +25,6 @@ export function Disclosure({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = controlledOpen ?? uncontrolledOpen;
   const contentId = useId();
-  const level = useMotionLevel();
 
   const toggle = () => {
     const next = !open;
@@ -43,7 +40,7 @@ export function Disclosure({
         aria-controls={contentId}
         onClick={toggle}
         className={clsx(
-          'type-section flex min-h-row w-full items-center justify-between gap-3 text-left text-ink',
+          'flex min-h-row w-full items-center justify-between gap-3 rounded text-left text-base font-semibold text-ink',
           buttonClassName,
         )}
       >
@@ -51,13 +48,13 @@ export function Disclosure({
         <Icon
           name="chevronDown"
           className={clsx(
-            'shrink-0 transition-transform duration-base ease-shutter',
+            'shrink-0 transition-transform duration-fast ease-out',
             open && 'rotate-180',
           )}
         />
       </button>
       <div id={contentId} hidden={!open}>
-        {open ? <m.div {...shutter(level, 'fromTop')}>{children}</m.div> : null}
+        {open ? children : null}
       </div>
     </div>
   );

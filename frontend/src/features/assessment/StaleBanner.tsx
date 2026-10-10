@@ -1,5 +1,4 @@
-import * as m from 'motion/react-m';
-import { shutter, useMotionLevel } from '../../lib/motion';
+import { Icon } from '../../components/ui/Icon';
 
 export const STALE_MESSAGE = 'Belirtiler değişti — sonuç güncel değil';
 
@@ -10,14 +9,15 @@ interface StaleBannerProps {
 }
 
 export function StaleBanner({ onReassess, pending, disabled = false }: StaleBannerProps) {
-  const level = useMotionLevel();
   return (
-    <m.div
-      {...shutter(level, 'fromTop')}
+    <div
       role="status"
-      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-2 border-ink bg-surface p-4"
+      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded border border-line-strong bg-surface-muted p-4"
     >
-      <p className="text-base font-semibold">{STALE_MESSAGE}</p>
+      <p className="flex items-center gap-2 text-base font-semibold">
+        <Icon name="refresh" className="shrink-0" />
+        {STALE_MESSAGE}
+      </p>
       <button
         type="button"
         className="btn-secondary"
@@ -26,6 +26,6 @@ export function StaleBanner({ onReassess, pending, disabled = false }: StaleBann
       >
         {pending ? 'Değerlendiriliyor…' : 'Yeniden değerlendir'}
       </button>
-    </m.div>
+    </div>
   );
 }

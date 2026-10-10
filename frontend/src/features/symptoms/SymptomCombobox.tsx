@@ -78,18 +78,14 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
 
     return (
       <div className="relative">
-        <label
-          {...getLabelProps()}
-          htmlFor={inputId}
-          className="block text-sm font-semibold text-ink"
-        >
+        <label {...getLabelProps()} htmlFor={inputId} className="type-label mb-2 block">
           Belirti ara
         </label>
         <div className="relative">
           <Icon
             name="search"
-            size={24}
-            className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-ink"
+            size={20}
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted"
           />
           <input
             {...getInputProps({
@@ -101,15 +97,14 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
             autoComplete="off"
             spellCheck={false}
             placeholder={regionName ? `${regionName} bölgesinde ara` : 'Örneğin baş ağrısı'}
-            className="field pl-9"
+            className="field"
           />
-          <span aria-hidden="true" className="field-underline" />
         </div>
 
         {regionName ? (
           <p className="mt-2 flex flex-wrap items-center gap-x-3 text-sm text-ink-muted">
             <span>
-              Liste <span className="font-medium text-ink">{regionName}</span> bölgesiyle sınırlı.
+              Liste <span className="font-semibold text-ink">{regionName}</span> bölgesiyle sınırlı.
             </span>
             <button type="button" className="link text-sm" onClick={onClearRegion}>
               Tüm belirtileri göster
@@ -120,8 +115,8 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         <ul
           {...getMenuProps()}
           className={clsx(
-            'absolute inset-x-0 z-30 max-h-80 overflow-y-auto border-2 border-t-0 border-ink bg-surface',
-            isOpen && items.length > 0 ? 'menu-open' : 'hidden',
+            'absolute inset-x-0 z-30 mt-1 max-h-80 overflow-y-auto rounded border border-line bg-surface py-1 shadow-pop',
+            !(isOpen && items.length > 0) && 'hidden',
           )}
         >
           {isOpen
@@ -130,18 +125,13 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
                   key={item.id}
                   {...getItemProps({ item, index })}
                   className={clsx(
-                    'flex min-h-row cursor-pointer items-center justify-between gap-4 border-b border-line px-4 py-2 text-base last:border-b-0',
-                    highlightedIndex === index && 'bg-accent text-on-accent',
+                    'flex min-h-row cursor-pointer items-center justify-between gap-4 px-4 py-2 text-base',
+                    highlightedIndex === index && 'bg-block',
                   )}
                 >
                   <span>{item.label}</span>
                   {!region ? (
-                    <span
-                      className={clsx(
-                        'shrink-0 text-sm',
-                        highlightedIndex === index ? 'text-on-accent' : 'text-ink-muted',
-                      )}
-                    >
+                    <span className="shrink-0 text-sm text-ink-muted">
                       {catalog.regionLabel(item.region)}
                     </span>
                   ) : null}

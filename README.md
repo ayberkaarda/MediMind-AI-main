@@ -22,7 +22,7 @@ The backend uses the new API and data structure; the frontend rewrite is in prog
 - Score policy: the format `Model skoru` (Model score) `%42` is used; values below 1% are shown as `<%1`. No threshold badge or color-coded confidence system is used; the API's `confidence_label` is not shown in the interface. Fixed explanation: “This value should not be interpreted as your probability of having the disease.”
 - Printable report: the browser's print/save as PDF function uses `@media print`, A4, and 15 mm margins. The report includes the date, request IDs, symptoms, scale, explanation, precautions, and warning.
 - Anonymous history: a UUID stored in the browser is sent to the server via `X-Client-Id`; assessments are listed and deleted in SQLite by this ID. This ID is not an account or an authentication mechanism.
-- Light, dark, and system themes; deep green-teal ink on a single pastel sea-green colour family, set in Archivo (condensed for headings, normal width for body text).
+- Light, dark, and system themes; a low-chroma slate and mist palette (slate-blue accent on a cool mist ground), Source Serif 4 for headings and the condition name, Source Sans 3 for interface and body text. A single focus window frames the chosen body region and moves to frame the result heading.
 - Accessibility: keyboard-operable search and region filters, visible focus, focus transfer to the result heading, ARIA status announcements, and reduced motion preference. WCAG AA contrast is targeted in both themes.
 - A warning that the report is out of date when symptoms change; symptom severity is presented only as plain text with an explanation in the “Teknik ayrıntılar” (Technical details) section.
 

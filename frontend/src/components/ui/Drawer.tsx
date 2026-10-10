@@ -85,28 +85,26 @@ export function Drawer({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: level === 'none' ? 0 : DUR.fast, ease: EASE.out }}
+          transition={{ duration: level === 'full' ? DUR.fast : DUR.tap, ease: EASE.out }}
         >
-          <div className="absolute inset-0 bg-ink/40" aria-hidden="true" onClick={onClose} />
+          <div className="absolute inset-0 bg-scrim/40" aria-hidden="true" onClick={onClose} />
           <m.div
             initial={panelHidden}
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={panelHidden}
-            transition={
-              level === 'full' ? SPRING_PANEL : { duration: level === 'none' ? 0 : DUR.fast }
-            }
+            transition={level === 'full' ? SPRING_PANEL : { duration: DUR.tap }}
             ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
             className={
               placement === 'bottom'
-                ? 'absolute inset-x-0 bottom-0 flex h-[70vh] flex-col border-t-2 border-ink bg-canvas'
-                : 'absolute inset-y-0 right-0 flex w-full max-w-[28rem] flex-col border-l-2 border-ink bg-canvas'
+                ? 'absolute inset-x-0 bottom-0 flex h-[70vh] flex-col rounded-t-frame bg-surface shadow-pop'
+                : 'absolute inset-y-0 right-0 flex w-full max-w-[28rem] flex-col bg-surface shadow-pop'
             }
           >
-            <div className="flex items-center justify-between gap-4 border-b-2 border-ink px-6 py-4">
-              <h2 id={titleId} className="type-title">
+            <div className="flex items-center justify-between gap-4 border-b border-line px-6 py-4">
+              <h2 id={titleId} className="type-heading">
                 {title}
               </h2>
               <button
@@ -121,7 +119,7 @@ export function Drawer({
             </div>
             <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
             {footer ? (
-              <div className="safe-bottom border-t-2 border-ink px-6 pt-3">{footer}</div>
+              <div className="safe-bottom border-t border-line px-6 pt-3">{footer}</div>
             ) : null}
           </m.div>
         </m.div>

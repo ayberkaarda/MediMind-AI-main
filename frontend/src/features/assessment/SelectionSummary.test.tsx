@@ -3,17 +3,17 @@ import { MotionProvider } from '../../app/MotionProvider';
 import { render as renderUi, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { SelectionTray } from './SelectionTray';
+import { SelectionSummary } from './SelectionSummary';
 import { testCatalog } from '../../test/utils';
 
 function render(ui: ReactElement) {
   return renderUi(ui, { wrapper: MotionProvider });
 }
 
-describe('SelectionTray', () => {
+describe('SelectionSummary', () => {
   it('shows the pending label and disables evaluation', async () => {
     render(
-      <SelectionTray
+      <SelectionSummary
         catalog={testCatalog}
         selected={['headache']}
         onRemove={() => {}}
@@ -29,7 +29,7 @@ describe('SelectionTray', () => {
     const user = userEvent.setup();
     const onRemove = vi.fn();
     const { container } = render(
-      <SelectionTray
+      <SelectionSummary
         catalog={testCatalog}
         selected={['headache']}
         onRemove={onRemove}
@@ -44,7 +44,7 @@ describe('SelectionTray', () => {
     for (const element of container.querySelectorAll('[class]')) {
       expect([...element.classList].some((name) => name.includes('-mr-'))).toBe(false);
     }
-    const heading = screen.getByRole('heading', { name: /Seçili belirtiler/ });
+    const heading = screen.getByRole('heading', { name: /Seçilenler/ });
     expect(heading).toHaveAttribute('tabindex', '-1');
     await user.click(button);
     expect(onRemove).toHaveBeenCalledWith('headache');

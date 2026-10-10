@@ -48,9 +48,8 @@ function prefersReducedMotion(): boolean {
 }
 
 /**
- * Applies a theme. A real change drops the new theme in from the top with a
- * view transition (see ::view-transition-new in base.css); browsers without
- * view transitions, and reduced-motion users, get a short colour cross-fade or none.
+ * Applies a theme. A real change cross-fades through a view transition; browsers
+ * without view transitions get a short colour cross-fade, reduced-motion users none.
  */
 export function applyTheme(theme: ResolvedTheme): void {
   const root = document.documentElement;

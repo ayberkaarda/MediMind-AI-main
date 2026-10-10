@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
-import { domAnimation, LazyMotion, MotionConfig } from 'motion/react';
+import { domMax, LazyMotion, MotionConfig } from 'motion/react';
 
+/** domMax carries the layout features the shared focus window needs. */
 export function MotionProvider({ children }: { children: ReactNode }) {
   return (
-    <LazyMotion features={domAnimation} strict>
+    <LazyMotion features={domMax} strict>
       <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </LazyMotion>
   );

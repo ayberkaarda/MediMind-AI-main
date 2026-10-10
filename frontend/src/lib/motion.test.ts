@@ -1,22 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { CLIP, STAGGER, STAGGER_CAP, UNCLIPPED, shutter, staggerDelay } from './motion';
+import { STAGGER, STAGGER_CAP, enter, reveal, staggerDelay } from './motion';
 
 describe('motion tokens', () => {
-  it('drops every animation for reduced motion', () => {
-    expect(shutter('none')).toEqual({});
+  it('shows the result at once on the reduced path', () => {
+    expect(reveal('reduced')).toEqual({});
   });
 
-  it('falls back to a short fade on low-power devices', () => {
-    const props = shutter('lite', 'fromLeft', 0.4);
+  it('animates opacity only on the reduced path', () => {
+    const props = enter('reduced');
     expect(props.initial).toEqual({ opacity: 0 });
     expect(props.animate).toEqual({ opacity: 1 });
+    expect(props.exit).toEqual({ opacity: 0 });
   });
 
-  it('wipes with clip-path and removes the clip when finished', () => {
-    const props = shutter('full', 'fromBottom');
-    expect(props.initial).toEqual({ clipPath: CLIP.fromBottom });
-    expect(props.animate).toBe(UNCLIPPED);
-    expect(UNCLIPPED.transitionEnd.clipPath).toBe('none');
+  it('moves chips by four pixels at full motion', () => {
+    const props = enter('full');
+    expect(props.initial).toEqual({ opacity: 0, y: 4 });
+    expect(props.animate).toEqual({ opacity: 1, y: 0 });
   });
 
   it('caps staggered delays so long lists never wait', () => {

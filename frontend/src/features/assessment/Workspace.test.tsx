@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { useState } from 'react';
 import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { FocusStage } from './FocusStage';
+import { Workspace } from './Workspace';
 import { STALE_MESSAGE } from './StaleBanner';
 import { DISCLAIMER_TEXT } from './Disclaimer';
 import { server } from '../../test/msw/server';
@@ -10,12 +10,12 @@ import { renderWithClient, testCatalog } from '../../test/utils';
 import historyFixture from '../../test/fixtures/history.json';
 
 function renderWorkspace() {
-  return renderWithClient(<FocusStage historyOpen={false} onCloseHistory={() => {}} />);
+  return renderWithClient(<Workspace historyOpen={false} onCloseHistory={() => {}} />);
 }
 
 function HistoryWorkspaceHarness() {
   const [open, setOpen] = useState(true);
-  return <FocusStage historyOpen={open} onCloseHistory={() => setOpen(false)} />;
+  return <Workspace historyOpen={open} onCloseHistory={() => setOpen(false)} />;
 }
 
 async function pick(
@@ -29,7 +29,7 @@ async function pick(
   await user.click(screen.getByRole('option', { name: label }));
 }
 
-describe('FocusStage', () => {
+describe('Workspace', () => {
   it('focuses the selected heading when editing at the symptom limit', async () => {
     const symptoms = testCatalog.symptoms.slice(0, 17).map((item) => item.id);
     server.use(
@@ -46,7 +46,7 @@ describe('FocusStage', () => {
     expect(input).toBeDisabled();
     await user.click(screen.getByRole('button', { name: 'Değerlendir · 17 belirti' }));
     await user.click(await screen.findByRole('button', { name: 'Belirtileri düzenle' }));
-    expect(screen.getByRole('heading', { level: 2, name: /Seçili belirtiler/ })).toHaveFocus();
+    expect(screen.getByRole('heading', { level: 2, name: /Seçilenler/ })).toHaveFocus();
   });
 
   it('evaluates, reports, turns stale after an edit and re-evaluates', async () => {
@@ -60,8 +60,9 @@ describe('FocusStage', () => {
     await pick(user, 'deri dok', /^Deri Döküntüsü/);
     expect(bodies).toHaveLength(0);
 
-    const selected = screen.getByRole('region', { name: /Seçili belirtiler/ });
+    const selected = screen.getByRole('region', { name: /Seçilenler/ });
     expect(within(selected).getByRole('group', { name: 'Cilt' })).toBeInTheDocument();
+    expect(screen.getByText('Cilt: 2 belirti seçili')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Değerlendir · 2 belirti' }));
 
@@ -70,6 +71,8 @@ describe('FocusStage', () => {
     expect(bodies[0]).toEqual({ symptoms: ['itching', 'skin_rash'] });
 
     const report = screen.getByRole('article');
+    // The focus window has travelled from the figure to the result heading.
+    expect(within(report).getByTestId('focus-frame')).toBeInTheDocument();
     const top = within(report).getByRole('region', { name: 'En yüksek skorlu sonuç' });
     expect(top).toHaveTextContent('Mantar Enfeksiyonu');
     expect(top).toHaveTextContent('Model skoru %42');

@@ -10,12 +10,11 @@
 
   body {
     @apply bg-canvas font-sans text-base text-ink antialiased;
-    font-variant-numeric: tabular-nums;
   }
 
   ::selection {
-    background: rgb(var(--c-accent));
-    color: rgb(var(--c-on-accent));
+    background: rgb(var(--c-block));
+    color: rgb(var(--c-text));
   }
 
   :focus-visible {
@@ -39,209 +38,135 @@
 }
 
 @layer components {
-  /* Display voice: Archivo condensed and heavy. Body text stays at normal width. */
-  .type-display {
-    font-stretch: 72%;
-    font-weight: 800;
-    letter-spacing: -0.015em;
-    line-height: 0.92;
-  }
-
-  .type-wide {
-    font-stretch: 125%;
-    font-weight: 800;
+  /* Serif voice for the question, the condition name and section titles. */
+  .type-title {
+    @apply font-serif font-semibold text-ink;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1.12;
     letter-spacing: -0.01em;
   }
 
-  .type-hero {
-    @apply type-display;
-    font-size: clamp(2.75rem, 10.5vw, 7.5rem);
-  }
-
-  .type-hero-compact {
-    @apply type-display;
-    font-size: clamp(2rem, 6vw, 3.75rem);
-  }
-
-  .type-title {
-    @apply type-display;
-    font-size: clamp(1.75rem, 4vw, 2.75rem);
-  }
-
   .type-disease {
-    @apply type-display;
-    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    @apply font-serif font-semibold text-ink;
+    font-size: 2.25rem;
+    line-height: 1.15;
     overflow-wrap: anywhere;
   }
 
-  .type-section {
-    font-stretch: 85%;
-    font-weight: 700;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+  .type-heading {
+    @apply font-serif text-xl font-semibold text-ink;
+  }
+
+  .type-label {
+    @apply text-sm font-semibold text-ink;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
   .btn {
-    @apply inline-flex min-h-row items-center justify-center gap-2 px-4 text-base font-semibold;
+    @apply inline-flex min-h-row items-center justify-center gap-2 rounded px-4 text-base font-semibold;
     transition:
       background-color var(--dur-tap) linear,
       border-color var(--dur-tap) linear,
-      color var(--dur-tap) linear,
-      transform var(--dur-tap) var(--ease-out);
+      color var(--dur-tap) linear;
   }
 
   .btn:disabled {
     @apply cursor-not-allowed opacity-50;
   }
 
-  .btn:active:not(:disabled) {
-    transform: translateY(1px);
-  }
-
-  /* The pastel fill needs the ink border: the fill alone is under 3:1 against the light canvas. */
   .btn-primary {
-    @apply btn border-2 border-ink bg-accent text-on-accent;
-    min-height: 3.5rem;
-    font-stretch: 90%;
-    font-weight: 800;
-    font-size: 1.125rem;
+    @apply btn bg-accent text-on-accent;
+    min-height: 3rem;
+    padding-inline: 1.5rem;
   }
 
   .btn-primary:not(:disabled):hover {
     @apply bg-accent-hover;
   }
 
-  .btn-primary:focus-visible {
-    box-shadow: inset 0 0 0 2px rgb(var(--c-on-accent));
-  }
-
   .btn-secondary {
-    @apply btn border-2 border-ink bg-transparent text-ink;
+    @apply btn border border-line-strong bg-surface text-ink;
   }
 
   .btn-secondary:not(:disabled):hover {
-    @apply bg-ink text-canvas;
+    @apply bg-surface-muted;
   }
 
   .btn-quiet {
-    @apply btn px-3 text-ink underline decoration-transparent decoration-2 underline-offset-4;
+    @apply btn px-3 text-ink;
   }
 
   .btn-quiet:not(:disabled):hover {
-    @apply decoration-accent;
+    @apply bg-surface-muted;
   }
 
   .link {
-    @apply font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4;
+    @apply font-semibold text-accent underline decoration-1 underline-offset-4;
   }
 
   .link:hover {
-    @apply decoration-ink;
+    @apply decoration-2;
   }
 
-  /* Search: a large underlined line of type rather than a boxed field. */
+  /* Region filter chip: fully rounded, the pressed state fills with the block tone. */
+  .chip {
+    @apply inline-flex min-h-10 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-sm font-semibold text-ink;
+    transition:
+      background-color var(--dur-tap) linear,
+      border-color var(--dur-tap) linear;
+  }
+
+  .chip:hover {
+    @apply bg-surface-muted;
+  }
+
+  .chip[aria-pressed='true'] {
+    @apply border-accent bg-block;
+  }
+
+  .count-badge {
+    @apply tabular inline-grid h-6 min-w-6 place-items-center rounded-full bg-accent px-1.5 text-xs font-semibold text-on-accent;
+  }
+
   .field {
-    @apply block w-full rounded-none border-0 border-b-2 border-ink bg-transparent px-0 font-sans text-ink;
-    min-height: 4rem;
-    font-size: 1.5rem;
-    font-weight: 600;
-    font-stretch: 90%;
+    @apply block h-12 w-full rounded border border-line-strong bg-surface pl-11 pr-4 font-sans text-lg text-ink;
+    transition: border-color var(--dur-tap) linear;
   }
 
   .field::placeholder {
     @apply text-ink-muted;
     opacity: 1;
-    font-weight: 400;
+  }
+
+  .field:focus {
+    @apply border-accent;
   }
 
   .field:disabled {
-    @apply cursor-not-allowed opacity-50;
+    @apply cursor-not-allowed bg-surface-muted opacity-70;
   }
 
-  .field-underline {
-    @apply pointer-events-none absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 bg-accent;
-    transition: transform var(--dur-base) var(--ease-shutter);
+  .segmented {
+    @apply inline-flex rounded-full bg-surface-muted p-1;
   }
 
-  .field:focus ~ .field-underline {
-    transform: scaleX(1);
+  .segmented > button {
+    @apply min-h-9 rounded-full px-3 text-sm font-semibold text-ink-muted;
+    transition:
+      background-color var(--dur-tap) linear,
+      color var(--dur-tap) linear;
   }
 
-  .menu-open {
-    animation: shutter-drop var(--dur-fast) var(--ease-out);
+  .segmented > button:hover {
+    @apply text-ink;
   }
 
-  /* Hover marker: an aqua bar wipes under the row from the left. */
-  .wipe-hover {
-    position: relative;
-    isolation: isolate;
-  }
-
-  .wipe-hover::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: rgb(var(--c-accent));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--dur-fast) var(--ease-shutter);
-  }
-
-  .wipe-hover:hover::before,
-  .wipe-hover[aria-pressed='true']::before {
-    transform: scaleX(1);
-  }
-
-  .wipe-hover:hover,
-  .wipe-hover[aria-pressed='true'] {
-    color: rgb(var(--c-on-accent));
-  }
-
-  .wipe-hover:disabled::before {
-    transform: scaleX(0);
-  }
-
-  .wipe-hover:disabled {
-    color: inherit;
-  }
-
-  /* Inverted dock: the selection always sits on the ink colour. */
-  .dock {
-    @apply bg-ink text-canvas;
-    --color-focus: rgb(var(--c-bg));
-  }
-
-  .btn-dock {
-    @apply btn px-0 text-canvas;
-  }
-
-  .btn-dock:not(:disabled):hover {
-    @apply bg-canvas text-ink;
-  }
-
-  .dock .btn-primary {
-    @apply border-canvas;
-  }
-
-  .stagger-in > * {
-    animation: rise-in var(--dur-base) var(--ease-out) both;
-  }
-
-  .stagger-in > :nth-child(2) {
-    animation-delay: 40ms;
-  }
-  .stagger-in > :nth-child(3) {
-    animation-delay: 80ms;
-  }
-  .stagger-in > :nth-child(4) {
-    animation-delay: 120ms;
-  }
-  .stagger-in > :nth-child(5) {
-    animation-delay: 160ms;
-  }
-  .stagger-in > :nth-child(n + 6) {
-    animation-delay: 200ms;
+  .segmented > button[aria-pressed='true'] {
+    @apply bg-surface text-ink;
+    box-shadow: inset 0 0 0 1px rgb(var(--c-border-strong));
   }
 }
 
@@ -255,45 +180,7 @@
   }
 }
 
-@keyframes shutter-drop {
-  from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Theme change: the new theme drops in from the top like a shutter. */
-::view-transition-old(root) {
-  animation: none;
-}
-
-::view-transition-new(root) {
-  animation: theme-shutter var(--dur-scene) var(--ease-shutter);
-}
-
-@keyframes theme-shutter {
-  from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-/* Fallback for browsers without view transitions. */
+/* Fallback for browsers without view transitions: a short colour cross-fade. */
 .theme-changing *,
 .theme-changing *::before,
 .theme-changing *::after {
@@ -301,25 +188,6 @@
     background-color var(--dur-fast),
     color var(--dur-fast),
     border-color var(--dur-fast);
-}
-
-.selection-tray {
-  max-height: 40vh;
-  overflow-y: auto;
-}
-
-#main {
-  padding-bottom: calc(40vh + 2rem);
-}
-
-@media (min-width: 1024px) {
-  .selection-tray {
-    max-height: 30vh;
-  }
-
-  #main {
-    padding-bottom: 12rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -332,11 +200,9 @@
     scroll-behavior: auto !important;
   }
 
-  ::view-transition-new(root) {
-    animation: none;
-  }
-
-  .btn:active:not(:disabled) {
-    transform: none;
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
