@@ -1,6 +1,4 @@
 import { forwardRef, useId, useMemo, useState } from 'react';
-import * as m from 'motion/react-m';
-import { useReducedMotion } from 'motion/react';
 import { useCombobox } from 'downshift';
 import clsx from 'clsx';
 import type { Symptom } from '../../lib/api/schemas';
@@ -26,7 +24,6 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
     inputRef,
   ) {
     const [inputValue, setInputValue] = useState('');
-    const reduced = useReducedMotion();
     const inputId = useId();
     const exclude = useMemo(() => new Set(selected), [selected]);
     const matches = useMemo(
@@ -84,14 +81,15 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         <label
           {...getLabelProps()}
           htmlFor={inputId}
-          className="mb-2 block text-sm font-medium text-ink"
+          className="block text-sm font-semibold text-ink"
         >
           Belirti ara
         </label>
         <div className="relative">
           <Icon
             name="search"
-            className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-ink-muted"
+            size={24}
+            className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-ink"
           />
           <input
             {...getInputProps({
@@ -103,8 +101,9 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
             autoComplete="off"
             spellCheck={false}
             placeholder={regionName ? `${regionName} bölgesinde ara` : 'Örneğin baş ağrısı'}
-            className="field pl-12"
+            className="field pl-9"
           />
+          <span aria-hidden="true" className="field-underline" />
         </div>
 
         {regionName ? (
@@ -121,8 +120,8 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         <ul
           {...getMenuProps()}
           className={clsx(
-            'absolute inset-x-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-md border border-line-strong bg-surface py-2 shadow-drawer',
-            !(isOpen && items.length > 0) && 'hidden',
+            'absolute inset-x-0 z-30 max-h-80 overflow-y-auto border-2 border-t-0 border-ink bg-surface',
+            isOpen && items.length > 0 ? 'menu-open' : 'hidden',
           )}
         >
           {isOpen
@@ -131,15 +130,18 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
                   key={item.id}
                   {...getItemProps({ item, index })}
                   className={clsx(
-                    'flex min-h-row cursor-pointer items-center justify-between gap-4 px-5 py-2 text-base',
-                    highlightedIndex === index && 'bg-surface-muted',
+                    'flex min-h-row cursor-pointer items-center justify-between gap-4 border-b border-line px-4 py-2 text-base last:border-b-0',
+                    highlightedIndex === index && 'bg-accent text-on-accent',
                   )}
                 >
-                  <m.span layoutId={reduced ? undefined : `symptom-${item.id}`}>
-                    {item.label}
-                  </m.span>
+                  <span>{item.label}</span>
                   {!region ? (
-                    <span className="shrink-0 text-sm text-ink-muted">
+                    <span
+                      className={clsx(
+                        'shrink-0 text-sm',
+                        highlightedIndex === index ? 'text-on-accent' : 'text-ink-muted',
+                      )}
+                    >
                       {catalog.regionLabel(item.region)}
                     </span>
                   ) : null}
@@ -147,7 +149,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
               ))
             : null}
           {isOpen && matches.length > MAX_VISIBLE ? (
-            <li role="presentation" className="px-3 py-2 text-sm text-ink-muted">
+            <li role="presentation" className="px-4 py-2 text-sm text-ink-muted">
               {matches.length - MAX_VISIBLE} sonuç daha var; aramayı daraltın.
             </li>
           ) : null}

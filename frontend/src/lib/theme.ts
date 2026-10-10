@@ -26,19 +26,47 @@ export function resolveTheme(preference: ThemePreference): ResolvedTheme {
   return preference;
 }
 
-export function applyTheme(theme: ResolvedTheme): void {
+function setThemeAttributes(theme: ResolvedTheme): void {
   const root = document.documentElement;
-  if (root.getAttribute('data-theme') !== theme) {
-    clearTimeout(themeTransition);
-    root.classList.add('theme-changing');
-    themeTransition = setTimeout(() => root.classList.remove('theme-changing'), 200);
-  }
   root.setAttribute('data-theme', theme);
   root.style.colorScheme = theme;
   const themeColor = getComputedStyle(root).getPropertyValue('--color-bg').trim();
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
     meta.content = themeColor;
   });
+}
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (update: () => void) => unknown;
+};
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+/**
+ * Applies a theme. A real change drops the new theme in from the top with a
+ * view transition (see ::view-transition-new in base.css); browsers without
+ * view transitions, and reduced-motion users, get a short colour cross-fade or none.
+ */
+export function applyTheme(theme: ResolvedTheme): void {
+  const root = document.documentElement;
+  if (root.getAttribute('data-theme') === theme) {
+    setThemeAttributes(theme);
+    return;
+  }
+  const doc = document as ViewTransitionDocument;
+  if (typeof doc.startViewTransition === 'function' && !prefersReducedMotion()) {
+    doc.startViewTransition(() => setThemeAttributes(theme));
+    return;
+  }
+  clearTimeout(themeTransition);
+  root.classList.add('theme-changing');
+  themeTransition = setTimeout(() => root.classList.remove('theme-changing'), 200);
+  setThemeAttributes(theme);
 }
 
 export function useTheme() {

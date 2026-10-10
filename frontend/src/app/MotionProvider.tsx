@@ -1,14 +1,10 @@
 import type { ReactNode } from 'react';
-import { domAnimation, domMax, LazyMotion, MotionConfig } from 'motion/react';
-
-const badgeFeatures = { renderer: domAnimation.renderer, layout: domMax.layout };
+import { domAnimation, LazyMotion, MotionConfig } from 'motion/react';
 
 export function MotionProvider({ children }: { children: ReactNode }) {
   return (
-    <LazyMotion features={domAnimation}>
-      <LazyMotion features={badgeFeatures}>
-        <MotionConfig reducedMotion="user">{children}</MotionConfig>
-      </LazyMotion>
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </LazyMotion>
   );
 }

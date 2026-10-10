@@ -11,11 +11,11 @@
   body {
     @apply bg-canvas font-sans text-base text-ink antialiased;
     font-variant-numeric: tabular-nums;
-    font-feature-settings: 'tnum' 1;
   }
 
   ::selection {
-    background: rgb(var(--c-accent) / 0.22);
+    background: rgb(var(--c-accent));
+    color: rgb(var(--c-on-accent));
   }
 
   :focus-visible {
@@ -32,78 +32,216 @@
   h3 {
     text-wrap: balance;
   }
+
+  p {
+    text-wrap: pretty;
+  }
 }
 
 @layer components {
+  /* Display voice: Archivo condensed and heavy. Body text stays at normal width. */
+  .type-display {
+    font-stretch: 72%;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    line-height: 0.92;
+  }
+
+  .type-wide {
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .type-hero {
+    @apply type-display;
+    font-size: clamp(2.75rem, 10.5vw, 7.5rem);
+  }
+
+  .type-hero-compact {
+    @apply type-display;
+    font-size: clamp(2rem, 6vw, 3.75rem);
+  }
+
+  .type-title {
+    @apply type-display;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+  }
+
+  .type-disease {
+    @apply type-display;
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    overflow-wrap: anywhere;
+  }
+
+  .type-section {
+    font-stretch: 85%;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
   .btn {
-    @apply inline-flex min-h-row items-center justify-center gap-2 rounded-full px-4 text-base font-semibold;
+    @apply inline-flex min-h-row items-center justify-center gap-2 px-4 text-base font-semibold;
     transition:
-      background-color var(--dur-hatch) linear,
-      border-color var(--dur-hatch) linear,
-      color var(--dur-hatch) linear,
-      transform var(--dur-hatch) ease;
+      background-color var(--dur-tap) linear,
+      border-color var(--dur-tap) linear,
+      color var(--dur-tap) linear,
+      transform var(--dur-tap) var(--ease-out);
   }
 
   .btn:disabled {
     @apply cursor-not-allowed opacity-50;
   }
 
-  .btn-primary {
-    @apply btn bg-accent text-on-accent;
-    min-height: 3.25rem;
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
   }
 
-  /* The focus outline sits on the page with a 2px gap; the inner ring keeps it visible on the accent fill. */
-  .btn-primary:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--color-on-accent);
+  /* Saffron needs the ink border: the fill alone is under 3:1 against the light canvas. */
+  .btn-primary {
+    @apply btn border-2 border-ink bg-accent text-on-accent;
+    min-height: 3.5rem;
+    font-stretch: 90%;
+    font-weight: 800;
+    font-size: 1.125rem;
   }
 
   .btn-primary:not(:disabled):hover {
     @apply bg-accent-hover;
-    transform: translateY(-1px);
+  }
+
+  .btn-primary:focus-visible {
+    box-shadow: inset 0 0 0 2px rgb(var(--c-on-accent));
   }
 
   .btn-secondary {
-    @apply btn border border-line-strong bg-surface text-ink;
+    @apply btn border-2 border-ink bg-transparent text-ink;
   }
 
   .btn-secondary:not(:disabled):hover {
-    @apply border-ink-muted bg-surface-muted;
+    @apply bg-ink text-canvas;
   }
 
   .btn-quiet {
-    @apply btn px-3 text-ink-muted;
+    @apply btn px-3 text-ink underline decoration-transparent decoration-2 underline-offset-4;
   }
 
   .btn-quiet:not(:disabled):hover {
-    @apply bg-surface-muted text-ink;
+    @apply decoration-accent;
   }
 
   .link {
-    @apply text-accent underline decoration-1 underline-offset-4;
+    @apply font-semibold text-ink underline decoration-accent decoration-2 underline-offset-4;
   }
 
   .link:hover {
-    @apply decoration-2;
+    @apply decoration-ink;
   }
 
+  /* Search: a large underlined line of type rather than a boxed field. */
   .field {
-    @apply block w-full rounded-full border border-line-strong bg-surface px-4 font-sans text-base text-ink;
-    min-height: 3.5rem;
+    @apply block w-full rounded-none border-0 border-b-2 border-ink bg-transparent px-0 font-sans text-ink;
+    min-height: 4rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-stretch: 90%;
   }
 
   .field::placeholder {
     @apply text-ink-muted;
     opacity: 1;
+    font-weight: 400;
   }
 
-  .field:hover {
-    @apply border-ink-muted;
+  .field:disabled {
+    @apply cursor-not-allowed opacity-50;
   }
 
-  .field:focus-visible {
-    @apply border-focus;
-    outline-offset: 2px;
+  .field-underline {
+    @apply pointer-events-none absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 bg-accent;
+    transition: transform var(--dur-base) var(--ease-shutter);
+  }
+
+  .field:focus ~ .field-underline {
+    transform: scaleX(1);
+  }
+
+  .menu-open {
+    animation: shutter-drop var(--dur-fast) var(--ease-out);
+  }
+
+  /* Hover marker: a saffron bar wipes under the row from the left. */
+  .wipe-hover {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .wipe-hover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(var(--c-accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-fast) var(--ease-shutter);
+  }
+
+  .wipe-hover:hover::before,
+  .wipe-hover[aria-pressed='true']::before {
+    transform: scaleX(1);
+  }
+
+  .wipe-hover:hover,
+  .wipe-hover[aria-pressed='true'] {
+    color: rgb(var(--c-on-accent));
+  }
+
+  .wipe-hover:disabled::before {
+    transform: scaleX(0);
+  }
+
+  .wipe-hover:disabled {
+    color: inherit;
+  }
+
+  /* Inverted dock: the selection always sits on the ink colour. */
+  .dock {
+    @apply bg-ink text-canvas;
+    --color-focus: rgb(var(--c-bg));
+  }
+
+  .btn-dock {
+    @apply btn px-0 text-canvas;
+  }
+
+  .btn-dock:not(:disabled):hover {
+    @apply bg-canvas text-ink;
+  }
+
+  .dock .btn-primary {
+    @apply border-canvas;
+  }
+
+  .stagger-in > * {
+    animation: rise-in var(--dur-base) var(--ease-out) both;
+  }
+
+  .stagger-in > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+  .stagger-in > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+  .stagger-in > :nth-child(4) {
+    animation-delay: 120ms;
+  }
+  .stagger-in > :nth-child(5) {
+    animation-delay: 160ms;
+  }
+  .stagger-in > :nth-child(n + 6) {
+    animation-delay: 200ms;
   }
 }
 
@@ -117,29 +255,52 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0ms !important;
-    transition-duration: 0ms !important;
-    scroll-behavior: auto !important;
+@keyframes shutter-drop {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 
-body,
-header,
-input,
-.selection-tray {
-  transition:
-    background-color 200ms,
-    color 200ms,
-    border-color 200ms;
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.btn:active:not(:disabled) {
-  transform: scale(0.98);
-  transition: transform 100ms;
+/* Theme change: the new theme drops in from the top like a shutter. */
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: theme-shutter var(--dur-scene) var(--ease-shutter);
+}
+
+@keyframes theme-shutter {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Fallback for browsers without view transitions. */
+.theme-changing *,
+.theme-changing *::before,
+.theme-changing *::after {
+  transition:
+    background-color var(--dur-fast),
+    color var(--dur-fast),
+    border-color var(--dur-fast);
 }
 
 .selection-tray {
@@ -147,121 +308,35 @@ input,
   overflow-y: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .btn:active:not(:disabled) {
-    transform: none;
-  }
-}
-
-@media (max-width: 1023px) {
-  #main {
-    padding-bottom: calc(40vh + 2rem);
-  }
-
-  .selection-tray {
-    position: fixed;
-    inset-inline: 0.75rem;
-    bottom: 0.5rem;
-    margin-top: 0;
-    border-radius: 28px;
-  }
-}
-
-.theme-changing *,
-.theme-changing *::before,
-.theme-changing *::after {
-  transition:
-    background-color 200ms,
-    color 200ms,
-    border-color 200ms;
-}
-
-@layer base {
-  h1,
-  h2,
-  h3,
-  .font-serif {
-    font-variation-settings: 'SOFT' 50;
-  }
-
-  p {
-    text-wrap: pretty;
-  }
-}
-
-@layer components {
-  .app-shell {
-    position: relative;
-    isolation: isolate;
-  }
-
-  .app-shell::before,
-  .app-shell::after {
-    content: '';
-    position: fixed;
-    z-index: -1;
-    width: min(42rem, 90vw);
-    height: 36rem;
-    pointer-events: none;
-    border-radius: 42% 58% 65% 35% / 55% 40% 60% 45%;
-  }
-
-  .app-shell::before {
-    top: 8rem;
-    left: -16rem;
-    background: radial-gradient(ellipse, rgb(var(--c-accent) / 0.06), transparent 70%);
-  }
-
-  .app-shell::after {
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse, rgb(var(--c-accent-2) / 0.06), transparent 70%);
-  }
-
-  .organic-surface {
-    box-shadow: var(--shadow-drawer);
-  }
-
-  :root[data-theme='dark'] .organic-surface {
-    border: 1px solid var(--color-border);
-  }
-
-  .disease-name {
-    font-size: 2.25rem;
-    line-height: 1.2;
-    overflow-wrap: anywhere;
-  }
-
-  .selection-tray li {
-    max-width: 100%;
-  }
-
-  #main > div > section {
-    min-width: 0;
-  }
+#main {
+  padding-bottom: calc(40vh + 2rem);
 }
 
 @media (min-width: 1024px) {
   .selection-tray {
-    bottom: 2rem;
+    max-height: 30vh;
+  }
+
+  #main {
+    padding-bottom: 12rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .btn-primary:not(:disabled):hover {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  ::view-transition-new(root) {
+    animation: none;
+  }
+
+  .btn:active:not(:disabled) {
     transform: none;
-  }
-}
-
-@layer components {
-  .wordmark {
-    font-size: 1.25rem;
-    line-height: 1.4;
-  }
-}
-
-@media (min-width: 640px) {
-  .wordmark {
-    font-size: 1.5rem;
   }
 }

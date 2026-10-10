@@ -30,12 +30,12 @@ function HistoryEntry({
 }) {
   const labels = item.symptoms.map((id) => symptomLabel(catalog, id));
   return (
-    <li className="border-b border-line py-6 last:border-b-0">
+    <li className="border-b-2 border-ink py-5 last:border-b-0">
       <p className="text-sm text-ink-muted">
         <time dateTime={item.created_at}>{formatDateShort(item.created_at)}</time>
       </p>
-      <p className="mt-1 font-serif text-lg font-medium">{item.top_disease_name}</p>
-      <p className="mt-2 inline-block rounded-full bg-surface-muted px-3 py-1 text-sm tabular-nums">
+      <p className="type-title mt-1">{item.top_disease_name}</p>
+      <p className="mt-2 inline-block border-2 border-ink px-2 py-0.5 text-sm font-bold tabular-nums">
         Model skoru {formatScore(item.probability)}
       </p>
       <p className="mt-1 line-clamp-2 text-sm text-ink-muted">{labels.join(', ')}</p>
@@ -125,7 +125,7 @@ export function HistoryDrawer({ open, onClose, catalog, onLoadSymptoms }: Histor
       ) : null}
 
       {items.length > 0 ? (
-        <ul className="mt-2" aria-label="Geçmiş değerlendirmeler">
+        <ul className="stagger-in mt-2" aria-label="Geçmiş değerlendirmeler">
           {items.map((item) => (
             <HistoryEntry
               key={item.id}

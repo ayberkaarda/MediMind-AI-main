@@ -1,5 +1,5 @@
 import * as m from 'motion/react-m';
-import { useReducedMotion } from 'motion/react';
+import { shutter, useMotionLevel } from '../../lib/motion';
 
 export const STALE_MESSAGE = 'Belirtiler değişti — sonuç güncel değil';
 
@@ -10,16 +10,14 @@ interface StaleBannerProps {
 }
 
 export function StaleBanner({ onReassess, pending, disabled = false }: StaleBannerProps) {
-  const reduced = useReducedMotion();
+  const level = useMotionLevel();
   return (
     <m.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: reduced ? 0.12 : 0.15 }}
+      {...shutter(level, 'fromTop')}
       role="status"
-      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded border border-uncertainty bg-uncertainty/5 p-4"
+      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-2 border-ink bg-surface p-4"
     >
-      <p className="text-base font-medium">{STALE_MESSAGE}</p>
+      <p className="text-base font-semibold">{STALE_MESSAGE}</p>
       <button
         type="button"
         className="btn-secondary"

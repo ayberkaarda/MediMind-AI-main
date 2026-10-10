@@ -11,11 +11,7 @@ const OPTIONS: { value: ThemePreference; label: string }[] = [
 export function ThemeToggle() {
   const { preference, setPreference } = useTheme();
   return (
-    <div
-      role="group"
-      aria-label="Tema"
-      className="flex rounded-full border border-line-strong bg-surface p-0.5"
-    >
+    <div role="group" aria-label="Tema" className="flex border-2 border-ink">
       {OPTIONS.map((option) => {
         const pressed = preference === option.value;
         return (
@@ -25,8 +21,8 @@ export function ThemeToggle() {
             aria-pressed={pressed}
             onClick={() => setPreference(option.value)}
             className={clsx(
-              'min-h-9 rounded-full px-1.5 text-sm transition-colors duration-hatch sm:px-2.5',
-              pressed ? 'bg-accent font-semibold text-on-accent' : 'text-ink-muted hover:text-ink',
+              'min-h-9 px-1.5 text-sm transition-colors duration-tap sm:px-2.5',
+              pressed ? 'bg-ink font-bold text-canvas' : 'text-ink hover:bg-surface-muted',
             )}
           >
             {option.label}

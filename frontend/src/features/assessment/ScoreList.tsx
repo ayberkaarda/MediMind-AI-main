@@ -1,12 +1,14 @@
 import clsx from 'clsx';
 import * as m from 'motion/react-m';
-import { useReducedMotion } from 'motion/react';
+import { DUR, EASE, staggerDelay, useMotionLevel } from '../../lib/motion';
 import type { Prediction } from '../../lib/api/schemas';
 import { formatScore, scoreToWidth } from '../../lib/format';
 
 export const RULER_NOTE = 'Bu değer, hastalığa sahip olma olasılığınız olarak yorumlanmamalıdır.';
 
 const TICKS = [0, 25, 50, 75, 100] as const;
+/** Bars start once the report's opening wipe has passed. */
+const BAR_DELAY = 0.45;
 
 interface ScoreListProps {
   predictions: Prediction[];
@@ -25,13 +27,13 @@ function Track({
   variant: 'screen' | 'print';
   index?: number;
 }) {
-  const reduced = useReducedMotion();
+  const level = useMotionLevel();
   const width = scoreToWidth(probability);
   return (
     <svg
       viewBox="0 0 100 16"
       preserveAspectRatio="none"
-      className={clsx('block h-4 w-full overflow-visible', variant === 'screen' && 'text-accent')}
+      className={clsx('block h-4 w-full overflow-visible', variant === 'screen' && 'text-ink')}
       aria-hidden="true"
       focusable="false"
     >
@@ -43,9 +45,7 @@ function Track({
           y1={0}
           y2={16}
           stroke="currentColor"
-          strokeOpacity={variant === 'screen' ? 1 : 0.5}
-          className={variant === 'screen' ? 'text-line' : undefined}
-          strokeDasharray={variant === 'screen' ? '1 3' : undefined}
+          strokeOpacity={variant === 'screen' ? 0.35 : 0.5}
           strokeWidth={variant === 'screen' ? 0.5 : 1}
           vectorEffect="non-scaling-stroke"
         />
@@ -56,10 +56,8 @@ function Track({
         y1={8}
         y2={8}
         stroke="currentColor"
-        className={variant === 'screen' ? 'text-line' : undefined}
-        strokeOpacity={variant === 'screen' ? 1 : 0.5}
-        strokeDasharray={variant === 'screen' ? '1 3' : undefined}
-        strokeWidth={variant === 'screen' ? 0.5 : 1}
+        strokeOpacity={variant === 'screen' ? 0.35 : 0.5}
+        strokeWidth={1}
         vectorEffect="non-scaling-stroke"
       />
       <m.rect
@@ -68,16 +66,21 @@ function Track({
         y={3}
         height={10}
         width={width}
-        rx={variant === 'screen' ? 3 : 0}
+        rx={0}
         fill="currentColor"
-        fillOpacity={variant === 'screen' && index > 0 ? 0.55 : 1}
         style={{ transformOrigin: '0px 8px' }}
-        initial={variant === 'print' || reduced ? false : { scaleX: 0 }}
-        animate={{ scaleX: 1 }}
+        initial={
+          variant === 'print' || level === 'none'
+            ? false
+            : level === 'lite'
+              ? { opacity: 0 }
+              : { scaleX: 0 }
+        }
+        animate={{ scaleX: 1, opacity: 1 }}
         transition={{
-          duration: reduced ? 0 : 0.5,
-          delay: reduced ? 0 : index * 0.06,
-          ease: 'easeOut',
+          duration: level === 'full' ? DUR.scene : DUR.fast,
+          delay: level === 'full' ? staggerDelay(index, BAR_DELAY) : 0,
+          ease: EASE.shutter,
         }}
       />
     </svg>
@@ -85,8 +88,8 @@ function Track({
 }
 
 /**
- * Model scores on one shared 0–100 axis. Bars are never normalised to the top result,
- * share one colour, with a softer tint on subsequent rows.
+ * Model scores on one shared 0–100 axis. Bars are never normalised to the top result and
+ * all share the ink colour. Bars grow in; the numbers are printed in full from the first frame.
  */
 export function ScoreList({
   predictions,
@@ -122,20 +125,20 @@ export function ScoreList({
 
   return (
     <div className={className} aria-live="polite" aria-atomic="true" aria-label="Model skoru">
-      <ol className="flex flex-col gap-2">
+      <ol className="flex flex-col border-t-2 border-ink">
         {rows.map((row, index) => (
           <li
             key={row.disease_id}
-            className="grid grid-cols-[minmax(0,1fr)_3.5rem] items-center gap-x-4 gap-y-1 py-2 md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_3.5rem]"
+            className="grid grid-cols-[minmax(0,1fr)_4.5rem] items-center gap-x-4 gap-y-1 border-b border-line py-3 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)_4.5rem]"
           >
-            <span className="col-span-2 text-base md:col-span-1">
+            <span className="col-span-2 text-base font-semibold md:col-span-1">
               <span className="sr-only">
                 {row.name}, model skoru {formatScore(row.probability)}
               </span>
               <span aria-hidden="true">{row.name}</span>
             </span>
             <Track probability={row.probability} variant="screen" index={index} />
-            <span className="text-right text-base tabular-nums" aria-hidden="true">
+            <span className="type-display text-right text-xl tabular-nums" aria-hidden="true">
               {formatScore(row.probability)}
             </span>
           </li>
@@ -143,7 +146,7 @@ export function ScoreList({
       </ol>
       <div
         aria-hidden="true"
-        className="grid grid-cols-[minmax(0,1fr)_3.5rem] gap-x-4 md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_3.5rem]"
+        className="mt-1 grid grid-cols-[minmax(0,1fr)_4.5rem] gap-x-4 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)_4.5rem]"
       >
         <span className="hidden md:block" />
         <span className="relative h-5 text-xs text-ink-muted">

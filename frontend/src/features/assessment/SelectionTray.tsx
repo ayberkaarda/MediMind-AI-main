@@ -1,8 +1,9 @@
 import * as m from 'motion/react-m';
-import { AnimatePresence, useReducedMotion } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 import { useId } from 'react';
 import type { Ref } from 'react';
 import { Icon } from '../../components/ui/Icon';
+import { CLIP, DUR, EASE, UNCLIPPED, useMotionLevel } from '../../lib/motion';
 import type { SymptomCatalog } from '../symptoms/catalog';
 import { symptomLabel } from '../symptoms/catalog';
 
@@ -46,6 +47,11 @@ function groupByRegion(catalog: SymptomCatalog | null, selected: readonly string
   return list;
 }
 
+/**
+ * The selection dock: an inverted strip fixed to the bottom of the viewport.
+ * Added symptoms are stamped in with a left-to-right wipe; removed ones drop out.
+ * No layout animation, so neighbours simply reflow.
+ */
 export function SelectionTray({
   catalog,
   selected,
@@ -56,97 +62,111 @@ export function SelectionTray({
   onEvaluate,
 }: SelectionTrayProps) {
   const headingId = useId();
-  const reduced = useReducedMotion();
+  const level = useMotionLevel();
   const groups = groupByRegion(catalog, selected);
+
+  const stamp =
+    level === 'full'
+      ? {
+          initial: { clipPath: CLIP.fromLeft },
+          animate: UNCLIPPED,
+          exit: { opacity: 0, y: 8, transition: { duration: DUR.fast, ease: EASE.in } },
+          transition: { duration: DUR.base, ease: EASE.shutter },
+        }
+      : level === 'lite'
+        ? {
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            exit: { opacity: 0 },
+            transition: { duration: DUR.fast },
+          }
+        : {};
 
   return (
     <section
       aria-labelledby={headingId}
-      className="selection-tray screen-only safe-bottom sticky bottom-0 z-40 mt-8 rounded-md border border-line bg-surface p-4 shadow-drawer lg:p-6"
+      className="selection-tray dock screen-only safe-bottom fixed inset-x-0 bottom-0 z-40 border-t-2 border-ink"
     >
-      <div className="flex min-h-row flex-wrap items-center justify-between gap-2 border-b border-line">
-        <h2 id={headingId} ref={headingRef} tabIndex={-1} className="text-base font-medium">
-          Seçili belirtiler <span className="text-ink-muted">({selected.length})</span>
-        </h2>
-        {selected.length > 0 ? (
-          <button type="button" onClick={onClear} className="btn-quiet text-sm">
-            Tümünü kaldır
-          </button>
-        ) : null}
-      </div>
+      <div className="mx-auto flex w-full max-w-shell flex-col gap-3 px-4 pt-3 md:px-8 lg:flex-row lg:items-end lg:gap-8">
+        <div className="min-w-0 flex-1">
+          <div className="flex min-h-row flex-wrap items-center justify-between gap-2">
+            <h2 id={headingId} ref={headingRef} tabIndex={-1} className="type-section">
+              Seçili belirtiler <span className="text-canvas/80">({selected.length})</span>
+            </h2>
+            {selected.length > 0 ? (
+              <button type="button" onClick={onClear} className="btn-dock px-3 text-sm underline">
+                Tümünü kaldır
+              </button>
+            ) : null}
+          </div>
 
-      <div>
-        {groups.length === 0 ? (
-          <p className="py-4 text-sm text-ink-muted">
-            Henüz belirti seçmediniz. Aramaya yazın ya da vücut haritasından bir bölge seçin.
-          </p>
-        ) : null}
-        <AnimatePresence initial={false}>
-          {groups.map((group) => (
-            <m.div
-              key={group.id}
-              role="group"
-              aria-label={group.label}
-              exit={reduced ? undefined : { opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.16 }}
-            >
-              <p className="pb-1 pt-4 text-sm text-ink-muted" aria-hidden="true">
-                {group.label}
+          <div className="flex flex-wrap gap-x-6 gap-y-1">
+            {groups.length === 0 ? (
+              <p className="pb-2 text-sm text-canvas/80">
+                Henüz belirti seçmediniz. Aramaya yazın ya da vücut haritasından bir bölge seçin.
               </p>
-              <ul className="flex flex-wrap gap-2">
-                <AnimatePresence>
-                  {group.items.map((item) => (
-                    <m.li
-                      key={item.id}
-                      layoutId={reduced ? undefined : `symptom-${item.id}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={reduced ? undefined : { opacity: 0, scale: 0.98 }}
-                      transition={{
-                        duration: reduced ? 0 : 0.16,
-                        layout: { type: 'spring', bounce: 0.1, duration: reduced ? 0 : 0.38 },
-                        opacity: { duration: reduced ? 0.12 : 0.16 },
-                      }}
-                      className="flex min-h-row min-w-0 items-center justify-between gap-3 rounded-full bg-surface-muted pl-3"
-                    >
-                      <span className="min-w-0 truncate">{item.label}</span>
-                      <button
-                        type="button"
-                        onClick={() => onRemove(item.id)}
-                        aria-label={`${item.label} belirtisini kaldır`}
-                        className="btn-quiet min-w-row shrink-0 px-0"
-                      >
-                        <Icon name="close" size={18} />
-                      </button>
-                    </m.li>
-                  ))}
-                </AnimatePresence>
-              </ul>
-            </m.div>
-          ))}
-        </AnimatePresence>
+            ) : null}
+            <AnimatePresence initial={false}>
+              {groups.map((group) => (
+                <m.div
+                  key={group.id}
+                  role="group"
+                  aria-label={group.label}
+                  className="min-w-0 max-w-full"
+                  exit={level === 'none' ? undefined : { opacity: 0 }}
+                  transition={{ duration: level === 'none' ? 0 : DUR.fast }}
+                >
+                  <p className="pb-1 text-xs font-semibold text-canvas/80" aria-hidden="true">
+                    {group.label}
+                  </p>
+                  <ul className="flex flex-wrap gap-2 pb-2">
+                    <AnimatePresence initial={false}>
+                      {group.items.map((item) => (
+                        <m.li
+                          key={item.id}
+                          {...stamp}
+                          className="flex min-h-row min-w-0 max-w-full items-center justify-between gap-1 border-2 border-canvas pl-3"
+                        >
+                          <span className="min-w-0 truncate font-semibold">{item.label}</span>
+                          <button
+                            type="button"
+                            onClick={() => onRemove(item.id)}
+                            aria-label={`${item.label} belirtisini kaldır`}
+                            className="btn-dock min-w-row shrink-0"
+                          >
+                            <Icon name="close" size={18} />
+                          </button>
+                        </m.li>
+                      ))}
+                    </AnimatePresence>
+                  </ul>
+                </m.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+        {onEvaluate ? (
+          <m.button
+            type="button"
+            className="btn-primary mb-1 w-full lg:mb-3 lg:w-auto lg:min-w-[16rem]"
+            onClick={onEvaluate}
+            disabled={selected.length === 0 || pending}
+            whileTap={level === 'full' ? { scale: 0.97 } : undefined}
+            transition={{ duration: DUR.tap }}
+          >
+            <span>{pending ? 'Değerlendiriliyor…' : 'Değerlendir'}</span>{' '}
+            {!pending && selected.length > 0 ? <span>· {selected.length} belirti</span> : null}
+            {pending && level !== 'none' ? (
+              <m.span
+                aria-hidden="true"
+                className="h-2.5 w-2.5 bg-on-accent"
+                animate={{ opacity: [0.25, 1, 0.25] }}
+                transition={{ duration: 0.9, repeat: Infinity }}
+              />
+            ) : null}
+          </m.button>
+        ) : null}
       </div>
-      {onEvaluate ? (
-        <m.button
-          type="button"
-          className="btn-primary mt-4 w-full"
-          onClick={onEvaluate}
-          disabled={selected.length === 0 || pending}
-          whileTap={reduced ? undefined : { scale: 0.98 }}
-          transition={{ duration: 0.1 }}
-        >
-          <span>{pending ? 'Değerlendiriliyor…' : 'Değerlendir'}</span>{' '}
-          {!pending && selected.length > 0 ? <span>· {selected.length} belirti</span> : null}
-          {pending && !reduced ? (
-            <m.span
-              aria-hidden="true"
-              className="h-2 w-2 rounded-full bg-on-accent"
-              animate={{ opacity: [0.3, 1, 0.3] }}
-              transition={{ duration: 0.8, repeat: Infinity }}
-            />
-          ) : null}
-        </m.button>
-      ) : null}
     </section>
   );
 }

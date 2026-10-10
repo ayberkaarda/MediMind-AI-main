@@ -12,12 +12,10 @@
     opacity: 1 !important;
     transform: none !important;
     clip-path: none !important;
-    stroke-dashoffset: 0 !important;
     box-shadow: none !important;
+    filter: none !important;
   }
 
-  .app-shell::before,
-  .app-shell::after,
   .body-figure,
   button,
   [role='dialog'],

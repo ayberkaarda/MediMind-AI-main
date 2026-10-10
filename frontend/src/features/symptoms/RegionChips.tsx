@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import type { Region } from '../../lib/api/schemas';
 
 interface RegionChipsProps {
@@ -17,7 +16,7 @@ export function RegionChips({ regions, activeRegion, counts, onSelect }: RegionC
       aria-label="Bölgesiz belirtiler"
       className="flex flex-wrap items-center gap-2"
     >
-      <span className="mr-1 text-sm text-ink-muted">Bölgesiz:</span>
+      <span className="mr-1 text-sm font-semibold">Bölgesiz:</span>
       {regions.map((region) => {
         const pressed = activeRegion === region.id;
         const count = counts[region.id] ?? 0;
@@ -27,19 +26,14 @@ export function RegionChips({ regions, activeRegion, counts, onSelect }: RegionC
             type="button"
             aria-pressed={pressed}
             onClick={() => onSelect(pressed ? null : region.id)}
-            className={clsx(
-              'inline-flex min-h-row items-center gap-2 rounded-full border px-4 text-sm transition-colors duration-hatch',
-              pressed
-                ? 'border-accent bg-accent/10 font-medium text-ink'
-                : 'border-line-strong bg-surface text-ink hover:bg-surface-muted',
-            )}
+            className="wipe-hover inline-flex min-h-row items-center gap-2 border-2 border-ink px-4 text-sm font-semibold text-ink"
           >
             {region.label}
             {count > 0 ? (
               <>
                 <span
                   aria-hidden="true"
-                  className="inline-grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1 text-xs font-medium text-on-accent"
+                  className="inline-grid h-5 min-w-5 place-items-center bg-ink px-1 text-xs font-bold text-canvas"
                 >
                   {count}
                 </span>

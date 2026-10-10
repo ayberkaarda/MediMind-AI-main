@@ -75,6 +75,14 @@ describe('FocusStage', () => {
     expect(top).toHaveTextContent('Model skoru %42');
     expect(within(report).getByText(/hastalığa sahip olma olasılığınız/)).toBeInTheDocument();
     expect(within(report).getByText(DISCLAIMER_TEXT)).toBeInTheDocument();
+    // The warning sits outside every animated layer, so it is visible from the first frame.
+    for (
+      let node: HTMLElement | null = within(report).getByText(DISCLAIMER_TEXT);
+      node && node !== report;
+      node = node.parentElement
+    ) {
+      expect(node.getAttribute('style')).toBeNull();
+    }
     expect(within(report).getByRole('heading', { name: 'Önlemler' })).toBeInTheDocument();
     expect(within(report).getByLabelText('Model skoru')).toHaveAttribute('aria-live', 'polite');
     expect(within(report).getAllByTestId('ruler-bar')).toHaveLength(5);

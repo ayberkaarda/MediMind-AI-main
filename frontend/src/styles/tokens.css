@@ -1,45 +1,51 @@
+/*
+ * Colour tokens: black/white ink with one saffron colour block.
+ * Values are space-separated RGB channels so Tailwind can apply alpha.
+ * Motion tokens mirror src/lib/motion.ts for CSS-only transitions.
+ */
 :root {
   color-scheme: light;
   --color-paper: rgb(255 255 255);
   --color-print-ink: rgb(0 0 0);
-  --c-bg: 244 238 228;
-  --c-surface: 251 248 242;
-  --c-surface-muted: 235 227 213;
-  --c-text: 42 38 32;
-  --c-text-muted: 107 98 84;
-  --c-border: 221 211 194;
-  --c-border-strong: 142 132 114;
-  --c-accent: 63 93 75;
-  --c-accent-hover: 49 74 59;
-  --c-on-accent: 251 248 242;
-  --c-focus: 31 95 191;
-  --c-error: 168 50 31;
-  --c-uncertainty: 138 90 18;
-  --c-accent-2: 194 96 60;
-  --c-accent-2-text: 162 74 41;
-  --shadow-drawer: 0 10px 30px -12px rgb(60 40 20 / 0.18);
-  --dur-hatch: 120ms;
-  --dur-disclosure: 240ms;
+  --c-bg: 246 246 244;
+  --c-surface: 255 255 255;
+  --c-surface-muted: 232 232 228;
+  --c-text: 0 0 0;
+  --c-text-muted: 82 82 78;
+  --c-border: 212 212 206;
+  --c-border-strong: 112 112 106;
+  --c-accent: 242 190 34;
+  --c-accent-hover: 230 172 10;
+  --c-on-accent: 0 0 0;
+  --c-accent-text: 122 82 0;
+  --c-focus: 0 0 0;
+  --c-error: 179 38 30;
+  --c-uncertainty: 122 82 0;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-shutter: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-tap: 120ms;
+  --dur-fast: 200ms;
+  --dur-base: 400ms;
+  --dur-scene: 720ms;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --c-bg: 27 24 20;
-  --c-surface: 37 32 26;
-  --c-surface-muted: 48 42 34;
-  --c-text: 237 230 218;
-  --c-text-muted: 179 168 149;
-  --c-border: 59 52 42;
-  --c-border-strong: 143 133 115;
-  --c-accent: 163 194 174;
-  --c-accent-hover: 188 214 197;
-  --c-on-accent: 23 32 26;
-  --c-focus: 141 184 242;
-  --c-error: 255 156 138;
-  --c-uncertainty: 232 183 102;
-  --c-accent-2: 229 140 104;
-  --c-accent-2-text: 240 165 131;
-  --shadow-drawer: none;
+  --c-bg: 24 24 22;
+  --c-surface: 34 34 32;
+  --c-surface-muted: 48 48 45;
+  --c-text: 245 245 240;
+  --c-text-muted: 178 178 170;
+  --c-border: 64 64 60;
+  --c-border-strong: 130 130 122;
+  --c-accent: 242 190 34;
+  --c-accent-hover: 250 206 76;
+  --c-on-accent: 0 0 0;
+  --c-accent-text: 242 190 34;
+  --c-focus: 242 190 34;
+  --c-error: 255 138 128;
+  --c-uncertainty: 242 190 34;
 }
 
 :root {
@@ -51,10 +57,9 @@
   --color-border: rgb(var(--c-border));
   --color-border-strong: rgb(var(--c-border-strong));
   --color-accent: rgb(var(--c-accent));
-  --color-accent-2: rgb(var(--c-accent-2));
-  --color-accent-2-text: rgb(var(--c-accent-2-text));
   --color-accent-hover: rgb(var(--c-accent-hover));
   --color-on-accent: rgb(var(--c-on-accent));
+  --color-accent-text: rgb(var(--c-accent-text));
   --color-focus: rgb(var(--c-focus));
   --color-error: rgb(var(--c-error));
   --color-uncertainty: rgb(var(--c-uncertainty));
