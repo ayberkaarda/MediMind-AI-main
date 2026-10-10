@@ -4,8 +4,6 @@ MediMind, seçilen belirtilerden hastalıkları makine öğrenmesi modeliyle sı
 
 ## Ekran görüntüleri
 
-Bu görseller önceki arayüze aittir; yeni tasarım tamamlandığında aynı dosya adlarıyla yenilenecektir.
-
 | Genel görünüm | Görsel |
 |---|---|
 | Açık tema: belirti seçimi | ![Açık tema belirti seçimi](screenshots/light-home.jpg) |
