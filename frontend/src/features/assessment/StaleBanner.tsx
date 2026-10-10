@@ -17,7 +17,7 @@ export function StaleBanner({ onReassess, pending, disabled = false }: StaleBann
       animate={{ opacity: 1 }}
       transition={{ duration: reduced ? 0.12 : 0.15 }}
       role="status"
-      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded border border-accent bg-surface-muted p-3"
+      className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded border border-uncertainty bg-uncertainty/5 p-4"
     >
       <p className="text-base font-medium">{STALE_MESSAGE}</p>
       <button

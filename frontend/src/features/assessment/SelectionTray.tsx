@@ -62,9 +62,9 @@ export function SelectionTray({
   return (
     <section
       aria-labelledby={headingId}
-      className="selection-tray screen-only safe-bottom sticky bottom-0 z-40 mt-8 rounded-md border border-line bg-surface p-4 shadow-drawer"
+      className="selection-tray screen-only safe-bottom sticky bottom-0 z-40 mt-8 rounded-md border border-line bg-surface p-4 shadow-drawer lg:p-6"
     >
-      <div className="flex min-h-row items-center justify-between gap-4 border-b border-line">
+      <div className="flex min-h-row flex-wrap items-center justify-between gap-2 border-b border-line">
         <h2 id={headingId} ref={headingRef} tabIndex={-1} className="text-base font-medium">
           Seçili belirtiler <span className="text-ink-muted">({selected.length})</span>
         </h2>
@@ -107,7 +107,7 @@ export function SelectionTray({
                         layout: { type: 'spring', bounce: 0.1, duration: reduced ? 0 : 0.38 },
                         opacity: { duration: reduced ? 0.12 : 0.16 },
                       }}
-                      className="flex min-h-row items-center justify-between gap-3 rounded bg-surface-muted pl-3"
+                      className="flex min-h-row min-w-0 items-center justify-between gap-3 rounded-full bg-surface-muted pl-3"
                     >
                       <span className="min-w-0 truncate">{item.label}</span>
                       <button

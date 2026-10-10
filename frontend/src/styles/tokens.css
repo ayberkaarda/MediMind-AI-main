@@ -2,39 +2,44 @@
   color-scheme: light;
   --color-paper: rgb(255 255 255);
   --color-print-ink: rgb(0 0 0);
-  --c-bg: 242 244 248;
-  --c-surface: 255 255 255;
-  --c-surface-muted: 232 237 247;
-  --c-text: 15 26 43;
-  --c-text-muted: 90 102 122;
-  --c-border: 213 218 228;
-  --c-border-strong: 119 132 154;
-  --c-accent: 59 52 224;
-  --c-accent-hover: 46 39 184;
-  --c-on-accent: 255 255 255;
-  --c-focus: 59 52 224;
-  --c-error: 180 35 24;
-  --c-uncertainty: 133 80 0;
-  --shadow-drawer: 0 8px 24px rgb(var(--c-text) / 0.12);
+  --c-bg: 244 238 228;
+  --c-surface: 251 248 242;
+  --c-surface-muted: 235 227 213;
+  --c-text: 42 38 32;
+  --c-text-muted: 107 98 84;
+  --c-border: 221 211 194;
+  --c-border-strong: 142 132 114;
+  --c-accent: 63 93 75;
+  --c-accent-hover: 49 74 59;
+  --c-on-accent: 251 248 242;
+  --c-focus: 31 95 191;
+  --c-error: 168 50 31;
+  --c-uncertainty: 138 90 18;
+  --c-accent-2: 194 96 60;
+  --c-accent-2-text: 162 74 41;
+  --shadow-drawer: 0 10px 30px -12px rgb(60 40 20 / 0.18);
   --dur-hatch: 120ms;
   --dur-disclosure: 240ms;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --c-bg: 10 17 32;
-  --c-surface: 18 27 46;
-  --c-surface-muted: 36 49 73;
-  --c-text: 232 237 247;
-  --c-text-muted: 147 160 184;
-  --c-border: 38 50 74;
-  --c-border-strong: 126 145 174;
-  --c-accent: 143 140 255;
-  --c-accent-hover: 171 169 255;
-  --c-on-accent: 10 17 32;
-  --c-focus: 185 183 255;
-  --c-error: 255 138 128;
-  --c-uncertainty: 240 180 80;
+  --c-bg: 27 24 20;
+  --c-surface: 37 32 26;
+  --c-surface-muted: 48 42 34;
+  --c-text: 237 230 218;
+  --c-text-muted: 179 168 149;
+  --c-border: 59 52 42;
+  --c-border-strong: 143 133 115;
+  --c-accent: 163 194 174;
+  --c-accent-hover: 188 214 197;
+  --c-on-accent: 23 32 26;
+  --c-focus: 141 184 242;
+  --c-error: 255 156 138;
+  --c-uncertainty: 232 183 102;
+  --c-accent-2: 229 140 104;
+  --c-accent-2-text: 240 165 131;
+  --shadow-drawer: none;
 }
 
 :root {
@@ -46,6 +51,8 @@
   --color-border: rgb(var(--c-border));
   --color-border-strong: rgb(var(--c-border-strong));
   --color-accent: rgb(var(--c-accent));
+  --color-accent-2: rgb(var(--c-accent-2));
+  --color-accent-2-text: rgb(var(--c-accent-2-text));
   --color-accent-hover: rgb(var(--c-accent-hover));
   --color-on-accent: rgb(var(--c-on-accent));
   --color-focus: rgb(var(--c-focus));

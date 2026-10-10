@@ -8,7 +8,7 @@ export function severitySentence(meanWeight: number): string {
 
 export function TechnicalDetails({ result }: { result: PredictResponse }) {
   return (
-    <Disclosure summary="Teknik ayrıntılar" className="border-y border-line">
+    <Disclosure summary="Teknik ayrıntılar" className="border-y border-line py-2">
       <div className="pb-4 text-sm text-ink-muted">
         <p className="max-w-prose text-ink">{severitySentence(result.severity.mean_weight)}</p>
         <dl className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1">

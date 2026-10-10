@@ -153,7 +153,7 @@ export function BodyFigure({
                       transition={{ duration: reduced || lowPower ? 0.12 : 0.28 }}
                       className="body-figure__selection"
                       d={REGION_PATHS[view][region.id]}
-                      fill="var(--color-accent)"
+                      fill="rgb(var(--c-accent) / 0.9)"
                     />
                   )}
                 </g>
@@ -180,6 +180,7 @@ export function BodyFigure({
                   transform={`translate(${anchor.x} ${anchor.y})`}
                 >
                   <circle r="14" />
+                  <circle cx={12} cy={-10} r={4} />
                   <text textAnchor="middle" dominantBaseline="central">
                     {count}
                   </text>

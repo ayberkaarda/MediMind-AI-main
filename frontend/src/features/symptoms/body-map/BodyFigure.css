@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 32px;
 }
 .body-figure__svg {
   display: block;
@@ -22,8 +22,10 @@
 }
 .body-figure__contour {
   fill: none;
-  stroke: var(--color-text);
-  stroke-width: 1.25;
+  stroke: var(--color-text-muted);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
@@ -43,11 +45,16 @@
 .body-figure__badge {
   pointer-events: none;
 }
-.body-figure__badge circle {
-  fill: var(--color-accent);
+.body-figure__badge circle:first-child {
+  fill: var(--color-surface);
+  stroke: var(--color-accent-2);
+  stroke-width: 1.75;
+}
+.body-figure__badge circle:last-of-type {
+  fill: var(--color-accent-2);
 }
 .body-figure__badge text {
-  fill: var(--color-on-accent);
+  fill: var(--color-text);
   font-size: 12px;
   font-family: inherit;
   font-weight: 600;
@@ -65,7 +72,7 @@
   color: var(--color-text);
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 9px 12px;
   cursor: pointer;
   transition:

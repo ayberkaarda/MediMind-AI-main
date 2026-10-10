@@ -28,10 +28,10 @@ export function RegionChips({ regions, activeRegion, counts, onSelect }: RegionC
             aria-pressed={pressed}
             onClick={() => onSelect(pressed ? null : region.id)}
             className={clsx(
-              'inline-flex min-h-row items-center gap-2 rounded border px-4 text-sm transition-colors duration-hatch',
+              'inline-flex min-h-row items-center gap-2 rounded-full border px-4 text-sm transition-colors duration-hatch',
               pressed
                 ? 'border-accent bg-accent/10 font-medium text-ink'
-                : 'border-line bg-surface text-ink hover:bg-surface-muted',
+                : 'border-line-strong bg-surface text-ink hover:bg-surface-muted',
             )}
           >
             {region.label}

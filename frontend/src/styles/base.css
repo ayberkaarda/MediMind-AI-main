@@ -36,11 +36,12 @@
 
 @layer components {
   .btn {
-    @apply inline-flex min-h-row items-center justify-center gap-2 rounded px-4 text-base font-medium;
+    @apply inline-flex min-h-row items-center justify-center gap-2 rounded-full px-4 text-base font-semibold;
     transition:
       background-color var(--dur-hatch) linear,
       border-color var(--dur-hatch) linear,
-      color var(--dur-hatch) linear;
+      color var(--dur-hatch) linear,
+      transform var(--dur-hatch) ease;
   }
 
   .btn:disabled {
@@ -49,6 +50,7 @@
 
   .btn-primary {
     @apply btn bg-accent text-on-accent;
+    min-height: 3.25rem;
   }
 
   /* The focus outline sits on the page with a 2px gap; the inner ring keeps it visible on the accent fill. */
@@ -58,6 +60,7 @@
 
   .btn-primary:not(:disabled):hover {
     @apply bg-accent-hover;
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
@@ -85,8 +88,8 @@
   }
 
   .field {
-    @apply block w-full rounded border border-line-strong bg-surface px-4 font-serif text-lg text-ink;
-    min-height: 4rem;
+    @apply block w-full rounded-full border border-line-strong bg-surface px-4 font-sans text-base text-ink;
+    min-height: 3.5rem;
   }
 
   .field::placeholder {
@@ -157,10 +160,10 @@ input,
 
   .selection-tray {
     position: fixed;
-    inset-inline: 0;
-    bottom: 0;
+    inset-inline: 0.75rem;
+    bottom: 0.5rem;
     margin-top: 0;
-    border-radius: 20px 20px 0 0;
+    border-radius: 28px;
   }
 }
 
@@ -171,4 +174,94 @@ input,
     background-color 200ms,
     color 200ms,
     border-color 200ms;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  .font-serif {
+    font-variation-settings: 'SOFT' 50;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .app-shell {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .app-shell::before,
+  .app-shell::after {
+    content: '';
+    position: fixed;
+    z-index: -1;
+    width: min(42rem, 90vw);
+    height: 36rem;
+    pointer-events: none;
+    border-radius: 42% 58% 65% 35% / 55% 40% 60% 45%;
+  }
+
+  .app-shell::before {
+    top: 8rem;
+    left: -16rem;
+    background: radial-gradient(ellipse, rgb(var(--c-accent) / 0.06), transparent 70%);
+  }
+
+  .app-shell::after {
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse, rgb(var(--c-accent-2) / 0.06), transparent 70%);
+  }
+
+  .organic-surface {
+    box-shadow: var(--shadow-drawer);
+  }
+
+  :root[data-theme='dark'] .organic-surface {
+    border: 1px solid var(--color-border);
+  }
+
+  .disease-name {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .selection-tray li {
+    max-width: 100%;
+  }
+
+  #main > div > section {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .selection-tray {
+    bottom: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary:not(:disabled):hover {
+    transform: none;
+  }
+}
+
+@layer components {
+  .wordmark {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 640px) {
+  .wordmark {
+    font-size: 1.5rem;
+  }
 }

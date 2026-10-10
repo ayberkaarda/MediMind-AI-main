@@ -35,6 +35,10 @@ export function applyTheme(theme: ResolvedTheme): void {
   }
   root.setAttribute('data-theme', theme);
   root.style.colorScheme = theme;
+  const themeColor = getComputedStyle(root).getPropertyValue('--color-bg').trim();
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+    meta.content = themeColor;
+  });
 }
 
 export function useTheme() {

@@ -43,7 +43,7 @@ export function Disclosure({
         aria-controls={contentId}
         onClick={toggle}
         className={clsx(
-          'flex min-h-row w-full items-center justify-between gap-3 text-left text-base font-medium text-ink',
+          'flex min-h-row w-full items-center justify-between gap-3 rounded text-left font-serif text-lg font-medium text-ink',
           buttonClassName,
         )}
       >

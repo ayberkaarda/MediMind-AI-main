@@ -31,7 +31,7 @@ function Track({
     <svg
       viewBox="0 0 100 16"
       preserveAspectRatio="none"
-      className={clsx('block h-4 w-full overflow-visible', variant === 'screen' && 'text-ink')}
+      className={clsx('block h-4 w-full overflow-visible', variant === 'screen' && 'text-accent')}
       aria-hidden="true"
       focusable="false"
     >
@@ -45,7 +45,8 @@ function Track({
           stroke="currentColor"
           strokeOpacity={variant === 'screen' ? 1 : 0.5}
           className={variant === 'screen' ? 'text-line' : undefined}
-          strokeWidth={1}
+          strokeDasharray={variant === 'screen' ? '1 3' : undefined}
+          strokeWidth={variant === 'screen' ? 0.5 : 1}
           vectorEffect="non-scaling-stroke"
         />
       ))}
@@ -57,16 +58,19 @@ function Track({
         stroke="currentColor"
         className={variant === 'screen' ? 'text-line' : undefined}
         strokeOpacity={variant === 'screen' ? 1 : 0.5}
-        strokeWidth={1}
+        strokeDasharray={variant === 'screen' ? '1 3' : undefined}
+        strokeWidth={variant === 'screen' ? 0.5 : 1}
         vectorEffect="non-scaling-stroke"
       />
       <m.rect
         data-testid="ruler-bar"
         x={0}
-        y={4}
-        height={8}
+        y={3}
+        height={10}
         width={width}
+        rx={variant === 'screen' ? 3 : 0}
         fill="currentColor"
+        fillOpacity={variant === 'screen' && index > 0 ? 0.55 : 1}
         style={{ transformOrigin: '0px 8px' }}
         initial={variant === 'print' || reduced ? false : { scaleX: 0 }}
         animate={{ scaleX: 1 }}
@@ -82,7 +86,7 @@ function Track({
 
 /**
  * Model scores on one shared 0–100 axis. Bars are never normalised to the top result,
- * share one colour and carry no emphasis on the first row.
+ * share one colour, with a softer tint on subsequent rows.
  */
 export function ScoreList({
   predictions,
@@ -118,7 +122,7 @@ export function ScoreList({
 
   return (
     <div className={className} aria-live="polite" aria-atomic="true" aria-label="Model skoru">
-      <ol className="flex flex-col">
+      <ol className="flex flex-col gap-2">
         {rows.map((row, index) => (
           <li
             key={row.disease_id}

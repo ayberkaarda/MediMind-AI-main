@@ -42,7 +42,7 @@ export function RegionPicker({
   const regionSymptoms = region ? catalog.symptoms.filter((s) => s.region === region) : [];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
         <BodyFigure
           view={figureView}
@@ -68,7 +68,7 @@ export function RegionPicker({
         aria-labelledby={listHeadingId}
         className="border-t border-line pt-4"
       >
-        <h3 id={listHeadingId} className="text-base font-medium">
+        <h3 id={listHeadingId} className="font-serif text-lg font-medium">
           {region
             ? `${catalog.regionLabel(region)} bölgesindeki belirtiler`
             : 'Bölgedeki belirtiler'}
@@ -94,10 +94,10 @@ export function RegionPicker({
                     <span
                       aria-hidden="true"
                       className={clsx(
-                        'grid h-5 w-5 shrink-0 place-items-center rounded-sm border transition-colors duration-hatch',
+                        'grid h-5 w-5 shrink-0 place-items-center rounded-full border transition-colors duration-hatch',
                         checked
                           ? 'border-accent bg-accent text-on-accent'
-                          : 'border-ink-muted bg-surface',
+                          : 'border-line-strong bg-surface',
                       )}
                     >
                       {checked ? <Icon name="check" size={14} strokeWidth={2.25} /> : null}

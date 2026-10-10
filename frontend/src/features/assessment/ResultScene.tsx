@@ -4,7 +4,7 @@ import { useReducedMotion } from 'motion/react';
 import { useLowPower } from '../../lib/useLowPower';
 
 export function ResultScene({ report }: { report: ReactNode }) {
-  return <div className="mt-4 rounded-md bg-surface p-6 md:p-8">{report}</div>;
+  return <div className="organic-surface mt-4 rounded-md bg-surface p-6 md:p-8">{report}</div>;
 }
 
 export function ReportReveal({ children }: { children: ReactNode }) {

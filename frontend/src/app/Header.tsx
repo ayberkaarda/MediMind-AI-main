@@ -7,12 +7,16 @@ interface HeaderProps {
 
 export function Header({ onOpenHistory }: HeaderProps) {
   return (
-    <header className="screen-only border-b border-line">
-      <div className="mx-auto flex h-16 w-full max-w-shell items-center justify-between gap-3 px-4 md:px-6">
-        <a href="/" className="font-serif text-lg font-semibold text-ink">
+    <header className="screen-only border-b border-line bg-canvas/80">
+      <div className="mx-auto flex h-20 w-full max-w-shell items-center justify-between gap-2 px-4 md:px-6">
+        <a
+          href="/"
+          className="wordmark inline-flex shrink-0 items-center gap-2 font-serif font-semibold text-ink"
+        >
+          <Icon name="leaf" size={26} className="text-accent" />
           MediMind
         </a>
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 rounded-full bg-surface-muted p-1 sm:gap-2">
           <button
             type="button"
             className="btn-quiet min-w-row px-0 text-sm sm:px-3"

@@ -135,10 +135,10 @@ export function FocusStage({ historyOpen, onCloseHistory, onOpenHistory }: Focus
           <section
             aria-labelledby="page-title"
             className={
-              showReport ? 'flex flex-col gap-6 lg:col-span-8' : 'flex flex-col gap-6 lg:col-span-7'
+              showReport ? 'flex flex-col gap-8 lg:col-span-8' : 'flex flex-col gap-8 lg:col-span-7'
             }
           >
-            <h1 id="page-title" className="font-serif text-xl font-semibold md:text-2xl">
+            <h1 id="page-title" className="font-serif text-xl font-medium md:text-2xl">
               Hangi belirtileri yaşıyorsunuz?
             </h1>
             <p className="max-w-prose text-ink-muted">
@@ -187,10 +187,10 @@ export function FocusStage({ historyOpen, onCloseHistory, onOpenHistory }: Focus
             <section
               aria-label="Çalışma alanı"
               className={
-                showReport ? 'flex flex-col gap-6 lg:col-span-4' : 'lg:col-span-5 lg:self-start'
+                showReport ? 'flex flex-col gap-8 lg:col-span-4' : 'lg:col-span-5 lg:self-start'
               }
             >
-              <div className="rounded-md bg-surface p-6">
+              <div className="organic-surface rounded-md bg-surface p-6 lg:p-8">
                 {regionPicker('compact', showReport ? 160 : firstSelection ? 280 : 420)}
               </div>
               {showReport ? tray : null}

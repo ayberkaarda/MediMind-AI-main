@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react';
 
 const PATHS = {
+  leaf: 'M5 19C3 11 8 4 20 4c0 10-5 16-12 13M5 21C8 15 12 10 17 7',
   close: 'M6 6l12 12M18 6L6 18',
   chevronDown: 'M6 9l6 6 6-6',
   search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4',

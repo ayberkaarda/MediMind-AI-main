@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { Icon } from '../../components/ui/Icon';
 
 export function sentenceCase(text: string): string {
   const trimmed = text.trim();
@@ -11,7 +12,7 @@ export function PrecautionList({ precautions }: { precautions: string[] }) {
   const items = precautions.map(sentenceCase).filter(Boolean);
   return (
     <section aria-labelledby={headingId}>
-      <h3 id={headingId} className="text-base font-medium">
+      <h3 id={headingId} className="font-serif text-lg font-medium">
         Önlemler
       </h3>
       {items.length === 0 ? (
@@ -19,11 +20,9 @@ export function PrecautionList({ precautions }: { precautions: string[] }) {
       ) : (
         <ul className="mt-2 max-w-prose">
           {items.map((item) => (
-            <li
-              key={item}
-              className="flex gap-3 border-b border-line py-2 before:mt-[0.6875rem] before:h-px before:w-3 before:shrink-0 before:bg-ink-muted before:content-[''] last:border-b-0"
-            >
-              {item}
+            <li key={item} className="flex gap-3 border-b border-line py-4 last:border-b-0">
+              <Icon name="leaf" className="mt-1 shrink-0 text-accent" />
+              <span>{item}</span>
             </li>
           ))}
         </ul>

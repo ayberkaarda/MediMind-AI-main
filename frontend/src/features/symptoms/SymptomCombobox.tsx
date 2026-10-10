@@ -91,7 +91,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         <div className="relative">
           <Icon
             name="search"
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted"
+            className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-ink-muted"
           />
           <input
             {...getInputProps({
@@ -103,7 +103,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
             autoComplete="off"
             spellCheck={false}
             placeholder={regionName ? `${regionName} bölgesinde ara` : 'Örneğin baş ağrısı'}
-            className="field pl-10"
+            className="field pl-12"
           />
         </div>
 
@@ -121,7 +121,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
         <ul
           {...getMenuProps()}
           className={clsx(
-            'absolute inset-x-0 z-30 mt-1 max-h-80 overflow-y-auto rounded border border-line bg-surface py-1',
+            'absolute inset-x-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-md border border-line-strong bg-surface py-2 shadow-drawer',
             !(isOpen && items.length > 0) && 'hidden',
           )}
         >
@@ -131,7 +131,7 @@ export const SymptomCombobox = forwardRef<HTMLInputElement, SymptomComboboxProps
                   key={item.id}
                   {...getItemProps({ item, index })}
                   className={clsx(
-                    'flex min-h-row cursor-pointer items-center justify-between gap-4 px-3 text-base',
+                    'flex min-h-row cursor-pointer items-center justify-between gap-4 px-5 py-2 text-base',
                     highlightedIndex === index && 'bg-surface-muted',
                   )}
                 >

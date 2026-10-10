@@ -73,14 +73,14 @@ export const ReportPanel = forwardRef<HTMLHeadingElement, ReportPanelProps>(func
         </header>
 
         <section aria-label="En yüksek skorlu sonuç" className="flex flex-col gap-3">
-          <h3 className="font-serif text-xl font-semibold">{top.name}</h3>
-          <p className="text-base font-medium tabular-nums">
+          <h3 className="disease-name font-serif font-medium">{top.name}</h3>
+          <p className="self-start rounded-full bg-surface-muted px-4 py-2 text-sm font-semibold tabular-nums">
             Model skoru {formatScore(top.probability)}
           </p>
         </section>
 
         <section aria-labelledby={rulerHeadingId}>
-          <h3 id={rulerHeadingId} className="text-base font-medium">
+          <h3 id={rulerHeadingId} className="font-serif text-lg font-medium">
             Model skorları
           </h3>
           <ScoreList predictions={result.predictions} className="mt-2" />
