@@ -1,0 +1,120 @@
+{
+  "model_version": "20261010-lr-59a12e81",
+  "model_type": "lr",
+  "trained_at": "2026-10-10T17:40:37+00:00",
+  "intended_use": "Educational demo that ranks diseases from a symptom checklist. Not a diagnostic tool.",
+  "data": {
+    "source": "dataset.csv",
+    "dataset_sha256": "84af3e52ecbb94c433a726c8f838e9e16982054d739072c20529cd3f87ec3e4c",
+    "n_rows": 4920,
+    "n_distinct_symptom_sets": 304,
+    "n_features": 131,
+    "n_classes": 41,
+    "feature_hash": "59a12e8139b141a75bc6aac53abb1b066215ac5dfed13b18c3c607f8a5e2c4df"
+  },
+  "config": {
+    "folds": 5,
+    "seed": 42,
+    "c_grid": [
+      0.1,
+      0.3,
+      1.0,
+      3.0
+    ],
+    "selected_C": 3.0,
+    "perturbation_repeats": 3,
+    "rf_trees": 200
+  },
+  "metrics": {
+    "grouped_cv": {
+      "folds": 5,
+      "per_fold": {
+        "accuracy": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "macro_f1": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "top3": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "log_loss": {
+          "mean": 0.0128,
+          "std": 0.0019
+        },
+        "brier": {
+          "mean": 0.0007,
+          "std": 0.0003
+        }
+      },
+      "pooled": {
+        "accuracy": 1.0,
+        "macro_f1": 1.0,
+        "top3": 1.0,
+        "log_loss": 0.0128,
+        "brier": 0.0007
+      },
+      "perturbation": {
+        "description": "one random symptom removed from each held-out combination",
+        "n": 912,
+        "top1": 0.9967,
+        "top3": 1.0
+      }
+    },
+    "dedup_logo": {
+      "n_rows": 304,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "top3": 1.0
+    }
+  },
+  "c_search": [
+    {
+      "C": 0.1,
+      "log_loss": 0.2012
+    },
+    {
+      "C": 0.3,
+      "log_loss": 0.0781
+    },
+    {
+      "C": 1.0,
+      "log_loss": 0.0297
+    },
+    {
+      "C": 3.0,
+      "log_loss": 0.0128
+    }
+  ],
+  "comparison": {
+    "lr": {
+      "grouped_cv_macro_f1": 1.0,
+      "grouped_cv_top3": 1.0,
+      "grouped_cv_log_loss": 0.0128,
+      "grouped_cv_brier": 0.0007,
+      "dedup_logo_macro_f1": 1.0,
+      "perturbation_top3": 1.0
+    },
+    "rf": {
+      "grouped_cv_macro_f1": 0.9974,
+      "grouped_cv_top3": 1.0,
+      "grouped_cv_log_loss": 0.1395,
+      "grouped_cv_brier": 0.0515,
+      "dedup_logo_macro_f1": 1.0,
+      "perturbation_top3": 1.0
+    }
+  },
+  "limitations": [
+    "Synthetic-looking Kaggle dataset with ~304 distinct combinations.",
+    "Scores are model outputs and not calibrated probabilities of disease.",
+    "Severity weights come from the dataset and are not clinical triage."
+  ],
+  "environment": {
+    "sklearn_version": "1.9.1",
+    "python_version": "3.12.14",
+    "git_sha": "c2b9720"
+  }
+}
