@@ -266,6 +266,21 @@ For local backend settings, you can copy `backend/.env.example` to `backend/.env
 | `MEDIMIND_CONFIDENCE_MEDIUM_AT` | `0.3` | API confidence label threshold; not shown in the interface |
 | `VITE_API_BASE_URL` | Empty | API origin; embedded in the frontend at build time |
 
+### Deploying to Vercel
+
+The repository deploys as a single Vercel project: the frontend is served as static files from `frontend/dist` and the FastAPI backend runs as a Python function under `/api/*` (`api/index.py`, configured by `vercel.json`).
+
+Requirements: a Vercel account and Node.js.
+
+```bash
+npx vercel login
+npx vercel --prod
+```
+
+Defaults for `MEDIMIND_DATABASE_URL`, `MEDIMIND_LOG_FORMAT`, `MEDIMIND_APP_ENV` and `MEDIMIND_CORS_ORIGINS` are set in `vercel.json` (same origin, so CORS stays empty); override them in the project's environment variables if needed. Leave `VITE_API_BASE_URL` empty so the frontend calls `/api/v1` on the same origin.
+
+> Note: serverless instances have no persistent disk. The history database lives in `/tmp`, is not shared between instances and is lost on cold start, so history is best-effort on Vercel. Use an external database through `MEDIMIND_DATABASE_URL` if durable history is needed.
+
 ## Development
 
 Common targets from the root directory:

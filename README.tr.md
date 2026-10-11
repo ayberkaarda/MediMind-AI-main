@@ -266,6 +266,21 @@ Yerel backend ayarları için `backend/.env.example` dosyasını `backend/.env` 
 | `MEDIMIND_CONFIDENCE_MEDIUM_AT` | `0.3` | API güven etiketi eşiği; arayüzde gösterilmez |
 | `VITE_API_BASE_URL` | Boş | API origin'i; derleme sırasında frontend'e alınır |
 
+### Vercel'e dağıtım
+
+Depo tek bir Vercel projesi olarak yayınlanır: frontend `frontend/dist` altından statik dosya olarak sunulur, FastAPI backend ise `/api/*` altında bir Python fonksiyonu olarak çalışır (`api/index.py`, yapılandırma `vercel.json`).
+
+Gereksinimler: bir Vercel hesabı ve Node.js.
+
+```bash
+npx vercel login
+npx vercel --prod
+```
+
+`MEDIMIND_DATABASE_URL`, `MEDIMIND_LOG_FORMAT`, `MEDIMIND_APP_ENV` ve `MEDIMIND_CORS_ORIGINS` varsayılanları `vercel.json` içinde tanımlıdır (aynı origin olduğu için CORS boş kalır); gerekirse projenin ortam değişkenlerinden geçersiz kılın. Frontend'in aynı origin'deki `/api/v1` adresini çağırması için `VITE_API_BASE_URL` boş bırakılmalıdır.
+
+> Not: serverless örneklerinde kalıcı disk yoktur. Geçmiş veritabanı `/tmp` altındadır, örnekler arasında paylaşılmaz ve soğuk başlangıçta kaybolur; bu nedenle Vercel'de geçmiş en iyi çaba esaslıdır. Kalıcı geçmiş gerekiyorsa `MEDIMIND_DATABASE_URL` ile harici bir veritabanı kullanın.
+
 ## Geliştirme
 
 Kök dizinden ortak hedefler:
