@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from app.db.models import AnalysisRecord
 from app.main import create_app
-from app.ml.artifact import ArtifactMismatchError, ModelArtifact, save_artifact
+from app.ml.artifact import FORMAT_VERSION, ArtifactMismatchError, ModelArtifact, save_artifact
 from app.services.container import ServiceContainer
 from app.services.prediction_service import PredictionOutcome
 from tests.conftest import CLIENT_A, make_settings
@@ -103,7 +103,7 @@ def test_broken_artifact_starts_degraded(tmp_path: Path) -> None:
     models.mkdir()
     joblib.dump(
         {
-            "format_version": 1,
+            "format_version": FORMAT_VERSION,
             "estimator": None,
             "feature_names": None,
             "classes": [],

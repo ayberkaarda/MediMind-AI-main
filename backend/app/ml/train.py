@@ -1,4 +1,9 @@
-"""Training CLI: ``medimind-train --out <dir> [--model lr|rf]``.
+"""Training CLI: ``medimind-train --out <dir>``.
+
+Ships a multinomial logistic regression; a random forest is evaluated on the same
+folds as a comparison baseline only and never written to the artifact. The fitted
+logistic regression is converted to a numpy-only ``LinearSoftmaxModel`` so the
+API does not need scikit-learn at runtime.
 
 The dataset repeats a small number of (symptom set, disease) combinations many
 times, so rows are grouped by symptom set for every evaluation to keep
@@ -33,6 +38,7 @@ from sklearn.model_selection import LeaveOneGroupOut, StratifiedGroupKFold, cros
 from app.core.paths import DATASET_PATH, MODEL_CARD_FILENAME, MODEL_FILENAME, SYMPTOMS_PATH
 from app.ml.artifact import ModelArtifact, save_artifact
 from app.ml.evaluate import align_proba, log_loss, mean_std, summarize, top_k_accuracy
+from app.ml.linear import LinearSoftmaxModel
 from app.ml.preprocessing import build_index, feature_hash, normalize_disease, normalize_symptom
 
 C_GRID: tuple[float, ...] = (0.3, 1.0, 3.0, 10.0)
@@ -278,7 +284,6 @@ def _comparison_row(report: dict[str, Any]) -> dict[str, float]:
 def train(
     dataset_path: Path,
     out_dir: Path,
-    model: str = "lr",
     symptoms_out: Path | None = SYMPTOMS_PATH,
     folds: int = DEFAULT_FOLDS,
     inner_folds: int = DEFAULT_INNER_FOLDS,
@@ -296,25 +301,22 @@ def train(
     )
 
     reports: dict[str, dict[str, Any]] = {}
-    outer_cs: list[float] = []
-    final_c: float | None = None
-    if model == "lr" or baseline:
-        print(
-            f"Logistic regression: outer {folds}-fold grouped CV, "
-            f"C chosen per outer fold by inner {inner_folds}-fold grouped CV log-loss"
-        )
-        cv_report = grouped_cv(
-            ds, nested_lr_planner(ds, c_grid, inner_folds, seed), folds, seed, perturbation_repeats
-        )
-        outer_cs = [float(f["C"]) for f in cv_report["fold_details"]]
-        for f in cv_report["fold_details"]:
-            print(f"  outer fold {f['fold']}: C={f['C']} inner log-loss={f['inner_log_loss']}")
-        final_c = most_frequent_c(outer_cs)
-        reports["lr"] = {
-            "grouped_cv": cv_report,
-            "dedup_logo": dedup_logo(ds, partial(make_estimator, "lr", final_c, seed)),
-        }
-    if model == "rf" or baseline:
+    print(
+        f"Logistic regression: outer {folds}-fold grouped CV, "
+        f"C chosen per outer fold by inner {inner_folds}-fold grouped CV log-loss"
+    )
+    cv_report = grouped_cv(
+        ds, nested_lr_planner(ds, c_grid, inner_folds, seed), folds, seed, perturbation_repeats
+    )
+    outer_cs = [float(f["C"]) for f in cv_report["fold_details"]]
+    for f in cv_report["fold_details"]:
+        print(f"  outer fold {f['fold']}: C={f['C']} inner log-loss={f['inner_log_loss']}")
+    final_c = most_frequent_c(outer_cs)
+    reports["lr"] = {
+        "grouped_cv": cv_report,
+        "dedup_logo": dedup_logo(ds, partial(make_estimator, "lr", final_c, seed)),
+    }
+    if baseline:
         print("Evaluating random forest baseline (same outer folds, no tuning)")
         rf_factory = partial(make_estimator, "rf", 1.0, seed)
         reports["rf"] = {
@@ -322,17 +324,19 @@ def train(
             "dedup_logo": dedup_logo(ds, rf_factory),
         }
 
-    fit_c = final_c if model == "lr" and final_c is not None else 1.0
-    estimator = make_estimator(model, fit_c, seed)
-    estimator.fit(ds.X, ds.y)
-    if model == "rf":
-        estimator.set_params(n_jobs=None)
+    fitted = make_estimator("lr", final_c, seed).fit(ds.X, ds.y)
+    estimator = LinearSoftmaxModel.from_sklearn(fitted)
+    max_diff = float(np.max(np.abs(estimator.predict_proba(ds.X) - fitted.predict_proba(ds.X))))
+    if max_diff > 1e-9:
+        raise RuntimeError(f"Converted model deviates from the fitted one by {max_diff:.2e}")
 
     trained_at = datetime.now(UTC).replace(microsecond=0)
     fhash = feature_hash(ds.feature_names)
+    model = "lr"
     metadata = {
         "model_version": f"{trained_at:%Y%m%d}-{model}-{fhash[:8]}",
         "model_type": model,
+        "estimator_format": "linear_softmax",
         "trained_at": trained_at.isoformat(),
         "sklearn_version": sklearn.__version__,
         "python_version": platform.python_version(),
@@ -340,7 +344,7 @@ def train(
         "dataset_sha256": ds.sha256,
         "n_train_rows": len(ds.y),
         "git_sha": _git_sha(),
-        "hyperparameters": {"C": fit_c} if model == "lr" else {"n_estimators": RF_TREES},
+        "hyperparameters": {"C": final_c},
     }
     artifact = ModelArtifact(
         estimator=estimator,
@@ -351,7 +355,7 @@ def train(
     out_dir.mkdir(parents=True, exist_ok=True)
     model_path = save_artifact(artifact, out_dir / MODEL_FILENAME)
 
-    shipped = reports[model]
+    shipped = reports["lr"]
     card = {
         "model_version": metadata["model_version"],
         "model_type": model,
@@ -444,7 +448,6 @@ def _print_summary(card: dict[str, Any], model_path: Path, card_path: Path, seco
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="medimind-train", description=__doc__)
     parser.add_argument("--out", type=Path, required=True, help="output directory")
-    parser.add_argument("--model", choices=("lr", "rf"), default="lr")
     parser.add_argument("--dataset", type=Path, default=DATASET_PATH)
     parser.add_argument(
         "--symptoms-out",
@@ -466,7 +469,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     train(
         dataset_path=args.dataset,
         out_dir=args.out,
-        model=args.model,
         symptoms_out=None if args.no_symptoms else args.symptoms_out,
         folds=args.folds,
         inner_folds=args.inner_folds,

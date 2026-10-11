@@ -29,7 +29,7 @@ class HistoryListResponse(BaseModel):
                         "top_disease_name": "Mantar Enfeksiyonu",
                         "probability": 0.93,
                         "severity_level": "low",
-                        "model_version": "20261010-lr-59a12e81",
+                        "model_version": "20261011-lr-59a12e81",
                     }
                 ],
                 "total": 1,

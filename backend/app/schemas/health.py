@@ -12,7 +12,7 @@ class HealthResponse(BaseModel):
             "example": {
                 "status": "ok",
                 "model_loaded": True,
-                "model_version": "20261010-lr-59a12e81",
+                "model_version": "20261011-lr-59a12e81",
                 "model_type": "lr",
                 "trained_at": "2026-10-10T17:40:37+00:00",
                 "sklearn_version": "1.9.1",

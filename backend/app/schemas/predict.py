@@ -61,7 +61,7 @@ class PredictResponse(BaseModel):
             "example": {
                 "request_id": "6f1c2d0e9a8b4c7d8e9f0a1b2c3d4e5f",
                 "analysis_id": 12,
-                "model_version": "20261010-lr-59a12e81",
+                "model_version": "20261011-lr-59a12e81",
                 "input": {"symptoms": FUNGAL_EXAMPLE, "count": 4},
                 "top_prediction": {
                     "disease_id": "fungal_infection",

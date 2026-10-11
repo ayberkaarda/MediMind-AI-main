@@ -1,7 +1,7 @@
 {
-  "model_version": "20261010-lr-59a12e81",
+  "model_version": "20261011-lr-59a12e81",
   "model_type": "lr",
-  "trained_at": "2026-10-10T18:03:13+00:00",
+  "trained_at": "2026-10-11T00:16:32+00:00",
   "intended_use": "Educational demo that ranks diseases from a symptom checklist. Not a diagnostic tool.",
   "data": {
     "source": "dataset.csv",
@@ -163,6 +163,6 @@
   "environment": {
     "sklearn_version": "1.9.1",
     "python_version": "3.12.14",
-    "git_sha": "1d416e9"
+    "git_sha": "34f2e6d"
   }
 }

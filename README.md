@@ -4,6 +4,8 @@
 
 MediMind is a Turkish preliminary assessment tool that ranks diseases using a machine learning model based on selected symptoms. It presents disease descriptions and precautions from the dataset; it does not diagnose or replace a physician's assessment. It was developed for educational and informational purposes.
 
+Live demo: https://medimind-ai-seven-khaki.vercel.app
+
 ## Screenshots
 
 | View | Image |
@@ -130,7 +132,7 @@ Representative example showing the response schema; the score, record ID, and ti
 {
   "request_id": "6f1c2d0e9a8b4c7d8e9f0a1b2c3d4e5f",
   "analysis_id": 12,
-  "model_version": "20261010-lr-59a12e81",
+  "model_version": "20261011-lr-59a12e81",
   "input": {
     "symptoms": ["itching", "skin_rash", "nodal_skin_eruptions", "dischromic_patches"],
     "count": 4
@@ -161,7 +163,7 @@ Source: [Disease Symptom Prediction](https://www.kaggle.com/datasets/itachi9604/
 
 Symptom names are converted to canonical `snake_case`; spaces and repeated underscores are corrected, and known typos are consolidated through alias mappings. Legacy names with spaces are also accepted. Symptom combinations are converted into binary feature vectors; Turkish labels, region mappings, descriptions, precautions, and symptom weights are provided through the registry.
 
-The distributed model is multinomial logistic regression with the `lbfgs` solver. According to the [model card](backend/models/model_card.json), **C=10.0**, selected by group-CV log-loss from the range `[0.3, 1.0, 3.0, 10.0]`, uses seed 42. The model version is `20261010-lr-59a12e81`; the artifact is at `backend/models/disease_model.joblib`. Random forest is only a comparison model.
+The distributed model is multinomial logistic regression with the `lbfgs` solver. According to the [model card](backend/models/model_card.json), **C=10.0**, selected by group-CV log-loss from the range `[0.3, 1.0, 3.0, 10.0]`, uses seed 42. The model version is `20261011-lr-59a12e81`; the artifact is at `backend/models/disease_model.joblib`. scikit-learn is used only for training; the fitted coefficients are stored in a numpy-only softmax model, so the API does not install scikit-learn or scipy. Random forest is only a comparison model.
 
 Evaluation uses three views: five-fold `StratifiedGroupKFold` grouped by symptom-combination hash, `LeaveOneGroupOut` (LOGO) on the 304-row deduplicated table, and a perturbation test that randomly removes one symptom from test combinations. Perturbation includes three repetitions, for a total of 912 evaluations.
 
@@ -265,6 +267,21 @@ For local backend settings, you can copy `backend/.env.example` to `backend/.env
 | `MEDIMIND_CONFIDENCE_HIGH_AT` | `0.6` | API confidence label threshold; not shown in the interface |
 | `MEDIMIND_CONFIDENCE_MEDIUM_AT` | `0.3` | API confidence label threshold; not shown in the interface |
 | `VITE_API_BASE_URL` | Empty | API origin; embedded in the frontend at build time |
+
+### Deploying to Vercel
+
+The repository deploys as a single Vercel project: the frontend is served as static files from `frontend/dist` and the FastAPI backend runs as a Python function under `/api/*` (`api/index.py`, configured by `vercel.json`).
+
+Requirements: a Vercel account and Node.js.
+
+```bash
+npx vercel login
+npx vercel --prod
+```
+
+Defaults for `MEDIMIND_DATABASE_URL`, `MEDIMIND_LOG_FORMAT`, `MEDIMIND_APP_ENV` and `MEDIMIND_CORS_ORIGINS` are set in `vercel.json` (same origin, so CORS stays empty); override them in the project's environment variables if needed. Leave `VITE_API_BASE_URL` empty so the frontend calls `/api/v1` on the same origin.
+
+> Note: serverless instances have no persistent disk. The history database lives in `/tmp`, is not shared between instances and is lost on cold start, so history is best-effort on Vercel. Use an external database through `MEDIMIND_DATABASE_URL` if durable history is needed.
 
 ## Development
 

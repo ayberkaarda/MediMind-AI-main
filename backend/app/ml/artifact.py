@@ -3,12 +3,15 @@
 Layout::
 
     {
-        "format_version": 1,
-        "estimator": <fitted sklearn classifier>,
+        "format_version": 2,
+        "estimator": <LinearSoftmaxModel>,
         "feature_names": [...],
         "classes": [...],
         "metadata": {...},
     }
+
+The estimator is a numpy-only :class:`~app.ml.linear.LinearSoftmaxModel`, so
+loading and serving an artifact never imports scikit-learn.
 """
 
 from __future__ import annotations
@@ -16,25 +19,20 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
 
 import joblib
 import numpy as np
-import numpy.typing as npt
 
+from app.ml.linear import LinearSoftmaxModel
 from app.ml.preprocessing import feature_hash
 from app.ml.registry import DataRegistry
 
-FORMAT_VERSION = 1
+FORMAT_VERSION = 2
 REQUIRED_KEYS = ("format_version", "estimator", "feature_names", "classes", "metadata")
+ESTIMATOR_ATTRIBUTES = ("predict_proba", "classes_", "n_features_in_")
 
 logger = logging.getLogger(__name__)
-
-
-class Classifier(Protocol):
-    classes_: Any
-
-    def predict_proba(self, x: Any) -> npt.NDArray[np.float64]: ...
 
 
 class ArtifactError(RuntimeError):
@@ -47,7 +45,7 @@ class ArtifactMismatchError(ArtifactError):
 
 @dataclass(frozen=True)
 class ModelArtifact:
-    estimator: Classifier
+    estimator: LinearSoftmaxModel
     feature_names: tuple[str, ...]
     classes: tuple[str, ...]
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -94,8 +92,12 @@ def _parse_payload(payload: Any, source: str) -> ModelArtifact:
     metadata = payload["metadata"]
     if not isinstance(metadata, dict):
         raise ArtifactError("Artifact field 'metadata' must be a mapping")
+    estimator = payload["estimator"]
+    missing = [a for a in ESTIMATOR_ATTRIBUTES if not hasattr(estimator, a)]
+    if missing:
+        raise ArtifactError(f"Artifact estimator lacks {', '.join(missing)}")
     return ModelArtifact(
-        estimator=payload["estimator"],
+        estimator=estimator,
         feature_names=_string_tuple(payload["feature_names"], "feature_names"),
         classes=_string_tuple(payload["classes"], "classes"),
         metadata=dict(metadata),
@@ -116,10 +118,6 @@ def load_artifact(path: Path) -> ModelArtifact:
         raise
     except Exception as exc:
         raise ArtifactError(f"Invalid model artifact {path}: {exc}") from exc
-
-
-def _minor(version: str) -> tuple[str, ...]:
-    return tuple(version.split(".")[:2])
 
 
 def _check_estimator(artifact: ModelArtifact) -> None:
@@ -170,15 +168,6 @@ def verify_artifact(artifact: ModelArtifact, registry: DataRegistry) -> list[str
     for kind, diseases in registry.missing_disease_info(artifact.classes).items():
         if diseases:
             warnings.append(f"Missing Turkish {kind} for: {', '.join(diseases)}")
-
-    trained_with = artifact.metadata.get("sklearn_version")
-    if trained_with:
-        import sklearn
-
-        if _minor(str(trained_with)) != _minor(sklearn.__version__):
-            warnings.append(
-                f"Artifact trained with scikit-learn {trained_with}, running {sklearn.__version__}"
-            )
     for message in warnings:
         logger.warning(message)
     return warnings

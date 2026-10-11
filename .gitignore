@@ -57,3 +57,8 @@ backend/htmlcov/
 backend/.venv/
 frontend/coverage/
 .env
+
+# Vercel
+.vercel
+
+.vercel

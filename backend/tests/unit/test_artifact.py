@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 from app.ml.artifact import (
+    FORMAT_VERSION,
     ArtifactError,
     ArtifactMismatchError,
     ModelArtifact,
@@ -16,6 +17,7 @@ from app.ml.artifact import (
     save_artifact,
     verify_artifact,
 )
+from app.ml.linear import LinearSoftmaxModel
 from app.ml.registry import DataRegistry
 
 
@@ -29,7 +31,8 @@ def test_roundtrip(tmp_path: Path, tiny_artifact: ModelArtifact) -> None:
     assert loaded.feature_hash == tiny_artifact.feature_hash
     raw = joblib.load(path)
     assert isinstance(raw, dict)
-    assert raw["format_version"] == 1
+    assert raw["format_version"] == FORMAT_VERSION == 2
+    assert isinstance(raw["estimator"], LinearSoftmaxModel)
 
 
 def test_load_missing(tmp_path: Path) -> None:
@@ -41,6 +44,17 @@ def test_load_legacy_estimator_is_rejected(tmp_path: Path, tiny_artifact: ModelA
     path = tmp_path / "legacy.joblib"
     joblib.dump(tiny_artifact.estimator, path)
     with pytest.raises(ArtifactError, match="not a MediMind artifact"):
+        load_artifact(path)
+
+
+def test_load_rejects_estimator_without_classifier_api(
+    tmp_path: Path, tiny_artifact: ModelArtifact
+) -> None:
+    path = save_artifact(tiny_artifact, tmp_path / "m.joblib")
+    payload = joblib.load(path)
+    payload["estimator"] = {"coef": [[1.0]]}
+    joblib.dump(payload, path)
+    with pytest.raises(ArtifactError, match="lacks predict_proba, classes_, n_features_in_"):
         load_artifact(path)
 
 
@@ -65,6 +79,8 @@ def test_verify_real_artifact(real_artifact: ModelArtifact, registry: DataRegist
     assert real_artifact.metadata["feature_hash"] == real_artifact.feature_hash
     for key in ("model_version", "trained_at", "sklearn_version", "dataset_sha256", "model_type"):
         assert real_artifact.metadata[key]
+    assert isinstance(real_artifact.estimator, LinearSoftmaxModel)
+    assert real_artifact.metadata["estimator_format"] == "linear_softmax"
 
 
 def test_verify_feature_mismatch(tiny_artifact: ModelArtifact, registry: DataRegistry) -> None:
@@ -92,13 +108,14 @@ def test_verify_warnings(real_artifact: ModelArtifact, registry: DataRegistry) -
         disease_labels={},
         descriptions={},
     )
+    # The training library version is informational only; serving never imports it.
     old = dataclasses.replace(
         real_artifact, metadata={**real_artifact.metadata, "sklearn_version": "0.1.0"}
     )
     warnings = verify_artifact(old, partial)
     assert any("Missing Turkish label" in w for w in warnings)
     assert any("Missing Turkish description" in w for w in warnings)
-    assert any("scikit-learn 0.1.0" in w for w in warnings)
+    assert not any("0.1.0" in w for w in warnings)
 
 
 @pytest.mark.parametrize(
