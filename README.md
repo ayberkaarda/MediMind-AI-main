@@ -4,6 +4,8 @@
 
 MediMind is a Turkish preliminary assessment tool that ranks diseases using a machine learning model based on selected symptoms. It presents disease descriptions and precautions from the dataset; it does not diagnose or replace a physician's assessment. It was developed for educational and informational purposes.
 
+Live demo: https://medimind-ai-seven-khaki.vercel.app
+
 ## Screenshots
 
 | View | Image |

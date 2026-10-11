@@ -4,6 +4,8 @@
 
 MediMind, seçilen belirtilerden hastalıkları makine öğrenmesi modeliyle sıralayan Türkçe bir ön değerlendirme aracıdır. Hastalık açıklamalarını ve veri setindeki önlemleri sunar; teşhis koymaz ve hekim değerlendirmesinin yerine geçmez. Eğitim ve bilgilendirme amacıyla geliştirilmiştir.
 
+Canlı demo: https://medimind-ai-seven-khaki.vercel.app
+
 ## Ekran görüntüleri
 
 | Görünüm | Görsel |
