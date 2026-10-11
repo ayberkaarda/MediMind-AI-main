@@ -130,7 +130,7 @@ Representative example showing the response schema; the score, record ID, and ti
 {
   "request_id": "6f1c2d0e9a8b4c7d8e9f0a1b2c3d4e5f",
   "analysis_id": 12,
-  "model_version": "20261010-lr-59a12e81",
+  "model_version": "20261011-lr-59a12e81",
   "input": {
     "symptoms": ["itching", "skin_rash", "nodal_skin_eruptions", "dischromic_patches"],
     "count": 4
@@ -161,7 +161,7 @@ Source: [Disease Symptom Prediction](https://www.kaggle.com/datasets/itachi9604/
 
 Symptom names are converted to canonical `snake_case`; spaces and repeated underscores are corrected, and known typos are consolidated through alias mappings. Legacy names with spaces are also accepted. Symptom combinations are converted into binary feature vectors; Turkish labels, region mappings, descriptions, precautions, and symptom weights are provided through the registry.
 
-The distributed model is multinomial logistic regression with the `lbfgs` solver. According to the [model card](backend/models/model_card.json), **C=10.0**, selected by group-CV log-loss from the range `[0.3, 1.0, 3.0, 10.0]`, uses seed 42. The model version is `20261010-lr-59a12e81`; the artifact is at `backend/models/disease_model.joblib`. Random forest is only a comparison model.
+The distributed model is multinomial logistic regression with the `lbfgs` solver. According to the [model card](backend/models/model_card.json), **C=10.0**, selected by group-CV log-loss from the range `[0.3, 1.0, 3.0, 10.0]`, uses seed 42. The model version is `20261011-lr-59a12e81`; the artifact is at `backend/models/disease_model.joblib`. scikit-learn is used only for training; the fitted coefficients are stored in a numpy-only softmax model, so the API does not install scikit-learn or scipy. Random forest is only a comparison model.
 
 Evaluation uses three views: five-fold `StratifiedGroupKFold` grouped by symptom-combination hash, `LeaveOneGroupOut` (LOGO) on the 304-row deduplicated table, and a perturbation test that randomly removes one symptom from test combinations. Perturbation includes three repetitions, for a total of 912 evaluations.
 

@@ -8,12 +8,12 @@ from typing import Any
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
-from sklearn.linear_model import LogisticRegression
 
 from app.core.config import Settings
 from app.core.paths import DATA_DIR, MODEL_CARD_PATH, MODEL_PATH
 from app.main import create_app
 from app.ml.artifact import ModelArtifact, load_artifact
+from app.ml.linear import LinearSoftmaxModel
 from app.ml.preprocessing import feature_hash
 from app.ml.registry import DataRegistry
 
@@ -40,9 +40,7 @@ def model_card() -> dict[str, Any]:
 def tiny_artifact() -> ModelArtifact:
     """Three features, three classes; each class is identified by one feature."""
     features = ("alpha_sign", "beta_sign", "gamma_sign")
-    X = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]] * 4, dtype=np.uint8)
-    y = np.array(["A", "B", "C"] * 4, dtype=object)
-    estimator = LogisticRegression(C=10.0, max_iter=1000).fit(X, y)
+    estimator = LinearSoftmaxModel(coef=4.0 * np.eye(3), intercept=np.zeros(3), classes="ABC")
     return ModelArtifact(
         estimator=estimator,
         feature_names=features,

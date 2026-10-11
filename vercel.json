@@ -5,20 +5,32 @@
   "functions": {
     "api/index.py": {
       "maxDuration": 10,
-      "memory": 1024,
-      "includeFiles": "backend/{app,data,models}/**"
+      "includeFiles": "backend/{app,data,models}/**",
+      "excludeFiles": "{frontend/**,screenshots/**,scripts/**,backend/tests/**,backend/scripts/**,**/__pycache__/**,**/tests/**,**/test/**,**/*.pyc}"
     }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "same-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        }
       ]
     }
   ],
@@ -27,5 +39,6 @@
     "MEDIMIND_LOG_FORMAT": "json",
     "MEDIMIND_APP_ENV": "production",
     "MEDIMIND_CORS_ORIGINS": "[]"
-  }
+  },
+  "framework": null
 }

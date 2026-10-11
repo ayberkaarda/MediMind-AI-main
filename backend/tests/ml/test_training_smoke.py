@@ -8,6 +8,7 @@ import pytest
 
 from app.ml import compare_artifacts
 from app.ml.artifact import load_artifact
+from app.ml.linear import LinearSoftmaxModel
 from app.ml.predictor import Predictor
 from app.ml.train import (
     C_GRID,
@@ -52,6 +53,8 @@ def test_train_lr_with_baseline(tmp_path: Path, mini_dataset: Path) -> None:
     assert artifact.classes == ("Common Cold", "Fungal infection", "Migraine")
     assert artifact.metadata["model_type"] == "lr"
     assert artifact.metadata["hyperparameters"]["C"] in C_GRID
+    # The random forest is a comparison baseline only; the artifact holds the linear model.
+    assert type(artifact.estimator) is LinearSoftmaxModel
 
     card = json.loads((out / "model_card.json").read_text(encoding="utf-8"))
     assert set(card["comparison"]) == {"lr", "rf"}
@@ -76,18 +79,18 @@ def test_train_lr_with_baseline(tmp_path: Path, mini_dataset: Path) -> None:
     assert result.top.disease == "Migraine"
 
 
-def test_train_rf_and_compare(tmp_path: Path, mini_dataset: Path) -> None:
-    lr_out = _train(tmp_path / "lr", mini_dataset, "--no-baseline", "--no-symptoms")
-    rf_out = _train(tmp_path / "rf", mini_dataset, "--model", "rf", "--no-baseline")
-    rf = load_artifact(rf_out / "disease_model.joblib")
-    assert rf.metadata["model_type"] == "rf"
-    assert not (tmp_path / "lr" / "symptoms.json").exists()
+def test_retrain_and_compare(tmp_path: Path, mini_dataset: Path) -> None:
+    base_out = _train(tmp_path / "base", mini_dataset, "--no-baseline", "--no-symptoms")
+    new_out = _train(tmp_path / "new", mini_dataset, "--no-baseline", "--seed", "7")
+    new_artifact = load_artifact(new_out / "disease_model.joblib")
+    assert new_artifact.metadata["model_type"] == "lr"
+    assert not (tmp_path / "base" / "symptoms.json").exists()
 
-    base, new = lr_out / "disease_model.joblib", rf_out / "disease_model.joblib"
+    base, new = base_out / "disease_model.joblib", new_out / "disease_model.joblib"
     assert compare_artifacts.compare(base, new, tolerance=1.0) == []
     assert compare_artifacts.main([str(base), str(new), "--tolerance", "1.0"]) == 0
 
-    card_path = rf_out / "model_card.json"
+    card_path = new_out / "model_card.json"
     card = json.loads(card_path.read_text(encoding="utf-8"))
     card["metrics"]["grouped_cv"]["per_fold"]["macro_f1"]["mean"] = -5.0
     card_path.write_text(json.dumps(card), encoding="utf-8")
@@ -114,6 +117,11 @@ def test_compare_detects_feature_and_class_changes(tmp_path: Path, mini_dataset:
 
 def test_missing_dataset(tmp_path: Path) -> None:
     assert main(["--out", str(tmp_path), "--dataset", str(tmp_path / "none.csv")]) == 2
+
+
+def test_only_logistic_regression_can_be_shipped(tmp_path: Path, mini_dataset: Path) -> None:
+    with pytest.raises(SystemExit):
+        main(["--out", str(tmp_path), "--dataset", str(mini_dataset), "--model", "rf"])
 
 
 def test_unknown_model_type() -> None:

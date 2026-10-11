@@ -281,7 +281,6 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "python-json-logger" },
-    { name = "scikit-learn" },
     { name = "sqlalchemy" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -297,6 +296,7 @@ dev = [
 ]
 train = [
     { name = "pandas" },
+    { name = "scikit-learn" },
 ]
 
 [package.metadata]
@@ -307,7 +307,6 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.7" },
     { name = "pydantic-settings", specifier = ">=2.4" },
     { name = "python-json-logger", specifier = ">=2.0" },
-    { name = "scikit-learn", specifier = ">=1.5" },
     { name = "sqlalchemy", specifier = ">=2.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.30" },
 ]
@@ -321,7 +320,10 @@ dev = [
     { name = "pytest-cov", specifier = ">=5.0" },
     { name = "ruff", specifier = ">=0.6" },
 ]
-train = [{ name = "pandas", specifier = ">=2.2" }]
+train = [
+    { name = "pandas", specifier = ">=2.2" },
+    { name = "scikit-learn", specifier = ">=1.5" },
+]
 
 [[package]]
 name = "mypy"

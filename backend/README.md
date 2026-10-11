@@ -24,13 +24,17 @@ uv run pytest -q --cov=app
 ## Training
 
 ```bash
-uv run medimind-train --out models            # logistic regression (shipped)
-uv run medimind-train --out /tmp/rf --model rf # random forest baseline
+uv run medimind-train --out models                      # logistic regression (shipped)
+uv run medimind-train --out /tmp/retrain --no-baseline  # skip the random forest comparison
 uv run python -m app.ml.compare_artifacts models/disease_model.joblib /tmp/retrain/disease_model.joblib
 ```
 
 Training writes `models/disease_model.joblib`, `models/model_card.json` and
-`data/symptoms.json` (the canonical symptom list the API serves).
+`data/symptoms.json` (the canonical symptom list the API serves). scikit-learn is
+used only for training and evaluation (`train` dependency group): the fitted
+logistic regression is stored as a numpy-only `LinearSoftmaxModel`
+(`app/ml/linear.py`), so the API runtime needs neither scikit-learn nor scipy.
+The random forest is evaluated as a comparison baseline and is never shipped.
 
 The dataset contains 4920 rows but only ~304 distinct (symptom set, disease)
 combinations, so a random row split leaks duplicates into the test fold.
@@ -80,6 +84,7 @@ app/db                 SQLAlchemy models and session helpers
 app/ml/preprocessing   symptom normalisation and vectorisation (no sklearn)
 app/ml/registry        Turkish labels, regions, severity, descriptions, precautions
 app/ml/artifact        model artifact format, save/load/verify
+app/ml/linear          numpy-only softmax model used for serving
 app/ml/predictor       pure prediction logic
 app/ml/train           training CLI with grouped cross-validation
 app/ml/evaluate        metrics

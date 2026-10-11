@@ -130,7 +130,7 @@ Yanıt şemasını gösteren temsili örnek; skor, kayıt kimliği ve zaman ger�
 {
   "request_id": "6f1c2d0e9a8b4c7d8e9f0a1b2c3d4e5f",
   "analysis_id": 12,
-  "model_version": "20261010-lr-59a12e81",
+  "model_version": "20261011-lr-59a12e81",
   "input": {
     "symptoms": ["itching", "skin_rash", "nodal_skin_eruptions", "dischromic_patches"],
     "count": 4
@@ -161,7 +161,7 @@ Kaynak: [Disease Symptom Prediction](https://www.kaggle.com/datasets/itachi9604/
 
 Belirti adları kanonik `snake_case` biçimine çevrilir; boşluklar ve tekrarlanan alt çizgiler düzeltilir, bilinen yazım hataları alias eşlemeleriyle birleştirilir. Eski boşluklu adlar da kabul edilir. Belirti kümeleri ikili özellik vektörlerine dönüştürülür; Türkçe etiketler, bölge eşlemeleri, açıklamalar, önlemler ve belirti ağırlıkları registry üzerinden sağlanır.
 
-Dağıtılan model `lbfgs` çözücülü multinomial lojistik regresyondur. [Model kartına](backend/models/model_card.json) göre `[0.3, 1.0, 3.0, 10.0]` aralığında grup-CV log-loss ile seçilen **C=10.0**, seed 42'dir. Model sürümü `20261010-lr-59a12e81`; artifact `backend/models/disease_model.joblib` içindedir. Random forest yalnızca karşılaştırma modelidir.
+Dağıtılan model `lbfgs` çözücülü multinomial lojistik regresyondur. [Model kartına](backend/models/model_card.json) göre `[0.3, 1.0, 3.0, 10.0]` aralığında grup-CV log-loss ile seçilen **C=10.0**, seed 42'dir. Model sürümü `20261011-lr-59a12e81`; artifact `backend/models/disease_model.joblib` içindedir. scikit-learn yalnızca eğitimde kullanılır; öğrenilen katsayılar yalnızca numpy kullanan bir softmax modeline aktarılır, bu yüzden API scikit-learn veya scipy kurmaz. Random forest yalnızca karşılaştırma modelidir.
 
 Değerlendirme üç görünüm kullanır: belirti kümesi hash'iyle gruplanmış beş katlı `StratifiedGroupKFold`, 304 satırlık tekilleştirilmiş tabloda `LeaveOneGroupOut` (LOGO) ve test kombinasyonlarından rastgele bir belirti çıkarılan perturbasyon testi. Perturbasyon üç tekrar, toplam 912 değerlendirme içerir.
 

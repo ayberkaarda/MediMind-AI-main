@@ -3,9 +3,6 @@ starlette==1.7.0
 pydantic==2.14.0
 pydantic-settings==2.15.0
 sqlalchemy==2.1.4
-scikit-learn==1.9.1
 numpy==2.5.3
-scipy==1.18.1
 joblib==1.6.0
-threadpoolctl==3.7.0
 python-json-logger==4.2.0

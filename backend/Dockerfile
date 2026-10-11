@@ -5,14 +5,15 @@ ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never
 WORKDIR /app
-# Dependencies first for better layer caching.
+# Dependencies first for better layer caching; the dev and train groups
+# (pytest, pandas, scikit-learn) stay out of the runtime image.
 COPY pyproject.toml uv.lock .python-version ./
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev --no-install-project
+    uv sync --frozen --no-default-groups --no-install-project
 COPY README.md ./
 COPY app ./app
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+    uv sync --frozen --no-default-groups
 
 FROM python:3.12-slim-bookworm AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
